@@ -1,0 +1,11 @@
+{
+    "status": true,
+    "code": 200,
+    "message": "Super Admin dashboard data retrieved successfully",
+    "data": {
+        "total_stores": 1,
+        "total_admins": 1,
+        "total_managers": 1,
+        "total_staffs": 1
+    }
+}

@@ -12,6 +12,25 @@ class StoreController extends BaseApi
         return new SVStore();
     }
 
+    /**
+     * Create Store
+     *
+     * @group Super Admin
+     *
+     * @bodyParam name string required The name of the store. Example: Main Store
+     * @bodyParam location string required The location of the store. Example: 123 Main St, Cityville
+     * @bodyParam user array required The user details for the store manager.
+     * @bodyParam user.first_name string required The first name of the user. Example: John
+     * @bodyParam user.last_name string required The last name of the user. Example: Doe
+     * @bodyParam user.email string required The email of the user. Example: johnjoe@gmail.com
+     * @bodyParam user.password string required The password of the user. Example: password123
+     * @bodyParam user.confirm_password string required The password confirmation of the user. Example: password123
+     * @bodyParam user.calling_code string required The calling code of the user's phone number. Example: 855
+     * @bodyParam user.phone_number string required The phone number of the user. Example: 1234567890
+     *
+     * @authenticated
+     * @responseFile storage/response/success.json
+     * */
     public function create(Request $request)
     {
         $request->validate([

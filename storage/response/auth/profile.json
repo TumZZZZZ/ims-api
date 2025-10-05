@@ -1,0 +1,13 @@
+{
+    "status": true,
+    "code": 200,
+    "message": "User profile retrieved successfully",
+    "data": {
+        "first_name": "Super",
+        "last_name": "Admin",
+        "email": "superadmin@gmail.com",
+        "role": "SUPER_ADMIN",
+        "calling_code": "855",
+        "phone_number": "987654321"
+    }
+}

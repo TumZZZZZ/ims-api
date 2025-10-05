@@ -5,6 +5,13 @@ namespace App\Http\Controllers;
 use App\Services\SVDashboard;
 use Illuminate\Http\Request;
 
+/**
+ * @group Super Admin
+ *
+ * To detail for Super Admin
+ *
+ * @authenticated
+ * */
 class SuperAdminDashboardController extends BaseApi
 {
     public function getService()
@@ -12,6 +19,12 @@ class SuperAdminDashboardController extends BaseApi
         return new SVDashboard();
     }
 
+    /**
+     * Super Admin Dashboard
+     *
+     * @authenticated
+     * @responseFile storage/response/super-admin/dashboard.json
+     */
     public function index(Request $request)
     {
         try {

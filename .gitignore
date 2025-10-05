@@ -22,3 +22,8 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+composer.lock
+# IGNORE SCRIBE
+.scribe
+/resources/views/scribe
+public/vendor/scribe

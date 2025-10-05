@@ -19,7 +19,7 @@ Route::prefix('v1')->group(function () {
             'prefix'     => 'super-admin',
         ], function () {
             Route::get('dashboard', [SuperAdminDashboardController::class, 'index']);
-            Route::post('stores', [StoreController::class, 'store']);
+            Route::post('stores', [StoreController::class, 'create']);
         });
 
         # Admin Routes
