@@ -29,6 +29,7 @@ return new class extends Migration
             $collection->enum('role', ['SUPER_ADMIN','ADMIN','MANAGER','STAFF']);
             $collection->string('calling_code');
             $collection->string('phone_number');
+            $collection->string('verify_otp')->nullable();
             $collection->timestamps();
             $collection->softDeletes();
         });

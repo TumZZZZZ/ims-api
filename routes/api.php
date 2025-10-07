@@ -9,6 +9,11 @@ Route::prefix('v1')->group(function () {
 
     Route::post('login', [AuthController::class, 'login']);
 
+        # Forgot Password & Verify OTP & Reset Password
+        Route::post('send-mail-verification', [AuthController::class, 'sendMailVerification']);
+        Route::post('verify-otp', [AuthController::class, 'verifyOTP']);
+        Route::post('reset-password', [AuthController::class, 'resetPassword']);
+
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
         Route::get('profile', [AuthController::class, 'profile']);

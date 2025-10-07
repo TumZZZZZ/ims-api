@@ -13,9 +13,6 @@ class User extends Authenticatable
 
     protected $connection = 'mongodb';
     protected $collection = 'users';
-    protected $primaryKey = '_id';
-    public $incrementing = false;
-    protected $keyType = 'string';
 
     protected $fillable = [
         'store_id',
@@ -26,6 +23,7 @@ class User extends Authenticatable
         'role',
         'calling_code',
         'phone_number',
+        'verify_otp',
     ];
 
     protected $hidden = [

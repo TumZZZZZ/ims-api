@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Mail\SendOTPMail;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class SVAuth
 {
@@ -31,9 +33,9 @@ class SVAuth
         ];
     }
 
-    public function getUserInfo(User $user)
+    public function getUserInfo(User $user, ?array $fields = [])
     {
-        return [
+        $info = [
             'first_name'   => $user->first_name,
             'last_name'    => $user->last_name,
             'email'        => $user->email,
@@ -41,5 +43,44 @@ class SVAuth
             'calling_code' => $user->calling_code,
             'phone_number' => $user->phone_number,
         ];
+
+        if (!empty($fields)) {
+            return array_intersect_key($info, array_flip($fields));
+        }
+
+        return $info;
+    }
+
+    public function sendMailVerification($email)
+    {
+        $user = User::where('email', $email)->first();
+        if (!$user) {
+            throw new \Exception('User not registered!');
+        }
+        $otp = rand(100000, 999999);
+        $user->verify_otp = $otp;
+        $user->save();
+
+        Mail::to($email)->send(new SendOTPMail($otp));
+    }
+
+    public function verifyOTP($otp)
+    {
+        $otp  = (int) $otp;
+        $user = User::where('verify_otp', $otp)->first();
+        if (!$user) {
+            throw new \Exception('Invalid OTP code!');
+        }
+        $user->verify_otp = null;
+        $user->save();
+
+        return $this->getUserInfo($user, ['email']);
+    }
+
+    public function resetPassword($params)
+    {
+        $user = User::where('email', $params['email'])->first();
+        $user->password = Hash::make($params['new_password']);
+        $user->save();
     }
 }
