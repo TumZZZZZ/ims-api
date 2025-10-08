@@ -34,14 +34,42 @@ return new class extends Migration
             $collection->softDeletes();
         });
 
-        Schema::create('suppliers', function (Blueprint $collection) {
+        Schema::create('images', function (Blueprint $collection) {
             $collection->string('_id');
+            $collection->string('object_id');
+            $collection->string('collection');
+            $collection->string('url');
+            $collection->timestamps();
+        });
+
+        Schema::create('categories', function (Blueprint $collection) {
+            $collection->string('_id');
+            $collection->string('parent_id');
             $collection->string('store_id');
             $collection->string('name');
-            $collection->string('calling_code');
-            $collection->string('phone_number');
-            $collection->string('email')->nullable();
-            $collection->string('address')->nullable();
+            $collection->array('product_ids');
+            $collection->timestamps();
+            $collection->softDeletes();
+        });
+
+        Schema::create('products', function (Blueprint $collection) {
+            $collection->string('_id');
+            $collection->string('name');
+            $collection->string('barcode')->nullable();
+            $collection->string('description')->nullable();
+            $collection->timestamps();
+            $collection->softDeletes();
+        });
+
+        Schema::create('product_assigns', function (Blueprint $collection) {
+            $collection->string('_id');
+            $collection->string('store_id');
+            $collection->string('product_id');
+            $collection->string('price')->default(0);
+            $collection->string('cost')->default(0);
+            $collection->string('unit')->default('pcs');
+            $collection->string('quantity')->default(0);
+            $collection->string('threshold')->default(0);
             $collection->timestamps();
             $collection->softDeletes();
         });

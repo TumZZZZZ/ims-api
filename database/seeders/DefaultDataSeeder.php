@@ -11,13 +11,28 @@ class DefaultDataSeeder extends Seeder
 {
     public function run()
     {
-        // Create or fetch default store
+        # Super Admin
+        User::firstOrCreate(
+            [
+                'email' => 'superadmin@gmail.com'
+            ],
+            [
+                'first_name'   => 'Super',
+                'last_name'    => 'Admin',
+                'password'     => Hash::make(config('app.super_admin_password')),
+                'role'         => 'SUPER_ADMIN',
+                'calling_code' => '855',
+                'phone_number' => '987654321',
+            ]
+        );
+
+        # Create or fetch default store
         $store = Store::firstOrCreate(
-            ['name'     => '24/7 Supermarket'],
+            ['name'     => 'Angkor Mart'],
             ['location' => 'Near IU, Sen Sok, Phnom Penh, Cambodia']
         );
 
-        // Default users
+        # Default users
         $users = [
             [
                 'email'        => 'tum200171@gmail.com',
@@ -48,7 +63,7 @@ class DefaultDataSeeder extends Seeder
             ],
         ];
 
-        // Create each user if not exists
+        # Create each user if not exists
         foreach ($users as $data) {
             $data['store_id'] = $store->_id;
             User::updateOrCreate(

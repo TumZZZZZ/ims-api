@@ -60,10 +60,34 @@ class AuthController extends BaseApi
      * @authenticated
      * @responseFile storage/response/auth/profile.json
      */
-    public function profile(Request $request)
+    public function getProfile(Request $request)
     {
         $user = $this->getService()->getUserInfo($request->user());
         return $this->sendResponse($user, 'User profile retrieved successfully');
+    }
+
+    /**
+     * Update Profile
+     *
+     * @authenticated
+     * @responseFile storage/response/auth/profile.json
+     */
+    public function updateProfile(Request $request, $id)
+    {
+        $request->validate([
+            'first_name'   => 'required|string|max:255',
+            'last_name'    => 'required|string|max:255',
+            'email'        => 'required|email|unique:users,email,' . $id,
+            'calling_code' => 'required|string|max:10',
+            'phone_number' => 'required|unique:users,phone_number,' . $id,
+        ]);
+
+        try {
+            $user = $this->getService()->updateProfile($id, $request->all());
+            return $this->sendResponse($user, 'User profile updated successfully');
+        } catch (\Throwable $th) {
+            return $this->sendError('Update profile failed', 500, ['error' => $th->getMessage()]);
+        }
     }
 
     /**

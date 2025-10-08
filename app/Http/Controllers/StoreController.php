@@ -5,11 +5,36 @@ namespace App\Http\Controllers;
 use App\Services\SVStore;
 use Illuminate\Http\Request;
 
+/**
+ * @group Admin
+ *
+ * To detail for Admin routes
+ *
+ * @authenticated
+ * */
 class StoreController extends BaseApi
 {
     public function getService()
     {
         return new SVStore();
+    }
+
+    /**
+     * List Stores
+     *
+     * @queryParam search string Search term to filter stores by name. Example: Angkor
+     *
+     * @authenticated
+     * @responseFile storage/response/store/list-stores.json
+     */
+    public function index(Request $request)
+    {
+        try {
+            $data = $this->getService()->getStores($request->all());
+            return $this->sendResponse($data, 'Store list retrieved successfully');
+        } catch (\Throwable $th) {
+            return $this->sendError('Retrieve store list failed', 500, ['error' => $th->getMessage()]);
+        }
     }
 
     /**
@@ -51,6 +76,32 @@ class StoreController extends BaseApi
             return $this->sendResponse($data, 'Store created successfully', 201);
         } catch (\Throwable $th) {
             return $this->sendError('Create store failed', 500, ['error' => $th->getMessage()]);
+        }
+    }
+
+    /**
+     * Update Store
+     *
+     * @bodyParam image string The image paht. Example: images/store/IAW1QBHRGuHda0KMnF3Rt9d98GcYxIxVL2Q6e5ww.jpg
+     * @bodyParam name string required The name of the store. Example: Main Store
+     * @bodyParam location string required The location of the store. Example: 123 Main St, Cityville
+     *
+     * @authenticated
+     * @responseFile storage/response/success.json
+     */
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'image'    => 'nullable|string',
+            'name'     => 'required|string|max:255',
+            'location' => 'required|string|max:255',
+        ]);
+
+        try {
+            $data = $this->getService()->update($id, $request->all());
+            return $this->sendResponse($data, 'Store updated successfully');
+        } catch (\Throwable $th) {
+            return $this->sendError('Update store failed', 500, ['error' => $th->getMessage()]);
         }
     }
 }

@@ -36,6 +36,7 @@ class SVAuth
     public function getUserInfo(User $user, ?array $fields = [])
     {
         $info = [
+            'id'           => $user->id,
             'first_name'   => $user->first_name,
             'last_name'    => $user->last_name,
             'email'        => $user->email,
@@ -49,6 +50,23 @@ class SVAuth
         }
 
         return $info;
+    }
+
+    public function updateProfile($id, $params)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            throw new \Exception('User not found');
+        }
+
+        $user->first_name   = $params['first_name'];
+        $user->last_name    = $params['last_name'];
+        $user->email        = $params['email'];
+        $user->calling_code = $params['calling_code'];
+        $user->phone_number = $params['phone_number'];
+        $user->save();
+
+        return $this->getUserInfo($user);
     }
 
     public function sendMailVerification($email)

@@ -27,3 +27,5 @@ composer.lock
 .scribe
 /resources/views/scribe
 public/vendor/scribe
+
+/public/storage

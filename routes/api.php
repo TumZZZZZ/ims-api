@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\SuperAdminDashboardController;
+use App\Http\Controllers\UploadController;
 
 Route::prefix('v1')->group(function () {
 
@@ -16,7 +17,14 @@ Route::prefix('v1')->group(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
-        Route::get('profile', [AuthController::class, 'profile']);
+        Route::get('profile', [AuthController::class, 'getProfile']);
+
+        # Update Profile
+        Route::group(['middleware' => 'role:ADMIN,MANAGER'], function () {
+            Route::put('profile/{id}', [AuthController::class, 'updateProfile']);
+        });
+
+        Route::post('upload', [UploadController::class, 'store']);
 
         # Super Admin Routes
         Route::group([
@@ -32,6 +40,8 @@ Route::prefix('v1')->group(function () {
             'middleware' => 'role:ADMIN',
             'prefix'     => 'admin',
         ], function () {
+            Route::get('stores', [StoreController::class, 'index']);
+            Route::put('stores/{id}', [StoreController::class, 'update']);
 
         });
 

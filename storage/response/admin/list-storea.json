@@ -1,0 +1,12 @@
+{
+    "status": true,
+    "code": 200,
+    "message": "Store list retrieved successfully",
+    "data": [
+        {
+            "name": "24/7 Supermarket",
+            "location": "Near IU, Sen Sok, Phnom Penh, Cambodia",
+            "id": "68e55804876f277d0b088543"
+        }
+    ]
+}

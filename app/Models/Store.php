@@ -13,4 +13,14 @@ class Store extends Model
         'name',
         'location'
     ];
+
+    public function admin()
+    {
+        return $this->hasOne(User::class, 'store_id', '_id')->where('role', 'ADMIN');
+    }
+
+    public function image()
+    {
+        return $this->hasOne(Image::class, 'object_id', '_id')->whereNull('deleted_at');
+    }
 }
