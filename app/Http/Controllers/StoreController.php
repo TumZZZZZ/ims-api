@@ -61,6 +61,7 @@ class StoreController extends BaseApi
         $request->validate([
             'name'                  => 'required|string|max:255',
             'location'              => 'required|string|max:255',
+            'currency_code'         => 'required|string|size:3',
             'user'                  => 'required|array',
             'user.first_name'       => 'required|string|max:255',
             'user.last_name'        => 'required|string|max:255',

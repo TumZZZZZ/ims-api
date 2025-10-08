@@ -28,8 +28,11 @@ class DefaultDataSeeder extends Seeder
 
         # Create or fetch default store
         $store = Store::firstOrCreate(
-            ['name'     => 'Angkor Mart'],
-            ['location' => 'Near IU, Sen Sok, Phnom Penh, Cambodia']
+            ['name' => 'Angkor Mart'],
+            [
+                'location'      => 'Near IU, Sen Sok, Phnom Penh, Cambodia',
+                'currency_code' => 'KHR',
+            ]
         );
 
         # Default users

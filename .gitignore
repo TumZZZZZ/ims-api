@@ -28,4 +28,4 @@ composer.lock
 /resources/views/scribe
 public/vendor/scribe
 
-/public/storage
+/public/storage/images
