@@ -21,7 +21,7 @@ Route::middleware('web')->group(function () {
         Route::get('product-list', [AdminController::class, 'productList'])->name('admin.product.list');
     });
 
-    Route::prefix('mamager')->group(function () {
-        Route::get('dashboard', [ManagerController::class, 'dashboard'])->name('mamager.dashboard');
+    Route::prefix('manager')->group(function () {
+        Route::get('dashboard', [ManagerController::class, 'dashboard'])->name('manager.dashboard');
     });
 });

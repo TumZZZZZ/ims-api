@@ -41,7 +41,7 @@
 
                 {{-- Menu Super Admin --}}
                 @elseif ($manager)
-                    <a href="{{ route('mamager.dashboard') }}" class="{{ request()->routeIs('mamager.dashboard') ? 'active' : '' }}">Dashboard</a>
+                    <a href="{{ route('manager.dashboard') }}" class="{{ request()->routeIs('manager.dashboard') ? 'active' : '' }}">Dashboard</a>
                 @endif
             </div>
         </div>
