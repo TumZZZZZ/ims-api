@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\SuperAdminDashboardController;
 use App\Http\Controllers\UploadController;
@@ -40,8 +41,17 @@ Route::prefix('v1')->group(function () {
             'middleware' => 'role:ADMIN',
             'prefix'     => 'admin',
         ], function () {
+
+            # Store Management
             Route::get('stores', [StoreController::class, 'index']);
             Route::put('stores/{id}', [StoreController::class, 'update']);
+
+            # Product Management
+            Route::apiResource('products', ProductController::class);
+
+            # Export & Import Products
+            Route::get('product-export', [ProductController::class, 'export']);
+            Route::post('product-import', [ProductController::class, 'import']);
 
         });
 

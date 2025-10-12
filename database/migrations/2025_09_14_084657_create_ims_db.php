@@ -58,6 +58,7 @@ return new class extends Migration
             $collection->string('name');
             $collection->string('barcode')->nullable();
             $collection->string('description')->nullable();
+            $collection->string('unit')->default('pcs');
             $collection->timestamps();
             $collection->softDeletes();
         });
@@ -69,7 +70,6 @@ return new class extends Migration
             $collection->string('price')->default(0);
             $collection->string('cost')->default(0);
             $collection->string('quantity')->default(0);
-            $collection->string('unit')->default('pcs');
             $collection->string('threshold')->default(0);
             $collection->timestamps();
             $collection->softDeletes();

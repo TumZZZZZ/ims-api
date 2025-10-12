@@ -29,9 +29,4 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
     ];
-
-    public function store()
-    {
-        return $this->belongsTo(Store::class, 'store_id', 'id');
-    }
 }

@@ -19,13 +19,16 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
-            // Only for API routes
+            // API routes: return JSON
             if ($request->is('api/*')) {
                 return response()->json([
-                    'status'    => false,
-                    'code'      => 401,
-                    'message'   => 'Unauthenticated.',
+                    'status'  => false,
+                    'code'    => 401,
+                    'message' => 'Unauthenticated.',
                 ], 401);
             }
+
+            // redirect to SPA entry point instead of `login`
+            return redirect(route('login')); // or wherever your SPA handles login
         });
     })->create();
