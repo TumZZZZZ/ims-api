@@ -11,8 +11,12 @@
 
 <body>
     @php
-        $user       = session('user');
-        $role       = $user ? $user['role'] : 'GUEST';
+        $user = session('user');
+        if (!$user) {
+            header('Location: ' . route('login'));
+            exit();
+        }
+        $role       = $user->role;
         $superAdmin = $role === 'SUPER_ADMIN';
         $admin      = $role === 'ADMIN';
         $manager    = $role === 'MANAGER';
@@ -33,6 +37,7 @@
                 {{-- Menu Super Admin --}}
                 @elseif ($admin)
                     <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
+                    <a href="{{ route('admin.product.list') }}" class="{{ request()->routeIs('admin.product.list') ? 'active' : '' }}">Products</a>
 
                 {{-- Menu Super Admin --}}
                 @elseif ($manager)

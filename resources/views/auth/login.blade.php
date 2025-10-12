@@ -160,9 +160,13 @@
             <div style="margin-top:10px;">
                 <a href="#">Forgot password?</a>
             </div>
-        </form>
 
-        <div id="errorMessage" style="color:red; margin-top:10px;"></div>
+            <div id="errorMessage" style="color:red; margin-top:10px;">
+                @error('email')
+                    <div class="error">{{ $message }}</div>
+                @enderror
+            </div>
+        </form>
     </div>
 </body>
 
