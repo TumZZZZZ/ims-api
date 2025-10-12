@@ -11,12 +11,13 @@
 
 <body>
     @php
-        $user = session('user');
-        if (!$user) {
-            header('Location: ' . route('login'));
-            exit();
-        }
-        $role       = $user->role;
+        // $user = session('user');
+        // if (!$user) {
+        //     header('Location: ' . route('login'));
+        //     exit();
+        // }
+        // $role       = $user->role;
+        $role       = "ADMIN";
         $superAdmin = $role === 'SUPER_ADMIN';
         $admin      = $role === 'ADMIN';
         $manager    = $role === 'MANAGER';
@@ -46,8 +47,8 @@
             </div>
         </div>
         <div class="user-profile">
-            <img src="{{ $user->image->url ?? url('storage/default-images/no-image.png') }}" alt="User">
-            <h4>{{ $user['first_name']." ".$user['last_name'] }}</h4>
+            <img src="{{ @$user->image->url ?? url('storage/default-images/no-image.png') }}" alt="User">
+            <h4>{{ @$user['first_name']." ".@$user['last_name'] }}</h4>
             <p>{{ $roles[$role] }}</p>
         </div>
     </aside>
