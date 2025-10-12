@@ -11,11 +11,16 @@
 
 <body>
     @php
-        $user = session('user');
-        $role = $user ? $user['role'] : 'GUEST';
+        $user       = session('user');
+        $role       = $user ? $user['role'] : 'GUEST';
         $superAdmin = $role === 'SUPER_ADMIN';
-        $admin = $role === 'ADMIN';
-        $manager = $role === 'MANAGER';
+        $admin      = $role === 'ADMIN';
+        $manager    = $role === 'MANAGER';
+        $roles      = [
+            "SUPER_ADMIN" => "Super Admin",
+            "ADMIN"       => "Admin",
+            "MANAGER"     => "Manager",
+        ];
     @endphp
     <aside class="sidebar">
         <div>
@@ -36,9 +41,9 @@
             </div>
         </div>
         <div class="user-profile">
-            <img src="https://i.pravatar.cc/100?img=8" alt="User">
-            <h4>{{ Auth::user()->name ?? 'Sok Dara' }}</h4>
-            <p>Administrator</p>
+            <img src="{{ $user->image->url ?? url('storage/images/no-image.png') }}" alt="User">
+            <h4>{{ $user['first_name']." ".$user['last_name'] }}</h4>
+            <p>{{ $roles[$role] }}</p>
         </div>
     </aside>
 
