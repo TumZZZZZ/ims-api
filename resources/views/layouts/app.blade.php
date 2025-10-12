@@ -41,7 +41,7 @@
             </div>
         </div>
         <div class="user-profile">
-            <img src="{{ $user->image->url ?? url('storage/images/no-image.png') }}" alt="User">
+            <img src="{{ $user->image->url ?? url('storage/default-images/no-image.png') }}" alt="User">
             <h4>{{ $user['first_name']." ".$user['last_name'] }}</h4>
             <p>{{ $roles[$role] }}</p>
         </div>
