@@ -29,7 +29,8 @@
         <table style="width:100%; border-collapse: collapse; background:white;">
             <thead style="background: var(--gold); color:white; text-align:left; position:sticky; top:0; z-index:2;">
                 <tr>
-                    <th style="padding:12px;">Product Name</th>
+                    <th style="padding:12px;">Image</th>
+                    <th style="padding:12px;">Name</th>
                     <th style="padding:12px;">Cost</th>
                     <th style="padding:12px;">Price</th>
                     <th style="padding:12px;">Category</th>
@@ -41,6 +42,12 @@
             <tbody id="products-body">
                 <!-- Example rows with color identification -->
                 <tr style="background:#f9f9f9;">
+                    <td style="display:flex; align-items:center;">
+                        <div
+                            style="margin-left:8px; width:50px; height:50px; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#fff;">
+                            <img src="https://s.lightorangebean.com/media/20240914145432/Veggie-Infused-Steamed-Rice_done.png" style="width:100%; height:100%; object-fit:contain;">
+                        </div>
+                    </td>
                     <td style="padding:12px;">Rice</td>
                     <td style="padding:12px;">$8.00</td>
                     <td style="padding:12px;">$12.00</td>
@@ -53,6 +60,16 @@
                     </td>
                 </tr>
                 <tr style="background:#fff;">
+                    <td style="display:flex; align-items:center;">
+                        <span class="arrow"></span>
+                        <div
+                            style="margin-left:8px; width:50px; height:50px; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#fff;">
+                            <div
+                                style="width:50px; height:50px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:#c9a643; color:white; font-weight:bold; font-size:20px;">
+                                C
+                            </div>
+                        </div>
+                    </td>
                     <td style="padding:12px;">Coffee</td>
                     <td style="padding:12px;">$5.00</td>
                     <td style="padding:12px;">$8.00</td>
@@ -65,6 +82,16 @@
                     </td>
                 </tr>
                 <tr style="background:#f9f9f9;">
+                    <td style="display:flex; align-items:center;">
+                        <span class="arrow"></span>
+                        <div
+                            style="margin-left:8px; width:50px; height:50px; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#fff;">
+                            <div
+                                style="width:50px; height:50px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:#c9a643; color:white; font-weight:bold; font-size:20px;">
+                                S
+                            </div>
+                        </div>
+                    </td>
                     <td style="padding:12px;">Sugar</td>
                     <td style="padding:12px;">$2.00</td>
                     <td style="padding:12px;">$3.50</td>

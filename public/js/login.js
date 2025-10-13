@@ -58,6 +58,13 @@ otpInputs.forEach((input, index) => {
         if (firstEmpty) firstEmpty.focus();
         else otpInputs[otpInputs.length - 1].focus();
     });
+
+    // Handle backspace or delete key
+    input.addEventListener('keydown', (e) => {
+        if ((e.key === 'Backspace' || e.key === 'Delete') && input.value === '' && index > 0) {
+            otpInputs[index - 1].focus();
+        }
+    });
 });
 
 // ===== ACTIONS EACH FORM =====

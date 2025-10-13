@@ -40,7 +40,7 @@
                 </div>
 
                 <div class="actions">
-                    <label class="remember"><input type="checkbox" name="remember"> Remember me</label>
+                    <label class="remember"><input class="custom-checkbox" type="checkbox" name="remember"> Remember me</label>
                     <div class="forgot"><a href="#" id="forgot-link">Forgot password?</a></div>
                 </div>
 

@@ -29,4 +29,14 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
     ];
+
+    public function image()
+    {
+        return $this->hasOne(Image::class, 'object_id', '_id')->whereNull('deleted_at');
+    }
+
+    public function store()
+    {
+        return $this->belongsTo(Store::class, 'store_id', '_id')->whereNull('deleted_at');
+    }
 }

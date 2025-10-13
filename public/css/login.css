@@ -240,3 +240,33 @@ input:focus {
         opacity: 1;
     }
 }
+
+.custom-checkbox {
+  position: relative;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #aaa;
+  border-radius: 4px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+}
+
+/* When checked — custom color */
+.custom-checkbox:checked {
+  background-color: #ffb700;
+  border-color: #ffb700;
+}
+
+/* Add a checkmark icon */
+.custom-checkbox:checked::after {
+  content: "✓";
+  color: black;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  font-size: 14px;
+}

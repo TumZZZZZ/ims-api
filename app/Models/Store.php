@@ -11,7 +11,8 @@ class Store extends Model
 
     protected $fillable = [
         'name',
-        'location'
+        'location',
+        'currency_code',
     ];
 
     public function admin()

@@ -39,8 +39,8 @@ class DefaultDataSeeder extends Seeder
         $users = [
             [
                 'email'        => 'tum200171@gmail.com',
-                'first_name'   => 'Admin',
-                'last_name'    => 'User',
+                'first_name'   => 'Tol',
+                'last_name'    => 'Tum',
                 'password'     => Hash::make('Admin1234!'),
                 'role'         => 'ADMIN',
                 'calling_code' => '855',
@@ -48,8 +48,8 @@ class DefaultDataSeeder extends Seeder
             ],
             [
                 'email'        => 'jeffjustin178@gmail.com',
-                'first_name'   => 'Manager',
-                'last_name'    => 'User',
+                'first_name'   => 'Jeff',
+                'last_name'    => 'Justin',
                 'password'     => Hash::make('Manager1234!'),
                 'role'         => 'MANAGER',
                 'calling_code' => '855',

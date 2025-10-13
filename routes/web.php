@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ManagerController;
+use App\Http\Controllers\SuperAdminController;
 
 Route::middleware('web')->group(function () {
 
@@ -13,11 +14,15 @@ Route::middleware('web')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     Route::prefix('super-admin')->group(function () {
-        Route::get('dashboard', [AdminController::class, 'dashboard'])->name('super-admin.dashboard');
+        Route::get('dashboard', [SuperAdminController::class, 'dashboard'])->name('super-admin.dashboard');
+        Route::get('stores', [SuperAdminController::class, 'listStore'])->name('super-admin.stores');
+        Route::get('users', [SuperAdminController::class, 'listUser'])->name('super-admin.users');
     });
 
     Route::prefix('admin')->group(function () {
         Route::get('dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+        Route::get('category-list', [AdminController::class, 'listCategory'])->name('admin.category.list');
+        Route::get('category-create', [AdminController::class, 'createCategory'])->name('admin.category.create');
         Route::get('product-list', [AdminController::class, 'productList'])->name('admin.product.list');
     });
 

@@ -11,6 +11,16 @@ class AdminController extends BaseApi
         return view('admin.dashboard');
     }
 
+    public function listCategory(Request $request)
+    {
+        return view('admin.categories.index');
+    }
+
+    public function createCategory(Request $request)
+    {
+        return view('admin.categories.create');
+    }
+
     public function productList(Request $request)
     {
         return view('admin.products.index');

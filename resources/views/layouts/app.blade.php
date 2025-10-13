@@ -34,10 +34,16 @@
                 {{-- Menu Super Admin --}}
                 @if ($superAdmin)
                     <a href="{{ route('super-admin.dashboard') }}" class="{{ request()->routeIs('super-admin.dashboard') ? 'active' : '' }}">Dashboard</a>
+                    <a href="{{ route('super-admin.stores') }}" class="{{ request()->routeIs('super-admin.stores') ? 'active' : '' }}">Stores</a>
+                    <a href="{{ route('super-admin.users') }}" class="{{ request()->routeIs('super-admin.users') ? 'active' : '' }}">Users</a>
 
                 {{-- Menu Super Admin --}}
                 @elseif ($admin)
                     <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
+                    @php
+                        $isActiveCategoriesMenu = request()->routeIs('admin.category.list') || request()->routeIs('admin.category.create');
+                    @endphp
+                    <a href="{{ route('admin.category.list') }}" class="{{ $isActiveCategoriesMenu ? 'active' : '' }}">Categories</a>
                     <a href="{{ route('admin.product.list') }}" class="{{ request()->routeIs('admin.product.list') ? 'active' : '' }}">Products</a>
 
                 {{-- Menu Super Admin --}}

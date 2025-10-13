@@ -24,8 +24,26 @@ input[type="text"]:focus,
 input[type="search"]:focus,
 input[type="number"]:focus,
 input[type="email"]:focus,
-input[type="password"]:focus {
+input[type="password"]:focus,
+select:focus {
     border-color: var(--gold);
     box-shadow: 0 0 5px rgba(164, 126, 60, 0.5);
     color: var(--dark); /* keeps text color consistent */
+}
+
+select:focus {
+    outline: none;
+}
+
+select {
+    appearance: none;
+}
+
+table thead tr th,
+table tbody tr td {
+    padding: 10px;
+}
+
+table .store-row:hover {
+    background-color: #f1f7ff !important;
 }
