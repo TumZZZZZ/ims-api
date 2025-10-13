@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\SendOTPMail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class LoginController extends Controller
 {
@@ -44,6 +46,66 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         $request->session()->flush();
+        return redirect()->route('login');
+    }
+
+    public function forgotPassword()
+    {
+        return view('auth.forgot-password');
+    }
+
+    public function sendOTP(Request $request)
+    {
+        $email = $request->email;
+        $user  = User::where('email', $email)->first();
+        if (!$user) {
+            return back()->with(['errors' => 'User not registered!'])->withInput();
+        }
+        $otp = rand(100000, 999999);
+        $user->verify_otp = $otp;
+        $user->save();
+
+        Mail::to($email)->send(new SendOTPMail($otp));
+
+        return redirect()->route('verify.otp.form');
+    }
+
+    public function verifyOTPForm()
+    {
+        return view('auth.verify-otp');
+    }
+
+    public function verifyOTPCode(Request $request)
+    {
+        $otp = "";
+        for ($i=1; $i <= 6; $i++) {
+            $otp .= $request->{"digit_$i"};
+        }
+        $otp  = (int) $otp;
+        $user = User::where('verify_otp', $otp)->first();
+        if (!$user) {
+            return back()->with(['errors' => 'Invalid OTP code!'])->withInput();
+        }
+        $user->verify_otp = null;
+        $user->save();
+
+        return redirect()->route('reset.password.form', ['id' => $user->id]);
+    }
+
+    public function resetPasswordForm($id)
+    {
+        return view('auth.reset-password', ['id' => $id]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $user = User::find($request->id);
+        if (!$user) {
+            throw new \Exception('User not found!');
+        }
+        $user->password = Hash::make($request->new);
+        $user->save();
+
         return redirect()->route('login');
     }
 }

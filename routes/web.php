@@ -12,6 +12,12 @@ Route::middleware('web')->group(function () {
     Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->name('login.post');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    Route::get('/forgot-password', [LoginController::class, 'forgotPassword'])->name('forgot.password');
+    Route::post('/send-otp', [LoginController::class, 'sendOTP'])->name('send.otp');
+    Route::get('/verify-otp', [LoginController::class, 'verifyOTPForm'])->name('verify.otp.form');
+    Route::post('/verify-otp-code', [LoginController::class, 'verifyOTPCode'])->name('verify.otp.code');
+    Route::get('/reset-password/{id}', [LoginController::class, 'resetPasswordForm'])->name('reset.password.form');
+    Route::post('/reset-password', [LoginController::class, 'resetPassword'])->name('reset.password');
 
     Route::prefix('super-admin')->group(function () {
         Route::get('dashboard', [SuperAdminController::class, 'dashboard'])->name('super-admin.dashboard');

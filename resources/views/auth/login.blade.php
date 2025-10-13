@@ -41,7 +41,7 @@
 
                 <div class="actions">
                     <label class="remember"><input class="custom-checkbox" type="checkbox" name="remember"> Remember me</label>
-                    <div class="forgot"><a href="#" id="forgot-link">Forgot password?</a></div>
+                    <div class="forgot"><a href={{ route('forgot.password') }}>Forgot password?</a></div>
                 </div>
 
                 <button class="btn" type="submit">Sign In</button>
