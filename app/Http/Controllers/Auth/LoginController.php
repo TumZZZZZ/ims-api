@@ -103,7 +103,7 @@ class LoginController extends Controller
         if (!$user) {
             throw new \Exception('User not found!');
         }
-        $user->password = Hash::make($request->new_password);
+        $user->password = Hash::make($request->password);
         $user->save();
 
         return redirect()->route('login');
