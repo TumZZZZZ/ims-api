@@ -47,6 +47,15 @@ class DefaultDataSeeder extends Seeder
                 'phone_number' => '857585745',
             ],
             [
+                'email'        => 'nganpeak2001@gmail.com',
+                'first_name'   => 'UX/UI',
+                'last_name'    => 'Designer',
+                'password'     => Hash::make('1234'),
+                'role'         => 'ADMIN',
+                'calling_code' => '855',
+                'phone_number' => '123456989',
+            ],
+            [
                 'email'        => 'jeffjustin178@gmail.com',
                 'first_name'   => 'Jeff',
                 'last_name'    => 'Justin',
