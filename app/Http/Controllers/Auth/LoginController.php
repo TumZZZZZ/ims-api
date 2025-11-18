@@ -6,13 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Mail\SendOTPMail;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 class LoginController extends Controller
 {
-    public function showLogin()
+    public function showLogin(Request $request)
     {
+        if ($request->user()) {
+            $role = $request->user()->role;
+            $role = str_replace('_', '-', strtolower($role));
+            return redirect(route(''.$role.'.dashboard'));
+        }
+
         return view('auth.login');
     }
 
@@ -29,10 +36,10 @@ class LoginController extends Controller
         $user = User::where('email', $email)->first();
 
         if (!$user || !Hash::check($password, $user->password)) {
-            return back()->withErrors(['email' => 'Invalid credentials']);
+            return back()->withErrors(['email' => 'Invalid credentials'])->withInput();
         }
 
-        session(['user' => $user]);
+        Auth::login($user);
 
         if ($user->role === 'SUPER_ADMIN') {
             return redirect()->route('super-admin.dashboard');
@@ -45,6 +52,7 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
+        Auth::logout();
         $request->session()->flush();
         return redirect()->route('login');
     }

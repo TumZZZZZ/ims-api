@@ -20,12 +20,12 @@ class RoleMiddleware extends BaseApi
     {
         // Ensure the user is logged in
         if (! $request->user()) {
-            return $this->sendError('Unauthenticated', 401);
+            return redirect()->route('401.page');
         }
 
         // Check role (assuming you have a `role` column on users table)
         if ($request->user()->role !== $role) {
-            return $this->sendError('Unauthorized', 403);
+            return redirect()->route('403.page');
         }
 
         return $next($request);
