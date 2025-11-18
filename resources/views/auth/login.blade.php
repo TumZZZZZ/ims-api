@@ -18,7 +18,7 @@
         <!-- ===== LOGIN FORM ===== -->
         <section id="login-section">
             <header class="brand">
-                <div class="logo" aria-hidden="true">AW</div>
+                <div class="logo" aria-hidden="true">KA</div>
                 <div>
                     <h1 id="signinTitle">Khmer Angkor — Sign In</h1>
                     <p>Welcome back — sign in to continue to your dashboard</p>
@@ -29,15 +29,23 @@
                 @csrf
                 <div class="input">
                     <label for="email">Email</label>
-                    <input id="email" name="email" type="email" placeholder="you@domain.com" required
+                    <input id="email" name="email" type="email" placeholder="you@domain.com" required value="{{ old('email') }}"
                         autocomplete="email">
                 </div>
 
                 <div class="input">
                     <label for="password">Password</label>
-                    <input id="password" name="password" type="password" placeholder="Enter your password" required
+                    <input id="password" name="password" type="password" placeholder="Enter your password" required value="{{ old('password') }}"
                         autocomplete="current-password">
                 </div>
+
+                @if ($errors->any())
+                    <div style="color:red;">
+                        @foreach ($errors->all() as $error)
+                            {{ $error }}
+                        @endforeach
+                    </div>
+                @endif
 
                 <div class="actions">
                     <label class="remember"><input class="custom-checkbox" type="checkbox" name="remember"> Remember me</label>
@@ -45,87 +53,6 @@
                 </div>
 
                 <button class="btn" type="submit">Sign In</button>
-            </form>
-        </section>
-
-        <!-- ===== FORGOT PASSWORD FORM ===== -->
-        <section id="forgot-section" style="display:none;">
-            <header class="brand">
-                <div class="logo" aria-hidden="true">AW</div>
-                <div>
-                    <h1>Forgot Password</h1>
-                    <p>Enter your email to receive an OTP code</p>
-                </div>
-            </header>
-
-            <form id="forgot-form" action="#" method="POST" novalidate>
-                <div class="input">
-                    <label for="forgot-email">Email</label>
-                    <input id="forgot-email" name="forgot-email" type="email" placeholder="you@domain.com" required>
-                </div>
-
-                <button class="btn" type="button" id="send-otp-btn">Send OTP</button>
-
-                <div class="actions">
-                    <div class="forgot"><a href="#" id="back-to-login">← Back to Login</a></div>
-                </div>
-            </form>
-        </section>
-
-        <!-- ===== OTP FORM ===== -->
-        <section id="otp-section" style="display:none;">
-            <header class="brand">
-                <div class="logo" aria-hidden="true">AW</div>
-                <div>
-                    <h1>Verify OTP</h1>
-                    <p>Enter the 6-digit code sent to your email</p>
-                </div>
-            </header>
-
-            <form id="otp-form" action="#" method="POST" novalidate>
-                <div class="otp-inputs" style="display:flex; gap:10px; justify-content:center; margin-bottom:15px;">
-                    <input type="text" maxlength="1">
-                    <input type="text" maxlength="1">
-                    <input type="text" maxlength="1">
-                    <input type="text" maxlength="1">
-                    <input type="text" maxlength="1">
-                    <input type="text" maxlength="1">
-                </div>
-
-                <button class="btn" type="submit">Verify OTP</button>
-
-                <div class="actions">
-                    <div class="forgot"><a href="#" id="back-to-forgot">← Back to Forgot Password</a></div>
-                </div>
-            </form>
-        </section>
-
-        <!-- ===== RESET PASSWORD FORM ===== -->
-        <section id="reset-section" style="display:none;">
-            <header class="brand">
-                <div class="logo" aria-hidden="true">AW</div>
-                <div>
-                    <h1>Reset Password</h1>
-                    <p>Enter your new password to complete the process</p>
-                </div>
-            </header>
-
-            <form id="reset-form" action="#" method="POST" novalidate>
-                <div class="input">
-                    <label for="new-password">New Password</label>
-                    <input id="new-password" name="new-password" type="password" placeholder="Enter new password" required>
-                </div>
-
-                <div class="input">
-                    <label for="confirm-password">Confirm Password</label>
-                    <input id="confirm-password" name="confirm-password" type="password" placeholder="Confirm new password" required>
-                </div>
-
-                <button class="btn" type="submit">Reset Password</button>
-
-                <div class="actions">
-                    <div class="forgot"><a href="#" id="back-to-otp">← Back to Verify OTP</a></div>
-                </div>
             </form>
         </section>
 
