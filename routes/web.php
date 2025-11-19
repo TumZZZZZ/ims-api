@@ -13,6 +13,7 @@ Route::middleware('web')->group(function () {
     Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->name('login.post');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    Route::get('/force-logout', [LoginController::class, 'logout'])->name('froce.logout');
     Route::get('/forgot-password', [LoginController::class, 'forgotPassword'])->name('forgot.password');
     Route::post('/send-otp', [LoginController::class, 'sendOTP'])->name('send.otp');
     Route::get('/verify-otp', [LoginController::class, 'verifyOTPForm'])->name('verify.otp.form');

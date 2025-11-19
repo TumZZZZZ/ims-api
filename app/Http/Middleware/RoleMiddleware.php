@@ -2,11 +2,11 @@
 
 namespace App\Http\Middleware;
 
-use App\Http\Controllers\BaseApi;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class RoleMiddleware extends BaseApi
+class RoleMiddleware
 {
     /**
      * Handle an incoming request.
@@ -19,12 +19,12 @@ class RoleMiddleware extends BaseApi
     public function handle(Request $request, Closure $next, $role)
     {
         // Ensure the user is logged in
-        if (! $request->user()) {
+        if (! Auth::check()) {
             return redirect()->route('401.page');
         }
 
         // Check role (assuming you have a `role` column on users table)
-        if ($request->user()->role !== $role) {
+        if (Auth::user()->role !== $role) {
             return redirect()->route('403.page');
         }
 

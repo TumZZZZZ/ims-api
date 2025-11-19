@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" href="{{ asset('storage/default-images/favicon.png') }}">
     <title>Khmer Angkor | Sign In</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
@@ -18,7 +19,7 @@
         <!-- ===== OTP FORM ===== -->
         <section id="otp-section">
             <header class="brand">
-                <div class="logo" aria-hidden="true">AW</div>
+                <div class="logo" aria-hidden="true">KA</div>
                 <div>
                     <h1>Verify OTP</h1>
                     <p>Enter the 6-digit code sent to your email</p>
