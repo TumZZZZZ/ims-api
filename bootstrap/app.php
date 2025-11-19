@@ -18,17 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
-            // API routes: return JSON
-            if ($request->is('api/*')) {
-                return response()->json([
-                    'status'  => false,
-                    'code'    => 401,
-                    'message' => 'Unauthenticated.',
-                ], 401);
-            }
-
-            // redirect to SPA entry point instead of `login`
-            return redirect(route('login')); // or wherever your SPA handles login
+        // Handle 404 Not Found
+        $exceptions->renderable(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, $request) {
+            // Redirect to custom 404 page
+            return redirect()->route('404.page');
         });
     })->create();

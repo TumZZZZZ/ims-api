@@ -41,5 +41,6 @@ Route::middleware('web')->group(function () {
     Route::prefix('errors')->group(function () {
         Route::get('401', [ErrorsController::class, 'unauthorized'])->name('401.page');
         Route::get('403', [ErrorsController::class, 'forbidden'])->name('403.page');
+        Route::get('404', [ErrorsController::class, 'pageNotFound'])->name('404.page');
     });
 });
