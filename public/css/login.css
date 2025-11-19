@@ -161,6 +161,15 @@ input:focus {
     color: rgba(255, 255, 255, 0.7);
 }
 
+.password-visibility {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    gap: 8px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
 .forgot a {
     font-size: 13px;
     color: var(--accent);
