@@ -40,6 +40,8 @@
                     <input id="confirm-password" name="confirm_password" type="password" placeholder="Confirm new password" required>
                 </div>
 
+                <label class="password-visibility" for="password-visibility" style="padding-bottom: 20px;">Show Password<input class="custom-checkbox" type="checkbox" name="password-visibility"></label>
+
                 <button class="btn" type="submit">Reset Password</button>
 
                 <div class="actions">
@@ -64,6 +66,15 @@
                 alert('Passwords do not match!');
             }
             // If passwords match, the form will submit naturally
+        });
+
+        const newPasswordInput = document.getElementById('new-password');
+        const confirmPasswordInput = document.getElementById('confirm-password');
+        const passwordToggle = document.getElementsByName('password-visibility')[0]; // get the first checkbox with that name
+
+        passwordToggle.addEventListener('change', function() {
+            newPasswordInput.type = this.checked ? 'text' : 'password';
+            confirmPasswordInput.type = this.checked ? 'text' : 'password';
         });
     </script>
 </body>

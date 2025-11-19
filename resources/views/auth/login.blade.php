@@ -39,6 +39,7 @@
                     <input id="password" name="password" type="password" placeholder="Enter your password" required value="{{ old('password') }}"
                         autocomplete="current-password">
                 </div>
+                <label class="password-visibility" for="password-visibility">Show Password<input class="custom-checkbox" type="checkbox" name="password-visibility"></label>
 
                 @if ($errors->any())
                     <div style="color:red;">
@@ -49,7 +50,7 @@
                 @endif
 
                 <div class="actions">
-                    <label class="remember"><input class="custom-checkbox" type="checkbox" name="remember"> Remember me</label>
+                    <label class="remember" for="remember-me"><input class="custom-checkbox" type="checkbox" name="remember"> Remember me</label>
                     <div class="forgot"><a href={{ route('forgot.password') }}>Forgot password?</a></div>
                 </div>
 
@@ -58,6 +59,16 @@
         </section>
 
     </main>
+
+    <script>
+        const passwordInput = document.getElementById('password');
+        const passwordToggle = document.getElementsByName('password-visibility')[0]; // get the first checkbox with that name
+
+        passwordToggle.addEventListener('change', function() {
+            passwordInput.type = this.checked ? 'text' : 'password';
+        });
+    </script>
+
 </body>
 
 </html>
