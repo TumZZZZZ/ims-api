@@ -13,4 +13,9 @@ class ErrorsController extends BaseApi
     {
         return view('errors.403');
     }
+
+    public function pageNotFound()
+    {
+        return view('errors.404');
+    }
 }
