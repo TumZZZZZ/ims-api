@@ -12,12 +12,13 @@ use Illuminate\Support\Facades\Mail;
 
 class LoginController extends Controller
 {
-    public function showLogin(Request $request)
+    public function showLogin()
     {
-        if ($request->user()) {
-            $role = $request->user()->role;
+        $user = Auth::user();
+        if ($user) {
+            $role = $user->role;
             $role = str_replace('_', '-', strtolower($role));
-            return redirect(route(''.$role.'.dashboard'));
+            return redirect(route($role.'.dashboard'));
         }
 
         return view('auth.login');
@@ -53,7 +54,6 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
-        $request->session()->flush();
         return redirect()->route('login');
     }
 
