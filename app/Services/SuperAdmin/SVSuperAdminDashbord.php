@@ -26,18 +26,40 @@ class SVSuperAdminDashbord
         ];
     }
 
-    public function getStores(array $params)
+    public function getMerchants(array $params)
     {
-        return Store::with('image')
-            ->select('name','location','currency_code')
+        return Store::with(['branches','image'])
             ->where('deleted_at', null)
+            ->whereNull('parent_id')
             ->get()
             ->map(function($store) {
                 return (object)[
-                    'image_url' => @$store->image->url ? url($store->image->url) : null,
+                    'id'        => (string)$store->_id,
+                    'image_url' => $store->image->url ?? null,
                     'name'      => $store->name,
-                    'currency'  => $store->currency_code,
+                    'branches'  => implode(', ', $store->branches->pluck('name')->toArray()),
                     'address'   => $store->location,
+                    'active'    => $store->active,
+                ];
+            })
+            ->values();
+    }
+
+    public function getBranches(array $params)
+    {
+        return Store::with(['merchant','image'])
+            ->where('deleted_at', null)
+            ->whereNotNull('parent_id')
+            ->get()
+            ->map(function($store) {
+                return (object)[
+                    'id'            => (string)$store->_id,
+                    'image_url'     => $store->image->url ?? null,
+                    'name'          => $store->name,
+                    'merchant'      => $store->merchant->name ?? 'N/A',
+                    'currency_code' => $store->currency_code,
+                    'address'       => $store->location,
+                    'active'        => $store->active,
                 ];
             })
             ->values();

@@ -13,16 +13,18 @@ return new class extends Migration
     {
         Schema::create('stores', function (Blueprint $collection) {
             $collection->string('_id');
+            $collection->string('parent_id');
             $collection->string('name');
             $collection->string('location');
             $collection->string('currency_code');
+            $collection->integer('active');
             $collection->timestamps();
             $collection->softDeletes();
         });
 
         Schema::create('users', function (Blueprint $collection) {
             $collection->string('_id');
-            $collection->string('store_id')->nullable();
+            $collection->array('store_ids');
             $collection->string('first_name');
             $collection->string('last_name');
             $collection->string('email')->unique();

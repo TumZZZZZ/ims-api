@@ -1,0 +1,16 @@
+{
+    "dashboard": "Dashboard",
+    "merchants": "Merchants",
+    "branches": "Branches",
+    "users": "Users",
+    "merchant": "Merchant",
+    "branch": "Branch",
+    "address": "Address",
+    "action": "Action",
+    "status": "Status",
+    "activate": "Activate",
+    "suspend": "Suspend",
+    "search": "Search",
+    "import": "Import",
+    "create": "Create"
+}

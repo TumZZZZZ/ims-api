@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Stores')
-@section('header-title', 'Stores')
+@section('title', __('branches'))
+@section('header-title', __('branches'))
 
 @section('content')
 
@@ -16,29 +16,33 @@
         <table style="width:100%; border-collapse:collapse; background:white;">
             <thead style="background: var(--gold); color:white; text-align:left; position:sticky; top:0; z-index:2;">
                 <tr>
-                    <th>Image</th>
-                    <th>Name</th>
+                    <th></th>
+                    <th>Branche</th>
+                    <th>Merchant</th>
                     <th>Currency</th>
                     <th>Address</th>
+                    <th>Available</th>
                 </tr>
             </thead>
             <tbody id="stores-body">
-                @foreach ($data as $store)
+                @foreach ($data as $branch)
                     <tr class="store-row">
                         <td style="display:flex; align-items:center;">
                             <div style="margin-left:8px; width:50px; height:50px; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#fff;">
-                                @if ($store->image_url)
-                                    <img src="{{ $store->image_url }}" style="width:100%; height:100%; object-fit:contain;">
+                                @if ($branch->image_url)
+                                    <img src="{{ $branch->image_url }}" style="width:100%; height:100%; object-fit:contain;">
                                 @else
                                     <div style="width:50px; height:50px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:#c9a643; color:white; font-weight:bold; font-size:20px;">
-                                        {{ substr($store->name, 0, 1) }}
+                                        {{ substr($branch->name, 0, 1) }}
                                     </div>
                                 @endif
                             </div>
                         </td>
-                        <td>{{ $store->name }}</td>
-                        <td>{{ $store->currency }}</td>
-                        <td>{{ $store->address }}</td>
+                        <td>{{ $branch->name }}</td>
+                        <td>{{ $branch->merchant }}</td>
+                        <td>{{ $branch->currency_code }}</td>
+                        <td>{{ $branch->address }}</td>
+                        <td><span style="color: #{{ $branch->active ? '4CAF50' : 'F44336' }};">{{ $branch->active ? 'Open' : 'Closed' }}</span></td>
                     </tr>
                 @endforeach
 

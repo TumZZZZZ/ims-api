@@ -15,7 +15,7 @@ class User extends Authenticatable
     protected $collection = 'users';
 
     protected $fillable = [
-        'store_id',
+        'store_ids',
         'first_name',
         'last_name',
         'email',
@@ -35,8 +35,11 @@ class User extends Authenticatable
         return $this->hasOne(Image::class, 'object_id', '_id')->whereNull('deleted_at');
     }
 
-    public function store()
+    public function getMerchant()
     {
-        return $this->belongsTo(Store::class, 'store_id', '_id')->whereNull('deleted_at');
+        return Store::whereIn('_id', $this->store_ids)
+            ->whereNull('parent_id')
+            ->whereNull('deleted_at')
+            ->first();
     }
 }

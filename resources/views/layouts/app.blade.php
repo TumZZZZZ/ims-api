@@ -34,8 +34,9 @@
             <div class="menu">
                 {{-- Menu Super Admin --}}
                 @if ($superAdmin)
-                    <a href="{{ route('super-admin.dashboard') }}" class="{{ request()->routeIs('super-admin.dashboard') ? 'active' : '' }}">Dashboard</a>
-                    <a href="{{ route('super-admin.stores') }}" class="{{ request()->routeIs('super-admin.stores') ? 'active' : '' }}">Stores</a>
+                    <a href="{{ route('super-admin.dashboard') }}" class="{{ request()->routeIs('super-admin.dashboard') ? 'active' : '' }}">@lang('dashboard')</a>
+                    <a href="{{ route('super-admin.merchants') }}" class="{{ request()->routeIs('super-admin.merchants') ? 'active' : '' }}">Merchants</a>
+                    <a href="{{ route('super-admin.branches') }}" class="{{ request()->routeIs('super-admin.branches') ? 'active' : '' }}">Branches</a>
                     <a href="{{ route('super-admin.users') }}" class="{{ request()->routeIs('super-admin.users') ? 'active' : '' }}">Users</a>
 
                 {{-- Menu Super Admin --}}

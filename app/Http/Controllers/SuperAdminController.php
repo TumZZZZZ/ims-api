@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\SuperAdmin\SVSuperAdminDashbord;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 
 class SuperAdminController extends BaseApi
 {
@@ -19,10 +20,17 @@ class SuperAdminController extends BaseApi
         ]);
     }
 
-    public function listStore(Request $request)
+    public function getMerchants(Request $request)
     {
-        return view('super-admin.stores.index', [
-            'data' => $this->getService()->getStores($request->all()),
+        return view('super-admin.merchants.index', [
+            'data' => $this->getService()->getMerchants($request->all()),
+        ]);
+    }
+
+    public function getBranches(Request $request)
+    {
+        return view('super-admin.branches.index', [
+            'data' => $this->getService()->getBranches($request->all()),
         ]);
     }
 

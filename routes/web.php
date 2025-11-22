@@ -23,7 +23,8 @@ Route::middleware('web')->group(function () {
 
     Route::prefix('super-admin')->middleware('role:SUPER_ADMIN')->group(function () {
         Route::get('dashboard', [SuperAdminController::class, 'dashboard'])->name('super-admin.dashboard');
-        Route::get('stores', [SuperAdminController::class, 'listStore'])->name('super-admin.stores');
+        Route::get('merchants', [SuperAdminController::class, 'getMerchants'])->name('super-admin.merchants');
+        Route::get('branches', [SuperAdminController::class, 'getBranches'])->name('super-admin.branches');
         Route::get('users', [SuperAdminController::class, 'listUser'])->name('super-admin.users');
     });
 
