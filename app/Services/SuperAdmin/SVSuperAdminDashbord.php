@@ -13,16 +13,24 @@ class SVSuperAdminDashbord
         $collectionStores = DB::getCollection('stores');
         $collectionUsers  = DB::getCollection('users');
 
-        $totalStores   = $collectionStores->countDocuments(['deleted_at' => null]);
-        $totalAdmins   = $collectionUsers->countDocuments(['role' => 'ADMIN', 'deleted_at' => null]);
-        $totalManagers = $collectionUsers->countDocuments(['role' => 'MANAGER', 'deleted_at' => null]);
-        $totalStaffs   = $collectionUsers->countDocuments(['role' => 'STAFF', 'deleted_at' => null]);
+        $activatedMerchants = $collectionStores->countDocuments(['parent_id' => null, 'deleted_at' => null]);
+        $openBranches       = $collectionStores->countDocuments(['parent_id' => ['$ne' => null], 'deleted_at' => null]);
+        $suspendMerchants   = $collectionUsers->countDocuments(['parent_id' => null, 'active' => false, 'deleted_at' => null]);
+        $closedBranches     = $collectionUsers->countDocuments(['parent_id' => ['$ne' => null], 'active' => false, 'deleted_at' => null]);
+        $totalUsers         = $collectionUsers->countDocuments(['role' => ['$ne' => 'SUPER_ADMIN'], 'deleted_at' => null]);
+        $totalAdmins        = $collectionUsers->countDocuments(['role' => 'ADMIN', 'deleted_at' => null]);
+        $totalManagers      = $collectionUsers->countDocuments(['role' => 'MANAGER', 'deleted_at' => null]);
+        $totalStaffs        = $collectionUsers->countDocuments(['role' => 'STAFF', 'deleted_at' => null]);
 
         return [
-            'total_stores'   => $totalStores,
-            'total_admins'   => $totalAdmins,
-            'total_managers' => $totalManagers,
-            'total_staffs'   => $totalStaffs,
+            'activated_merchants'   => $activatedMerchants,
+            'open_branches'         => $openBranches,
+            'suspended_merchants'   => $suspendMerchants,
+            'closed_branches'       => $closedBranches,
+            'total_users'           => $totalUsers,
+            'total_admins'          => $totalAdmins,
+            'total_managers'        => $totalManagers,
+            'total_staffs'          => $totalStaffs,
         ];
     }
 
@@ -72,18 +80,19 @@ class SVSuperAdminDashbord
             'MANAGER' => 'Manager',
             'STAFF'   => 'Staff',
         ];
-        return User::with(['image','store'])
-            ->select('store_id','name','first_name','last_name','email','calling_code','phone_number','role')
+        return User::with(['image'])
+            ->select('store_ids','name','first_name','last_name','email','calling_code','phone_number','role')
             ->where('role', '!=', 'SUPER_ADMIN')
             ->where('deleted_at', null)
             ->get()
             ->map(function($user) use ($roles) {
                 return (object)[
                     'image_url' => @$user->image->url ? url($user->image->url) : null,
-                    'full_name' => $user->first_name.' '.$user->last_name,
+                    'user_name' => $user->first_name.' '.$user->last_name,
                     'email'     => $user->email,
                     'phone'     => '+'.$user->calling_code.$user->phone_number,
-                    'store'     => $user->store->name ?? 'Unknown Store',
+                    'merchant'  => $user->getMerchant()->name ?? 'Unknown Merchant',
+                    'branches'  => $user->getBranches()->implode('name', ', ') ?? 'Unknown Branch',
                     'role'      => $roles[$user->role] ?? 'Unknown Role',
                 ];
             })

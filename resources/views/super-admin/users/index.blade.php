@@ -8,7 +8,7 @@
     <!-- Action bar: Search + Buttons -->
     <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 25px; flex-wrap: wrap;">
         <!-- Search -->
-        <input type="text" id="search" placeholder="Search users..."
+        <input type="text" id="search" placeholder="{{ __('search') }}"
             style="padding:10px 15px; border-radius:8px; border:1px solid #ccc; width: 250px; margin-bottom: 10px;">
     </div>
 
@@ -17,22 +17,25 @@
         <table style="width:100%; border-collapse:collapse; background:white;">
             <thead style="background: var(--gold); color:white; text-align:left; position:sticky; top:0; z-index:2;">
                 <tr>
-                    <th>Image</th>
-                    <th>Full Name</th>
-                    <th>Email</th>
-                    <th>Phone Number</th>
-                    <th>Store</th>
-                    <th>Role</th>
+                    <th></th>
+                    <th>{{ __('user_name') }}</th>
+                    <th>{{ __('email') }}</th>
+                    <th>{{ __('phone_number') }}</th>
+                    <th>{{ __('merchant') }}</th>
+                    <th>{{ __('branches') }}</th>
+                    <th>{{ __('role') }}</th>
                 </tr>
             </thead>
-            <tbody id="users-body">
+            <tbody id="table-body">
                 @foreach ($data as $user)
-                    <tr class="store-row">
+                    <tr class="table-body-tr">
                         <td style="display:flex; align-items:center;">
                             <div
                                 style="margin-left:8px; width:50px; height:50px; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#fff;">
                                 @if ($user->image_url)
-                                    <img src="{{ $user->image_url }}" style="width:100%; height:100%; object-fit:contain;">
+                                    <div style="width:50px; height:50px; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#fff;">
+                                        <img src="{{ $user->image_url }}" style="width:100%; height:100%; object-fit:cover;">
+                                    </div>
                                 @else
                                     <div
                                         style="width:50px; height:50px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:#c9a643; color:white; font-weight:bold; font-size:20px;">
@@ -41,10 +44,11 @@
                                 @endif
                             </div>
                         </td>
-                        <td>{{ $user->full_name }}</td>
+                        <td>{{ $user->user_name }}</td>
                         <td>{{ $user->email }}</td>
                         <td>{{ $user->phone }}</td>
-                        <td>{{ $user->store }}</td>
+                        <td>{{ $user->merchant }}</td>
+                        <td>{{ $user->branches }}</td>
                         <td>{{ $user->role }}</td>
                     </tr>
                 @endforeach
@@ -53,39 +57,12 @@
         </table>
     </div>
 
-    <!-- JS for search -->
     <script>
-        const searchInput = document.getElementById('search');
-        const tableBody = document.getElementById('users-body');
-        const tableRows = tableBody.querySelectorAll('tr');
-
-        searchInput.addEventListener('keyup', function() {
-            const query = this.value.toLowerCase();
-            let visibleCount = 0;
-
-            tableRows.forEach(row => {
-                const productName = row.cells[0].textContent.toLowerCase();
-                if (productName.includes(query)) {
-                    row.style.display = '';
-                    visibleCount++;
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-
-            // Remove existing "no product found" row
-            const existingNoRow = document.getElementById('no-product-row');
-            if (existingNoRow) existingNoRow.remove();
-
-            // If no rows visible, add "No product found" row
-            if (visibleCount === 0) {
-                const noRow = document.createElement('tr');
-                noRow.id = 'no-product-row';
-                noRow.innerHTML =
-                    `<td colspan="7" style="text-align:center; padding:12px; color:#888;">No store found</td>`;
-                tableBody.appendChild(noRow);
-            }
-        });
+        // Pass translation to JS
+        window.translations = {
+            recordNotFound: "{{ __('record_not_found') }}"
+        };
     </script>
+    <script src="{{ asset('js/search.js') }}"></script>
 
 @endsection

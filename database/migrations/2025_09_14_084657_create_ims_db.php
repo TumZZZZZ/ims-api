@@ -11,6 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::create('meta', function (Blueprint $collection) {
+            $collection->string('_id');
+            $collection->string('key');
+            $collection->string('value');
+            $collection->string('object_id');
+            $collection->string('object_type');
+            $collection->timestamps();
+            $collection->softDeletes();
+        });
+
         Schema::create('stores', function (Blueprint $collection) {
             $collection->string('_id');
             $collection->string('parent_id');
@@ -58,8 +68,9 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $collection) {
             $collection->string('_id');
             $collection->string('name');
-            $collection->string('barcode')->nullable();
-            $collection->string('description')->nullable();
+            $collection->string('sku');
+            $collection->string('barcode');
+            $collection->string('description');
             $collection->string('unit')->default('pcs');
             $collection->timestamps();
             $collection->softDeletes();
@@ -85,7 +96,6 @@ return new class extends Migration
             $collection->string('value')->default(0);
             $collection->datetimes('start_date');
             $collection->datetimes('end_date');
-            $collection->enum('status', ['ACTIVE','INACTIVE','EXPIRED'])->default('ACTIVE');
             $collection->timestamps();
             $collection->softDeletes();
         });
@@ -95,6 +105,17 @@ return new class extends Migration
             $collection->string('promotion_id');
             $collection->string('category_id')->nullable();
             $collection->string('product_id')->nullable();
+            $collection->timestamps();
+            $collection->softDeletes();
+        });
+
+        Schema::create('suppliers', function (Blueprint $collection) {
+            $collection->string('_id');
+            $collection->string('store_id');
+            $collection->string('name');
+            $collection->string('email');
+            $collection->string('phone_number');
+            $collection->string('address');
             $collection->timestamps();
             $collection->softDeletes();
         });
@@ -121,7 +142,7 @@ return new class extends Migration
             $collection->string('product_id');
             $collection->string('quantity')->default(0);
             $collection->string('unit_cost')->default(0);
-            $collection->string('cost')->default(0);
+            $collection->string('total_cost')->default(0);
             $collection->timestamps();
             $collection->softDeletes();
         });
@@ -134,8 +155,27 @@ return new class extends Migration
             $collection->string('quantity')->default(0);
             $collection->string('unit_cost')->default(0);
             $collection->string('cost')->default(0);
-            $collection->enum('type', ['SALE','PURCHASE_ORDER','ADJUSTMENT_INC','ADJUSTMENT_DEC','TRANSFER']);
-            $collection->string('transfer_id')->nullable();
+            $collection->enum('type', ['SALE','PURCHASE_ORDER','INCREASEMENT','DECREASEMENT']);
+            $collection->timestamps();
+            $collection->softDeletes();
+        });
+
+        Schema::create('printers', function (Blueprint $collection) {
+            $collection->string('_id');
+            $collection->string('store_id');
+            $collection->string('name');
+            $collection->string('ip_address');
+            $collection->enum('connection_type', ['LAN']);
+            $collection->timestamps();
+            $collection->softDeletes();
+        });
+
+        Schema::create('histories', function (Blueprint $collection) {
+            $collection->string('_id');
+            $collection->string('store_id');
+            $collection->string('history_id');
+            $collection->string('history_type');
+            $collection->string('value');
             $collection->timestamps();
             $collection->softDeletes();
         });
@@ -147,6 +187,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('meta');
         Schema::dropIfExists('stores');
         Schema::dropIfExists('users');
         Schema::dropIfExists('images');
@@ -155,8 +196,11 @@ return new class extends Migration
         Schema::dropIfExists('product_assigns');
         Schema::dropIfExists('promotions');
         Schema::dropIfExists('promotion_assigns');
+        Schema::dropIfExists('suppliers');
         Schema::dropIfExists('purchase_orders');
         Schema::dropIfExists('purchase_order_details');
         Schema::dropIfExists('ledgers');
+        Schema::dropIfExists('printers');
+        Schema::dropIfExists('histories');
     }
 };

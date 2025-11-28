@@ -28,13 +28,15 @@
                     <th>@lang('action')</th>
                 </tr>
             </thead>
-            <tbody id="merchant-body">
+            <tbody id="table-body">
                 @foreach ($data as $merchant)
-                    <tr class="store-row">
+                    <tr class="table-body-tr">
                         <td style="display:flex; align-items:center;">
                             <div style="margin-left:8px; width:50px; height:50px; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#fff;">
                                 @if ($merchant->image_url)
-                                    <img src="{{ $merchant->image_url }}" style="width:100%; height:100%; object-fit:contain;">
+                                    <div style="width:50px; height:50px; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#fff;">
+                                        <img src="{{ $merchant->image_url }}" style="width:100%; height:100%; object-fit:cover;">
+                                    </div>
                                 @else
                                     <div style="width:50px; height:50px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:#c9a643; color:white; font-weight:bold; font-size:20px;">
                                         {{ substr($merchant->name, 0, 1) }}
@@ -47,7 +49,11 @@
                         <td>{{ $merchant->address }}</td>
                         <td><span style="color: #{{ $merchant->active ? '4CAF50' : 'F44336' }};">{{ $merchant->active ? __('activate') : __('suspend') }}</span></td>
                         <td>
-                            <button class="btn" onclick="openDialog()" style="background:#{{ !$merchant->active ? '4CAF50' : 'F44336' }};">{{ !$merchant->active ? __('activate') : __('suspend') }}</button>
+                            <button class="btn"
+                                onclick="openDialog('{{ $merchant->name }}', '{{ !$merchant->active ? __('activate') : __('suspend') }}')"
+                                style="background:#{{ !$merchant->active ? '4CAF50' : 'F44336' }};">
+                                {{ !$merchant->active ? __('activate') : __('suspend') }}
+                            </button>
                         </td>
                     </tr>
                 @endforeach
@@ -57,23 +63,22 @@
     </div>
 
     <!-- ===== Modal ===== -->
-    <div class="modal-bg" id="modal">
-        <div class="modal-box">
-            <p>Are you sure you want to continue?</p>
-            <br>
-            <button class="btn btn-cancel" onclick="closeDialog()">Cancel</button>
-            <button class="btn btn-ok" onclick="confirmAction()">OK</button>
-        </div>
-    </div>
+    @include('modal')
 
-    <!-- ===== Success Toast ===== -->
-    <div id="toast" class="toast">
-        Product saved successfully.
-    </div>
-
-    <!-- JS for search -->
     <script>
-        function openDialog() {
+        // Pass translation to JS
+        window.translations = {
+            recordNotFound: "{{ __('record_not_found') }}"
+        };
+
+        // Modal
+        let currentMerchant = '';
+        let currentAction = '';
+
+        function openDialog(merchantName, action) {
+            currentMerchant = merchantName;
+            currentAction = action;
+            document.getElementById("modal-message").textContent = `Are you sure you want to ${action.toLowerCase()} ${merchantName}?`;
             document.getElementById("modal").style.display = "flex";
         }
 
@@ -85,6 +90,7 @@
             closeDialog();
 
             const toast = document.getElementById("toast");
+            toast.textContent = `${currentMerchant} has been ${currentAction.toLowerCase()}d successfully.`;
             toast.style.display = "block";
 
             setTimeout(() => {
@@ -92,5 +98,6 @@
             }, 5000);
         }
     </script>
+    <script src="{{ asset('js/search.js') }}"></script>
 
 @endsection

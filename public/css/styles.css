@@ -44,7 +44,7 @@ table tbody tr td {
     padding: 10px;
 }
 
-table .store-row:hover {
+table .table-body-tr:hover {
     background-color: #f1f7ff !important;
 }
 

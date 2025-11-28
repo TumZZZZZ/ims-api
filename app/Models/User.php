@@ -42,4 +42,12 @@ class User extends Authenticatable
             ->whereNull('deleted_at')
             ->first();
     }
+
+    public function getBranches()
+    {
+        return Store::whereIn('_id', $this->store_ids)
+            ->whereNotNull('parent_id')
+            ->whereNull('deleted_at')
+            ->get();
+    }
 }

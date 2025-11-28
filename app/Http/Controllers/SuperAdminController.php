@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Services\SuperAdmin\SVSuperAdminDashbord;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 
 class SuperAdminController extends BaseApi
 {
@@ -34,10 +33,15 @@ class SuperAdminController extends BaseApi
         ]);
     }
 
-    public function listUser(Request $request)
+    public function getUsers(Request $request)
     {
         return view('super-admin.users.index', [
             'data' => $this->getService()->getUsers($request->all()),
         ]);
+    }
+
+    public function getActivityLogs()
+    {
+        return view('super-admin.activity-logs');
     }
 }
