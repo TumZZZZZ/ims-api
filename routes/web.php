@@ -21,14 +21,31 @@ Route::middleware('web')->group(function () {
     Route::get('/reset-password/{id}', [LoginController::class, 'resetPasswordForm'])->name('reset.password.form');
     Route::post('/reset-password', [LoginController::class, 'resetPassword'])->name('reset.password');
 
+    /**
+     * =================================================
+     *                  SUPER ADMIN
+     * =================================================
+     */
     Route::prefix('super-admin')->middleware('role:SUPER_ADMIN')->group(function () {
+        // Dashboard
         Route::get('dashboard', [SuperAdminController::class, 'dashboard'])->name('super-admin.dashboard');
-        Route::get('merchants', [SuperAdminController::class, 'getMerchants'])->name('super-admin.merchants');
+
+        // Merchants
+        Route::group(['prefix' => 'merchants'], function () {
+            Route::get('/', [SuperAdminController::class, 'getMerchants'])->name('super-admin.merchants');
+            Route::post('/{merchant_id}/suspend-or-activate', [SuperAdminController::class, 'suspendOrActivate']);
+        });
+
         Route::get('branches', [SuperAdminController::class, 'getBranches'])->name('super-admin.branches');
         Route::get('users', [SuperAdminController::class, 'getUsers'])->name('super-admin.users');
         Route::get('activity-logs', [SuperAdminController::class, 'getActivityLogs'])->name('super-admin.activity-logs');
     });
 
+    /**
+     * =================================================
+     *                  ADMIN
+     * =================================================
+     */
     Route::prefix('admin')->middleware('role:ADMIN')->group(function () {
         Route::get('dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('category-list', [AdminController::class, 'listCategory'])->name('admin.category.list');
@@ -36,10 +53,21 @@ Route::middleware('web')->group(function () {
         Route::get('product-list', [AdminController::class, 'productList'])->name('admin.product.list');
     });
 
+    /**
+     * =================================================
+     *                  MANAGER
+     * =================================================
+     */
     Route::prefix('manager')->middleware('role:MANAGER')->group(function () {
         Route::get('dashboard', [ManagerController::class, 'dashboard'])->name('manager.dashboard');
     });
 
+
+    /**
+     * =================================================
+     *                  HANDLING ERRORS
+     * =================================================
+     */
     Route::prefix('errors')->group(function () {
         Route::get('401', [ErrorsController::class, 'unauthorized'])->name('401.page');
         Route::get('403', [ErrorsController::class, 'forbidden'])->name('403.page');

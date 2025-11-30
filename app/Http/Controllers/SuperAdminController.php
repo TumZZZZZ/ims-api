@@ -26,6 +26,12 @@ class SuperAdminController extends BaseApi
         ]);
     }
 
+    public function suspendOrActivate(Request $request, $merchantId)
+    {
+        $this->getService()->suspendOrActivateMerchant($merchantId, $request->all());
+        return back()->with('success_message', $request->merchant_name . ' successfully ' . $request->action);
+    }
+
     public function getBranches(Request $request)
     {
         return view('super-admin.branches.index', [

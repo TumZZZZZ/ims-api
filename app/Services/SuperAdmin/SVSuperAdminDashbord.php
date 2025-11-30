@@ -4,6 +4,7 @@ namespace App\Services\SuperAdmin;
 
 use App\Models\Store;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class SVSuperAdminDashbord
@@ -53,6 +54,12 @@ class SVSuperAdminDashbord
             ->values();
     }
 
+    public function suspendOrActivateMerchant($merchantId, $params)
+    {
+        Store::where('id', $merchantId)->update(['active' => $params['active']]);
+        createHistory(Auth::user()->id, ucfirst($params['action'])." ".$params['merchant_name']);
+    }
+
     public function getBranches(array $params)
     {
         return Store::with(['merchant','image'])
@@ -67,7 +74,7 @@ class SVSuperAdminDashbord
                     'merchant'      => $store->merchant->name ?? 'N/A',
                     'currency_code' => $store->currency_code,
                     'address'       => $store->location,
-                    'active'        => $store->active,
+                    'active'        => $store->merchant->active ? $store->active : 0,
                 ];
             })
             ->values();

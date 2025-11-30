@@ -172,10 +172,9 @@ return new class extends Migration
 
         Schema::create('histories', function (Blueprint $collection) {
             $collection->string('_id');
+            $collection->string('user_id');
             $collection->string('store_id');
-            $collection->string('history_id');
-            $collection->string('history_type');
-            $collection->string('value');
+            $collection->string('action');
             $collection->timestamps();
             $collection->softDeletes();
         });

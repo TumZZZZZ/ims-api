@@ -47,10 +47,10 @@
                         <td>{{ $merchant->name }}</td>
                         <td>{{ $merchant->branches }}</td>
                         <td>{{ $merchant->address }}</td>
-                        <td><span style="color: #{{ $merchant->active ? '4CAF50' : 'F44336' }};">{{ $merchant->active ? __('activate') : __('suspend') }}</span></td>
+                        <td><span id="status-{{ $merchant->id }}" style="color: #{{ $merchant->active ? '4CAF50' : 'F44336' }};">{{ $merchant->active ? __('activate') : __('suspend') }}</span></td>
                         <td>
-                            <button class="btn"
-                                onclick="openDialog('{{ $merchant->name }}', '{{ !$merchant->active ? __('activate') : __('suspend') }}')"
+                            <button id="action-btn-{{ $merchant->id }}" class="btn"
+                                onclick="openDialog('{{ $merchant->id }}', '{{ $merchant->name }}', '{{ !$merchant->active ? __('activate') : __('suspend') }}')"
                                 style="background:#{{ !$merchant->active ? '4CAF50' : 'F44336' }};">
                                 {{ !$merchant->active ? __('activate') : __('suspend') }}
                             </button>
@@ -72,11 +72,13 @@
         };
 
         // Modal
-        let currentMerchant = '';
+        let currentMerchantId = '';
+        let currentMerchantName = '';
         let currentAction = '';
 
-        function openDialog(merchantName, action) {
-            currentMerchant = merchantName;
+        function openDialog(merchantId, merchantName, action) {
+            currentMerchantId = merchantId;
+            currentMerchantName = merchantName;
             currentAction = action;
             document.getElementById("modal-message").textContent = `Are you sure you want to ${action.toLowerCase()} ${merchantName}?`;
             document.getElementById("modal").style.display = "flex";
@@ -87,15 +89,59 @@
         }
 
         function confirmAction() {
-            closeDialog();
 
-            const toast = document.getElementById("toast");
-            toast.textContent = `${currentMerchant} has been ${currentAction.toLowerCase()}d successfully.`;
-            toast.style.display = "block";
+            const url = `/super-admin/merchants/${currentMerchantId}/suspend-or-activate`;
 
-            setTimeout(() => {
-                toast.style.display = "none";
-            }, 5000);
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    merchant_name: currentMerchantName,
+                    action: currentAction,
+                    active: currentAction === "Suspend" ? 0 : 1
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    closeDialog();
+
+                    // Update columns status & action
+                    const statusSpan = document.getElementById(`status-${currentMerchantId}`);
+                    const actionBtn = document.getElementById(`action-btn-${currentMerchantId}`);
+
+                    if (currentAction.toLowerCase() === "suspend") {
+                        statusSpan.textContent = "Suspend";
+                        statusSpan.style.color = "#F44336";
+
+                        actionBtn.textContent = "Activate";
+                        actionBtn.style.background = "#4CAF50";
+                        actionBtn.setAttribute("onclick", `openDialog('${currentMerchantId}', '${currentMerchantName}', 'activate')`);
+                    } else {
+                        statusSpan.textContent = "Activate";
+                        statusSpan.style.color = "#4CAF50";
+
+                        actionBtn.textContent = "Suspend";
+                        actionBtn.style.background = "#F44336";
+                        actionBtn.setAttribute("onclick", `openDialog('${currentMerchantId}', '${currentMerchantName}', 'suspend')`);
+                    }
+
+                    // Display success message
+                    const toast = document.getElementById("toast");
+                    toast.textContent = `${currentMerchantName} has been ${currentAction.toLowerCase()}ed successfully.`;
+                    toast.style.display = "block";
+
+                    // Disapear after 5 seconds
+                    setTimeout(() => {
+                        toast.style.display = "none";
+                    }, 5000);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
         }
     </script>
     <script src="{{ asset('js/search.js') }}"></script>
