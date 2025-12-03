@@ -50,4 +50,9 @@ class User extends Authenticatable
             ->whereNull('deleted_at')
             ->get();
     }
+
+    public function getFullName()
+    {
+        return $this->first_name." ".$this->last_name;
+    }
 }

@@ -8,7 +8,14 @@ if (! function_exists('createHistory')) {
         History::create([
             'user_id'  => $userId,
             'store_id' => $storeId,
-            'value'    => $value,
+            'action'   => $value,
         ]);
+    }
+}
+
+if (!function_exists('getTimezone')) {
+    function getTimezone()
+    {
+        return "Asia/Phnom_Penh";
     }
 }

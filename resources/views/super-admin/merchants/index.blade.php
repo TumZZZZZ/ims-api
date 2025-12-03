@@ -11,7 +11,10 @@
         <input type="text" id="search" placeholder="{{ __('search') }}">
         <!-- Buttons -->
         <div>
-            <button class="btn" style="background: #4CAF50;">+ @lang('create')</button>
+            <button class="btn" style="background: #4CAF50;"
+            onclick="window.location.href='/super-admin/merchants/create'">
+                + @lang('create')
+            </button>
         </div>
     </div>
 

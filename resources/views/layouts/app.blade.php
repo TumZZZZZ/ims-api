@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app-layout.css') }}">
+    @stack('styles')
 </head>
 
 <body style="font-family: 'Poppins', Arial;">
@@ -20,14 +21,9 @@
             exit();
         }
         $role       = $user->role;
-        $superAdmin = $role === 'SUPER_ADMIN';
-        $admin      = $role === 'ADMIN';
-        $manager    = $role === 'MANAGER';
-        $roles      = [
-            "SUPER_ADMIN" => "Super Admin",
-            "ADMIN"       => "Admin",
-            "MANAGER"     => "Manager",
-        ];
+        $superAdmin = $role === App\Enum\Constants::ROLE_SUPER_ADMIN;
+        $admin      = $role === App\Enum\Constants::ROLE_ADMIN;
+        $manager    = $role === App\Enum\Constants::ROLE_MANAGER;
     @endphp
     <aside class="sidebar">
         <div>
@@ -35,8 +31,11 @@
             <div class="menu">
                 {{-- Menu Super Admin --}}
                 @if ($superAdmin)
+                    @php
+                        $activeMerchantMenu = request()->routeIs('super-admin.merchants') || request()->routeIs('super-admin.merchants.create');
+                    @endphp
                     <a href="{{ route('super-admin.dashboard') }}" class="{{ request()->routeIs('super-admin.dashboard') ? 'active' : '' }}">@lang('dashboard')</a>
-                    <a href="{{ route('super-admin.merchants') }}" class="{{ request()->routeIs('super-admin.merchants') ? 'active' : '' }}">@lang('merchants')</a>
+                    <a href="{{ route('super-admin.merchants') }}" class="{{ $activeMerchantMenu ? 'active' : '' }}">@lang('merchants')</a>
                     <a href="{{ route('super-admin.branches') }}" class="{{ request()->routeIs('super-admin.branches') ? 'active' : '' }}">@lang('branches')</a>
                     <a href="{{ route('super-admin.users') }}" class="{{ request()->routeIs('super-admin.users') ? 'active' : '' }}">@lang('users')</a>
                     <a href="{{ route('super-admin.activity-logs') }}" class="{{ request()->routeIs('super-admin.activity-logs') ? 'active' : '' }}">@lang('activity_logs')</a>
@@ -59,7 +58,7 @@
         <div class="user-profile">
             <img src="{{ $user->image->url ?? url('storage/default-images/no-image.png') }}" alt="User">
             <h4>{{ $user['first_name']." ".$user['last_name'] }}</h4>
-            <p>{{ $roles[$role] }}</p>
+            <p>{{ App\Enum\Constants::ROLES[$role] }}</p>
         </div>
     </aside>
 
@@ -78,6 +77,7 @@
 
         {{-- <footer>© 2025 Khmer Angkor. All rights reserved.</footer> --}}
     </main>
+    @stack('scripts')
 </body>
 
 </html>

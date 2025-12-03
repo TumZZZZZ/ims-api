@@ -34,6 +34,7 @@ Route::middleware('web')->group(function () {
         Route::group(['prefix' => 'merchants'], function () {
             Route::get('/', [SuperAdminController::class, 'getMerchants'])->name('super-admin.merchants');
             Route::post('/{merchant_id}/suspend-or-activate', [SuperAdminController::class, 'suspendOrActivate']);
+            Route::get('create', [SuperAdminController::class, 'createMerchantForm'])->name('super-admin.merchants.create');
         });
 
         Route::get('branches', [SuperAdminController::class, 'getBranches'])->name('super-admin.branches');

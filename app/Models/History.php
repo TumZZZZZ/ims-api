@@ -17,11 +17,11 @@ class History extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', '_id');
+        return $this->hasOne(User::class, '_id', 'user_id');
     }
 
     public function store()
     {
-        return $this->belongsTo(Store::class, 'store_id', '_id');
+        return $this->hasOne(Store::class, '_id', 'store_id');
     }
 }

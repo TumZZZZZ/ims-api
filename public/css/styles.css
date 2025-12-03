@@ -12,6 +12,7 @@ input[type="password"] {
     background: #fffaf3; /* light background */
     transition: border 0.3s ease, box-shadow 0.3s ease;
     outline: none;
+    font-size: 16px;
 }
 
 /* Hover & focus */
@@ -99,7 +100,7 @@ table .table-body-tr:hover {
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    margin: 0 8px;
+    /* margin: 0 8px; */
 }
 
 .btn-cancel {

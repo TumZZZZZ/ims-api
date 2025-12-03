@@ -26,6 +26,11 @@ class SuperAdminController extends BaseApi
         ]);
     }
 
+    public function createMerchantForm()
+    {
+        return view('super-admin.merchants.create');
+    }
+
     public function suspendOrActivate(Request $request, $merchantId)
     {
         $this->getService()->suspendOrActivateMerchant($merchantId, $request->all());
@@ -48,6 +53,8 @@ class SuperAdminController extends BaseApi
 
     public function getActivityLogs()
     {
-        return view('super-admin.activity-logs');
+        return view('super-admin.activity-logs', [
+            'data' => $this->getService()->getUserActivities(),
+        ]);
     }
 }

@@ -12,7 +12,7 @@
             style="padding:10px 15px; border-radius:8px; border:1px solid #ccc; width: 250px; margin-bottom: 10px;">
     </div>
 
-    <!-- Stores Table -->
+    <!-- Users Table -->
     <div style="overflow-y:auto; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.05);">
         <table style="width:100%; border-collapse:collapse; background:white;">
             <thead style="background: var(--gold); color:white; text-align:left; position:sticky; top:0; z-index:2;">

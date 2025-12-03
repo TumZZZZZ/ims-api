@@ -2,8 +2,11 @@
 
 namespace App\Services\SuperAdmin;
 
+use App\Enum\Constants;
+use App\Models\History;
 use App\Models\Store;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -57,7 +60,7 @@ class SVSuperAdminDashbord
     public function suspendOrActivateMerchant($merchantId, $params)
     {
         Store::where('id', $merchantId)->update(['active' => $params['active']]);
-        createHistory(Auth::user()->id, ucfirst($params['action'])." ".$params['merchant_name']);
+        createHistory(Auth::user()->id, ucfirst($params['action'])." ".$params['merchant_name'], $merchantId);
     }
 
     public function getBranches(array $params)
@@ -82,17 +85,12 @@ class SVSuperAdminDashbord
 
     public function getUsers(array $params)
     {
-        $roles = [
-            'ADMIN'   => 'Admin',
-            'MANAGER' => 'Manager',
-            'STAFF'   => 'Staff',
-        ];
         return User::with(['image'])
             ->select('store_ids','name','first_name','last_name','email','calling_code','phone_number','role')
             ->where('role', '!=', 'SUPER_ADMIN')
             ->where('deleted_at', null)
             ->get()
-            ->map(function($user) use ($roles) {
+            ->map(function($user) {
                 return (object)[
                     'image_url' => @$user->image->url ? url($user->image->url) : null,
                     'user_name' => $user->first_name.' '.$user->last_name,
@@ -100,9 +98,29 @@ class SVSuperAdminDashbord
                     'phone'     => '+'.$user->calling_code.$user->phone_number,
                     'merchant'  => $user->getMerchant()->name ?? 'Unknown Merchant',
                     'branches'  => $user->getBranches()->implode('name', ', ') ?? 'Unknown Branch',
-                    'role'      => $roles[$user->role] ?? 'Unknown Role',
+                    'role'      => Constants::ROLES[$user->role] ?? 'Unknown Role',
                 ];
             })
             ->values();
+    }
+
+    public function getUserActivities()
+    {
+        return History::with(['user','store'])
+            ->orderByDesc('created_at')
+            ->get()
+            ->map(function($activity) {
+                $store    = $activity->store;
+                $merchant = !$activity->store->parent_id ? $store->name : "-";
+                $branch   = $activity->store->parent_id ? $store->name : "-";
+                return (object)[
+                    'username'  => $activity->user->getFullName(),
+                    'merchant'  => $merchant,
+                    'branch'    => $branch,
+                    'role'      => Constants::ROLES[$activity->user->role],
+                    'action'    => $activity->action,
+                    'date'      => Carbon::parse($activity->created_at)->setTimezone(getTimezone())->format('m/d/Y h:i A'),
+                ];
+            });
     }
 }
