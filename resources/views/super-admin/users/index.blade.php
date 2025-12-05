@@ -39,12 +39,12 @@
                                 @else
                                     <div
                                         style="width:50px; height:50px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:#c9a643; color:white; font-weight:bold; font-size:20px;">
-                                        {{ substr($user->full_name, 0, 1) }}
+                                        {{ initials($user->name) }}
                                     </div>
                                 @endif
                             </div>
                         </td>
-                        <td>{{ $user->user_name }}</td>
+                        <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
                         <td>{{ $user->phone }}</td>
                         <td>{{ $user->merchant }}</td>
@@ -52,7 +52,11 @@
                         <td>{{ $user->role }}</td>
                     </tr>
                 @endforeach
-
+                @if ($data->isEmpty())
+                    <tr id="no-record">
+                        <td colspan="6" class="text-center">{{ __('record_not_found') }}</td>
+                    </tr>
+                @endif
             </tbody>
         </table>
     </div>

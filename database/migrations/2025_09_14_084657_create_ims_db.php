@@ -175,6 +175,7 @@ return new class extends Migration
             $collection->string('user_id');
             $collection->string('store_id');
             $collection->string('action');
+            $collection->string('details');
             $collection->timestamps();
             $collection->softDeletes();
         });

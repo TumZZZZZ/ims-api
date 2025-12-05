@@ -34,7 +34,11 @@ Route::middleware('web')->group(function () {
         Route::group(['prefix' => 'merchants'], function () {
             Route::get('/', [SuperAdminController::class, 'getMerchants'])->name('super-admin.merchants');
             Route::post('/{merchant_id}/suspend-or-activate', [SuperAdminController::class, 'suspendOrActivate']);
-            Route::get('create', [SuperAdminController::class, 'createMerchantForm'])->name('super-admin.merchants.create');
+            Route::get('create', [SuperAdminController::class, 'createMerchantForm'])->name('super-admin.merchants.create.form');
+            Route::post('store', [SuperAdminController::class, 'storeMerchant'])->name('super-admin.merchants.store');
+            Route::get('update/{merchant_id}', [SuperAdminController::class, 'updateMerchantForm'])->name('super-admin.merchants.update.form');
+            Route::put('update/{merchant_id}', [SuperAdminController::class, 'updateMerchant'])->name('super-admin.merchants.update');
+            Route::delete('delete/{merchant_id}', [SuperAdminController::class, 'deleteMerchant'])->name('super-admin.merchants.delete');
         });
 
         Route::get('branches', [SuperAdminController::class, 'getBranches'])->name('super-admin.branches');

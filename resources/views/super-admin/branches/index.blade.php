@@ -35,7 +35,7 @@
                                     </div>
                                 @else
                                     <div style="width:50px; height:50px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:#c9a643; color:white; font-weight:bold; font-size:20px;">
-                                        {{ substr($branch->name, 0, 1) }}
+                                        {{ initials($branch->name) }}
                                     </div>
                                 @endif
                             </div>
@@ -47,7 +47,11 @@
                         <td><span style="color: #{{ $branch->active ? '4CAF50' : 'F44336' }};">{{ $branch->active ? 'Open' : 'Closed' }}</span></td>
                     </tr>
                 @endforeach
-
+                @if ($data->isEmpty())
+                    <tr id="no-record">
+                        <td colspan="6" class="text-center">{{ __('record_not_found') }}</td>
+                    </tr>
+                @endif
             </tbody>
         </table>
     </div>

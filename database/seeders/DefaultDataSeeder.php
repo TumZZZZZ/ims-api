@@ -86,8 +86,7 @@ class DefaultDataSeeder extends Seeder
         $admin = User::updateOrCreate(
             [
                 'email'        => 'jeffjustin178@gmail.com',
-                'calling_code' => '855',
-                'phone_number' => '876555653',
+                'phone_number' => '0876555653',
             ],
             [
                 'store_ids'  => $storeIds,

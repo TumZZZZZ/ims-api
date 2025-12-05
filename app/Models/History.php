@@ -13,6 +13,7 @@ class History extends Model
         'user_id',
         'store_id',
         'action',
+        'details',
     ];
 
     public function user()

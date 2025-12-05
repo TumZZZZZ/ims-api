@@ -32,7 +32,9 @@
                 {{-- Menu Super Admin --}}
                 @if ($superAdmin)
                     @php
-                        $activeMerchantMenu = request()->routeIs('super-admin.merchants') || request()->routeIs('super-admin.merchants.create');
+                        $activeMerchantMenu = request()->routeIs('super-admin.merchants')
+                            || request()->routeIs('super-admin.merchants.create.form')
+                            || request()->routeIs('super-admin.merchants.update.form');
                     @endphp
                     <a href="{{ route('super-admin.dashboard') }}" class="{{ request()->routeIs('super-admin.dashboard') ? 'active' : '' }}">@lang('dashboard')</a>
                     <a href="{{ route('super-admin.merchants') }}" class="{{ $activeMerchantMenu ? 'active' : '' }}">@lang('merchants')</a>

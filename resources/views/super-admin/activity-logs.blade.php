@@ -35,7 +35,11 @@
                         <td class="text-center">{{ $activity->date }}</td>
                     </tr>
                 @endforeach
-
+                @if ($data->isEmpty())
+                    <tr id="no-record">
+                        <td colspan="6" class="text-center">{{ __('record_not_found') }}</td>
+                    </tr>
+                @endif
             </tbody>
         </table>
     </div>
