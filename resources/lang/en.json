@@ -58,5 +58,10 @@
     "delete": "Delete",
     "confirm_merchant_action": "Are you sure you want to :action <strong>:merchantName</strong>?",
     "edit": "Edit",
-    "upload_image": "Upload Image"
+    "upload_image": "Upload Image",
+    "setting": "Setting",
+    "profile": "Profile",
+    "logout": "Logout",
+    "en": "EN",
+    "km": "KM"
 }
