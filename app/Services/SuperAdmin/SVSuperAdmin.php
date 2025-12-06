@@ -2,11 +2,9 @@
 
 namespace App\Services\SuperAdmin;
 
-use App\Enum\Constants;
 use App\Models\History;
 use App\Models\Store;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -42,22 +40,16 @@ class SVSuperAdmin
 
     public function getMerchants(array $params)
     {
+        $search = $params['search'] ?? null;
         return Store::with(['branches','image'])
+            ->when($search, function($query, $search) {
+                $query->where('name', 'like', '%'.$search.'%')
+                      ->orWhere('location', 'like', '%'.$search.'%');
+            })
             ->where('deleted_at', null)
             ->whereNull('parent_id')
             ->orderByDesc('created_at')
-            ->get()
-            ->map(function($store) {
-                return (object)[
-                    'id'        => (string)$store->_id,
-                    'image_url' => $store->image->url ?? null,
-                    'name'      => $store->name,
-                    'branches'  => implode(', ', $store->branches->pluck('name')->toArray()),
-                    'address'   => $store->location,
-                    'active'    => $store->active,
-                ];
-            })
-            ->values();
+            ->paginate(10);
     }
 
     public function storeMerchant(array $params)
@@ -171,62 +163,56 @@ class SVSuperAdmin
 
     public function getBranches(array $params)
     {
+        $search = $params['search'] ?? null;
         return Store::with(['merchant','image'])
+            ->when($search, function($query, $search) {
+                $query->where('name', 'like', '%'.$search.'%')
+                      ->orWhere('location', 'like', '%'.$search.'%')
+                      ->orWhereHas('merchant', function($q) use ($search) {
+                          $q->where('name', 'like', '%'.$search.'%');
+                      });
+            })
             ->where('deleted_at', null)
             ->whereNotNull('parent_id')
-            ->get()
-            ->map(function($store) {
-                return (object)[
-                    'id'            => (string)$store->_id,
-                    'image_url'     => $store->image->url ?? null,
-                    'name'          => $store->name,
-                    'merchant'      => $store->merchant->name ?? 'N/A',
-                    'currency_code' => $store->currency_code,
-                    'address'       => $store->location,
-                    'active'        => $store->active,
-                ];
-            })
-            ->values();
+            ->orderByDesc('created_at')
+            ->paginate(10);
     }
 
     public function getUsers(array $params)
     {
+        $search = $params['search'] ?? null;
         return User::with(['image'])
-            ->select('store_ids','name','first_name','last_name','email','calling_code','phone_number','role')
+            ->when($search, function($query, $search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('first_name', 'like', '%'.$search.'%')
+                      ->orWhere('last_name', 'like', '%'.$search.'%')
+                      ->orWhere('email', 'like', '%'.$search.'%')
+                      ->orWhere('phone_number', 'like', '%'.$search.'%');
+                });
+            })
             ->where('role', '!=', 'SUPER_ADMIN')
             ->where('deleted_at', null)
-            ->get()
-            ->map(function($user) {
-                return (object)[
-                    'image_url' => @$user->image->url ? url($user->image->url) : null,
-                    'name'      => $user->first_name.' '.$user->last_name,
-                    'email'     => $user->email,
-                    'phone'     => $user->phone_number,
-                    'merchant'  => $user->getMerchant()->name ?? 'Unknown Merchant',
-                    'branches'  => $user->getBranches()->implode('name', ', ') ?? 'Unknown Branch',
-                    'role'      => Constants::ROLES[$user->role] ?? 'Unknown Role',
-                ];
-            })
-            ->values();
+            ->orderByDesc('created_at')
+            ->paginate(10);
     }
 
-    public function getUserActivities()
+    public function getUserActivities(array $params)
     {
+        $search = $params['search'] ?? null;
         return History::with(['user','store'])
+            ->when($search, function($query, $search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('action', 'like', '%'.$search.'%')
+                      ->orWhereHas('user', function($qu) use ($search) {
+                          $qu->where('first_name', 'like', '%'.$search.'%')
+                             ->orWhere('last_name', 'like', '%'.$search.'%');
+                      })
+                      ->orWhereHas('store', function($qu) use ($search) {
+                          $qu->where('name', 'like', '%'.$search.'%');
+                      });
+                });
+            })
             ->orderByDesc('created_at')
-            ->get()
-            ->map(function($activity) {
-                $store    = $activity->store;
-                $merchant = !$activity->store->parent_id ? $store->name : "-";
-                $branch   = $activity->store->parent_id ? $store->name : "-";
-                return (object)[
-                    'username'  => $activity->user->getFullName(),
-                    'merchant'  => $merchant,
-                    'branch'    => $branch,
-                    'role'      => Constants::ROLES[$activity->user->role],
-                    'action'    => $activity->action,
-                    'date'      => Carbon::parse($activity->created_at)->setTimezone(getTimezone())->format('m/d/Y h:i A'),
-                ];
-            });
+            ->paginate(10);
     }
 }

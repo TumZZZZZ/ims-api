@@ -45,8 +45,17 @@ table tbody tr td {
     padding: 10px;
 }
 
-table .table-body-tr:hover {
+table tbody tr:hover {
     background-color: #f1f7ff !important;
+}
+
+table tbody tr {
+    height: 60px;
+}
+
+table thead tr th,
+table tbody tr td {
+    text-align: center;
 }
 
 /* ===== Modal Background ===== */

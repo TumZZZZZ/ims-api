@@ -83,10 +83,10 @@ class SuperAdminController extends BaseApi
         ]);
     }
 
-    public function getActivityLogs()
+    public function getActivityLogs(Request $request)
     {
         return view('super-admin.activity-logs', [
-            'data' => $this->getService()->getUserActivities(),
+            'data' => $this->getService()->getUserActivities($request->all()),
         ]);
     }
 }

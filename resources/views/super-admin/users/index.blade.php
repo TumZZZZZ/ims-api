@@ -1,21 +1,22 @@
 @extends('layouts.app')
 
-@section('title', 'Users')
-@section('header-title', 'Users')
+@section('title', __('users'))
+@section('header-title', __('users'))
 
 @section('content')
 
-    <!-- Action bar: Search + Buttons -->
-    <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 25px; flex-wrap: wrap;">
-        <!-- Search -->
-        <input type="text" id="search" placeholder="{{ __('search') }}"
-            style="padding:10px 15px; border-radius:8px; border:1px solid #ccc; width: 250px; margin-bottom: 10px;">
+    <div class="action-bar">
+        {{-- Keep search during pagination --}}
+        <input type="text"
+               id="search"
+               placeholder="{{ __('search') }}"
+               value="{{ request('search') }}">
     </div>
 
-    <!-- Users Table -->
-    <div style="overflow-y:auto; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.05);">
-        <table style="width:100%; border-collapse:collapse; background:white;">
-            <thead style="background: var(--gold); color:white; text-align:left; position:sticky; top:0; z-index:2;">
+    {{-- Users Table --}}
+    <div class="table-wrapper">
+        <table class="activity-table">
+            <thead class="table-header">
                 <tr>
                     <th></th>
                     <th>{{ __('user_name') }}</th>
@@ -26,47 +27,51 @@
                     <th>{{ __('role') }}</th>
                 </tr>
             </thead>
-            <tbody id="table-body">
-                @foreach ($data as $user)
-                    <tr class="table-body-tr">
-                        <td style="display:flex; align-items:center;">
-                            <div
-                                style="margin-left:8px; width:50px; height:50px; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#fff;">
-                                @if ($user->image_url)
-                                    <div style="width:50px; height:50px; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#fff;">
-                                        <img src="{{ $user->image_url }}" style="width:100%; height:100%; object-fit:cover;">
+
+            <tbody>
+                @forelse ($data as $user)
+                    <tr>
+                        <td class="avatar-cell">
+                            <div class="avatar-wrapper">
+                                @if (@$user->image->url)
+                                    <div class="avatar-image-wrapper">
+                                        <img src="{{ $user->image->url }}" class="avatar-image">
                                     </div>
                                 @else
-                                    <div
-                                        style="width:50px; height:50px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:#c9a643; color:white; font-weight:bold; font-size:20px;">
-                                        {{ initials($user->name) }}
+                                    <div class="avatar-initials">
+                                        {{ initials($user->getFullName()) }}
                                     </div>
                                 @endif
                             </div>
                         </td>
-                        <td>{{ $user->name }}</td>
+                        <td>{{ $user->getFullName() }}</td>
                         <td>{{ $user->email }}</td>
-                        <td>{{ $user->phone }}</td>
-                        <td>{{ $user->merchant }}</td>
-                        <td>{{ $user->branches }}</td>
-                        <td>{{ $user->role }}</td>
+                        <td>{{ $user->phone_number }}</td>
+                        <td>{{ $user->getMerchant()->name }}</td>
+                        <td>{{ $user->getBranches()->count() ? $user->getBranches()->implode('name', ', ') : '-' }}</td>
+                        <td>{{ App\Enum\Constants::ROLES[$user->role] }}</td>
                     </tr>
-                @endforeach
-                @if ($data->isEmpty())
-                    <tr id="no-record">
-                        <td colspan="6" class="text-center">{{ __('record_not_found') }}</td>
+                @empty
+                    <tr>
+                        <td colspan="6">{{ __('record_not_found') }}</td>
                     </tr>
-                @endif
+                @endforelse
             </tbody>
         </table>
     </div>
 
-    <script>
-        // Pass translation to JS
-        window.translations = {
-            recordNotFound: "{{ __('record_not_found') }}"
-        };
-    </script>
-    <script src="{{ asset('js/search.js') }}"></script>
+    {{-- Pagination --}}
+    <div class="pagination-wrapper">
+        @if ($data->isNotEmpty())
+            <div>
+                Showing {{ $data->firstItem() }}–{{ $data->lastItem() }} of {{ $data->total() }}
+            </div>
+        @endif
+        {{ $data->links() }}
+    </div>
+
+    @push('scripts')
+        <script src="{{ asset('js/search.js') }}"></script>
+    @endpush
 
 @endsection

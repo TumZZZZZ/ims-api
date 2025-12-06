@@ -1,47 +1,42 @@
-const recordNotFoundText = window.translations.recordNotFound;
+// -------------------------------
+// Debounced search + focus after reload
+// -------------------------------
+let debounceTimer = null;
 
-const searchInput = document.getElementById("search");
-const tableBody = document.getElementById("table-body");
-const rows = Array.from(tableBody.getElementsByClassName("table-body-tr"));
+// Make sure your input has id="search"
+const searchInput = document.getElementById('search');
 
-// Create "No records found" row
-let noRecordRow = document.getElementById("no-record");
-if (!noRecordRow) {
-    noRecordRow = document.createElement("tr");
-    noRecordRow.id = "no-record";
-    noRecordRow.innerHTML = `<td colspan="6" style="text-align:center; padding:15px;">${recordNotFoundText}</td>`;
-    noRecordRow.style.display = "none";
-    tableBody.appendChild(noRecordRow);
-}
+if (searchInput) {
 
-searchInput.addEventListener("input", function () {
-    const query = this.value.toLowerCase();
-    let matchCount = 0;
+    // Listen for typing with debounce
+    searchInput.addEventListener('input', function () {
+        clearTimeout(debounceTimer);
 
-    rows.forEach((row) => {
-        const cells = Array.from(row.getElementsByTagName("td"));
-        let found = false;
+        debounceTimer = setTimeout(() => {
+            const search = searchInput.value.trim();
+            const url = new URL(window.location.href);
 
-        cells.forEach((cell, index) => {
-            if (index === 0 || index === cells.length - 1) return; // skip first and last column if needed
-            const text = cell.textContent;
+            // Set search query and reset page
+            url.searchParams.set('search', search);
+            url.searchParams.set('page', 1);
 
-            if (query !== "" && text.toLowerCase().includes(query)) {
-                found = true;
-                const regex = new RegExp(`(${query})`, "gi");
-                cell.innerHTML = text.replace(regex, `<span style="background: yellow;">$1</span>`);
-            } else {
-                cell.innerHTML = cell.textContent; // reset highlight
-                if (query === "") found = true;
-            }
-        });
+            // Set focus flag to restore input focus after reload
+            url.searchParams.set('focus', '1');
 
-        row.style.display = found ? "" : "none";
-        if (found) matchCount++;
+            // Navigate to new URL
+            window.location.href = url.toString();
+        }, 500); // 0.5 second debounce
     });
 
-    noRecordRow.style.display = matchCount === 0 ? "" : "none";
+    // On page load, if focus flag is set, restore focus
+    window.addEventListener('load', () => {
+        const url = new URL(window.location.href);
+        if (url.searchParams.get('focus') === '1') {
+            searchInput.focus();
 
-    // Optional: reset pagination to first page after search
-    if (typeof resetPagination === "function") resetPagination();
-});
+            // Move cursor to end of text
+            const len = searchInput.value.length;
+            searchInput.setSelectionRange(len, len);
+        }
+    });
+}
