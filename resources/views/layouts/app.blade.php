@@ -7,14 +7,15 @@
     <link rel="icon" type="image/png" href="{{ asset('storage/default-images/favicon.png') }}">
     <title>Khmer Angkor | @yield('title')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app-layout.css') }}">
     <link rel="stylesheet" href="{{ asset('css/dropdown.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/selection.css') }}">
     @stack('styles')
 </head>
 
-<body style="font-family: 'Poppins', Arial;">
+<body style="font-family: '{{ getFontFamilyByLocale(app()->getLocale()) }}', Arial;">
     @php
         $user = auth()->user();
         if (!$user) {
@@ -52,12 +53,12 @@
                     {{-- Menu Super Admin --}}
                 @elseif ($admin)
                     <a href="{{ route('admin.dashboard') }}"
-                        class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
+                        class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">@lang('dashboard')</a>
                     @php
                         $isActiveCategoriesMenu =
-                            request()->routeIs('admin.category.list') || request()->routeIs('admin.category.create');
+                            request()->routeIs('admin.categories') || request()->routeIs('admin.category.create');
                     @endphp
-                    <a href="{{ route('admin.category.list') }}"
+                    <a href="{{ route('admin.categories') }}"
                         class="{{ $isActiveCategoriesMenu ? 'active' : '' }}">Categories</a>
                     <a href="{{ route('admin.product.list') }}"
                         class="{{ request()->routeIs('admin.product.list') ? 'active' : '' }}">Products</a>
@@ -80,16 +81,39 @@
         <div class="main-header">
             <h1>@yield('header-title')</h1>
             <div class="dropdown-wrapper">
-                <button class="dropdown-toggle" id="dropdownLanguageToggle">
-                    {{ __('en') }}
+                <button class="dropdown-toggle" id="dropdownBranchToggle">
+                    {{ $user->getActiveBranch()->name }}
                 </button>
+                @if ($user->getBranches()->count() >= 2)
+                    <ul class="dropdown-menu" id="dropdownBranchMenu">
+                        @foreach ($user->getBranches() as $branch)
+                            <li data-value="branch-{{ $branch->_id }}">
+                                <form id="branch-{{ $branch->_id }}" action="{{ route('select.branch.post', ['user_id' => $user->_id, 'branch_id' => $branch->_id]) }}" method="POST" style="display: none;">
+                                    @csrf
+                                </form>
+                                <a onclick="event.preventDefault(); document.getElementById('branch-{{ $branch->_id }}').submit();">
+                                    {{ $branch->name }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+                <div class="circle-img" id="dropdownLanguageToggle">
+                    <img src="{{ asset('storage/default-images/flags/' . app()->getLocale() . '.png') }}" alt="language">
+                </div>
                 <ul class="dropdown-menu" id="dropdownLanguageMenu">
-                    <li data-value="English">{{ "English" }}</li>
-                    <li data-value="Khmer">{{ "ភាសាខ្មែរ" }}</li>
+                    <li data-value="English" onclick="window.location='{{ route('language.switch','en') }}'">
+                        <img src="{{ asset('storage/default-images/flags/en.png') }}" alt="" style="width: 30px; height: 20px;">
+                        {{ "English" }}
+                    </li>
+                    <li data-value="Khmer" onclick="window.location='{{ route('language.switch','km') }}'">
+                        <img src="{{ asset('storage/default-images/flags/km.png') }}" alt="" style="width: 30px; height: 20px;">
+                        {{ "ភាសាខ្មែរ" }}
+                    </li>
                 </ul>
-                <button class="dropdown-toggle" id="dropdownSettingToggle">
-                    {{ __('setting') }}
-                </button>
+                <div class="circle-img" id="dropdownSettingToggle">
+                    <img src="{{ $user->image->url ?? url('storage/default-images/no-image.png') }}" alt="User">
+                </div>
                 <ul class="dropdown-menu" id="dropdownSettingMenu">
                     @if (!$superAdmin)
                         <li data-value="Profile">{{ __('profile') }}</li>
@@ -98,7 +122,7 @@
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
                         </form>
-                        <a style="text-decoration: none;" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <a onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             {{ __('logout') }}
                         </a>
                     </li>

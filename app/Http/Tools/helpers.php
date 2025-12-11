@@ -2,6 +2,7 @@
 
 use App\Models\History;
 use App\Models\Image;
+use App\Models\Store;
 use Illuminate\Support\Facades\DB;
 
 if (! function_exists('createHistory')) {
@@ -106,6 +107,42 @@ if (!function_exists('mongodbTransaction')) {
             // Rollback transaction
             $session->abortTransaction();
             throw $e;
+        }
+    }
+}
+
+if (!function_exists('getMerchantNameByUserStoreIds')) {
+    function getMerchantNameByUserStoreIds(array $storeIds)
+    {
+        $merchant = Store::whereIn('_id', $storeIds)
+            ->whereNull('parent_id')
+            // ->whereNull('deleted_at')
+            ->first();
+        return $merchant ? $merchant->name : null;
+    }
+}
+
+if (!function_exists('getBranchNamesByUserStoreIds')) {
+    function getBranchNamesByUserStoreIds(array $storeIds)
+    {
+        $branches = \App\Models\Store::whereIn('_id', $storeIds)
+            ->whereNotNull('parent_id')
+            ->whereNull('deleted_at')
+            ->get();
+        return implode(', ', $branches->pluck('name')->toArray());
+    }
+}
+
+if (!function_exists('getFontFamilyByLocale')) {
+    function getFontFamilyByLocale($locale)
+    {
+        switch ($locale) {
+            case 'km':
+                return 'Kantumruy Pro';
+                break;
+            default:
+                return 'Poppins';
+                break;
         }
     }
 }

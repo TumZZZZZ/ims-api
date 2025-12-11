@@ -47,8 +47,8 @@
                         <td>{{ $user->getFullName() }}</td>
                         <td>{{ $user->email }}</td>
                         <td>{{ $user->phone_number }}</td>
-                        <td>{{ $user->getMerchant()->name }}</td>
-                        <td>{{ $user->getBranches()->count() ? $user->getBranches()->implode('name', ', ') : '-' }}</td>
+                        <td>{{ @$user->getMerchant()->name }}</td>
+                        <td>{{ @$user->getBranches()->count() ? $user->getBranches()->implode('name', ', ') : '-' }}</td>
                         <td>{{ App\Enum\Constants::ROLES[$user->role] }}</td>
                     </tr>
                 @empty

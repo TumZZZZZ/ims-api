@@ -92,7 +92,6 @@
     <!-- ===== Modal ===== -->
     @include('modal')
 
-
     @push('scripts')
         <script src="{{ asset('js/search.js') }}"></script>
         <script>

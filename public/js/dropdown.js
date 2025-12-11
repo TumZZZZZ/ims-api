@@ -1,33 +1,22 @@
-// Language Dropdown
-const toggleLanguageBtn = document.getElementById("dropdownLanguageToggle");
-const languageMenu = document.getElementById("dropdownLanguageMenu");
+// Dropdown utility function
+function initializeDropdown(toggleId, menuId) {
+    const toggleBtn = document.getElementById(toggleId);
+    const menu = document.getElementById(menuId);
 
-toggleLanguageBtn.addEventListener("click", () => {
-    languageMenu.classList.toggle("show");
-});
+    if (!toggleBtn || !menu) return;
 
-document.addEventListener("click", (e) => {
-    if (
-        !toggleLanguageBtn.contains(e.target) &&
-        !languageMenu.contains(e.target)
-    ) {
-        languageMenu.classList.remove("show");
-    }
-});
+    toggleBtn.addEventListener("click", () => {
+        menu.classList.toggle("show");
+    });
 
-// Setting Dropdown
-const toggleSettingBtn = document.getElementById("dropdownSettingToggle");
-const settingMenu = document.getElementById("dropdownSettingMenu");
+    document.addEventListener("click", (e) => {
+        if (!toggleBtn.contains(e.target) && !menu.contains(e.target)) {
+            menu.classList.remove("show");
+        }
+    });
+}
 
-toggleSettingBtn.addEventListener("click", () => {
-    settingMenu.classList.toggle("show");
-});
-
-document.addEventListener("click", (e) => {
-    if (
-        !toggleSettingBtn.contains(e.target) &&
-        !settingMenu.contains(e.target)
-    ) {
-        settingMenu.classList.remove("show");
-    }
-});
+// Initialize dropdowns
+initializeDropdown("dropdownBranchToggle", "dropdownBranchMenu");
+initializeDropdown("dropdownLanguageToggle", "dropdownLanguageMenu");
+initializeDropdown("dropdownSettingToggle", "dropdownSettingMenu");

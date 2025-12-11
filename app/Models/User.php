@@ -24,6 +24,7 @@ class User extends Authenticatable
         'calling_code',
         'phone_number',
         'verify_otp',
+        'active_on',
     ];
 
     protected $hidden = [
@@ -54,5 +55,10 @@ class User extends Authenticatable
     public function getFullName()
     {
         return $this->first_name." ".$this->last_name;
+    }
+
+    public function getActiveBranch()
+    {
+        return Store::find($this->active_on);
     }
 }

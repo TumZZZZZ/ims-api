@@ -43,6 +43,7 @@ return new class extends Migration
             $collection->string('calling_code');
             $collection->string('phone_number');
             $collection->string('verify_otp')->nullable();
+            $collection->string('active_on');
             $collection->timestamps();
             $collection->softDeletes();
         });

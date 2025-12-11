@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ErrorsController;
+use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\SuperAdminController;
 
@@ -12,6 +13,8 @@ Route::middleware('web')->group(function () {
     Route::get('/', fn() => redirect()->route('login'));
     Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->name('login.post');
+    Route::get('select-branch', [LoginController::class, 'showSelectBranch'])->name('select.branch');
+    Route::post('select-branch', [LoginController::class, 'selectBranch'])->name('select.branch.post');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/force-logout', [LoginController::class, 'logout'])->name('froce.logout');
     Route::get('/forgot-password', [LoginController::class, 'forgotPassword'])->name('forgot.password');
@@ -53,8 +56,12 @@ Route::middleware('web')->group(function () {
      */
     Route::prefix('admin')->middleware('role:ADMIN')->group(function () {
         Route::get('dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-        Route::get('category-list', [AdminController::class, 'listCategory'])->name('admin.category.list');
-        Route::get('category-create', [AdminController::class, 'createCategory'])->name('admin.category.create');
+        Route::group(['prefix' => 'categories'], function () {
+            Route::get('/', [AdminController::class, 'getCategories'])->name('admin.categories');
+            Route::get('create', [AdminController::class, 'createCategoryForm'])->name('admin.category.create');
+            Route::post('store', [AdminController::class, 'storeCategory'])->name('admin.category.store');
+            Route::delete('delete/{category_id}', [AdminController::class, 'deleteCategory'])->name('admin.category.delete');
+        });
         Route::get('product-list', [AdminController::class, 'productList'])->name('admin.product.list');
     });
 
@@ -67,6 +74,12 @@ Route::middleware('web')->group(function () {
         Route::get('dashboard', [ManagerController::class, 'dashboard'])->name('manager.dashboard');
     });
 
+    /**
+     * =================================================
+     *                 LANGUAGE SWITCHER
+     * =================================================
+     */
+    Route::get('lang/{locale}', [LanguageController::class, 'switchLanguage'])->name('language.switch');
 
     /**
      * =================================================

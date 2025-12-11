@@ -63,5 +63,17 @@
     "profile": "Profile",
     "logout": "Logout",
     "en": "EN",
-    "km": "KM"
+    "km": "KM",
+    "create_merchant": "Create Merchant",
+    "edit_merchant": "Edit Merchant",
+    "parent_category": "Parent Category",
+    "optional": "Optional",
+    "select_parent_category": "Select Parent Category",
+    "enter_category_name": "Enter category name",
+    "create_category": "Create Category",
+    "edit_category": "Edit Category",
+    "category_created_successfully": "Category <strong>:categoryName</strong> created successfully",
+    "products": "Products",
+    "actions": "Actions",
+    "confirm_category_action_delete": "Are you sure you want to :action <strong>:categoryName</strong>?"
 }

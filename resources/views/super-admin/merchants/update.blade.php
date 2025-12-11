@@ -1,12 +1,11 @@
 @extends('layouts.app')
 
-@section('title', __('merchants'))
-@section('header-title', __('merchants'))
+@section('title', __('edit_merchant'))
+@section('header-title', __('edit_merchant'))
 
 @section('content')
 
-    <!-- Action bar -->
-    <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 25px; flex-wrap: wrap;">
+    <div class="action-bar">
 
         <!-- Back Button -->
         <button class="btn btn-gold"
