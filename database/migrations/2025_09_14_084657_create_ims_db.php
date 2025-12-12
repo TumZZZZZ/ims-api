@@ -68,6 +68,7 @@ return new class extends Migration
 
         Schema::create('products', function (Blueprint $collection) {
             $collection->string('_id');
+            $collection->string('store_id');
             $collection->string('name');
             $collection->string('sku');
             $collection->string('barcode');
@@ -181,6 +182,26 @@ return new class extends Migration
             $collection->softDeletes();
         });
 
+        // Schema::create('orders', function (Blueprint $collection) {
+        //     $collection->string('_id');
+        //     $collection->string('store_id');
+        //     $collection->string('sale_by');
+        //     $collection->date('date');
+        //     $collection->timestamps();
+        //     $collection->softDeletes();
+        // });
+
+        // Schema::create('order_details', function (Blueprint $collection) {
+        //     $collection->string('_id');
+        //     $collection->string('order_id');
+        //     $collection->string('category_id');
+        //     $collection->string('product_id');
+        //     $collection->date('price');
+        //     $collection->date('cost');
+        //     $collection->date('quantity');
+        //     $collection->timestamps();
+        //     $collection->softDeletes();
+        // });
     }
 
     /**

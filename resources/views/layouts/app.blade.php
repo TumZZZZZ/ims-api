@@ -7,7 +7,6 @@
     <link rel="icon" type="image/png" href="{{ asset('storage/default-images/favicon.png') }}">
     <title>Khmer Angkor | @yield('title')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app-layout.css') }}">
     <link rel="stylesheet" href="{{ asset('css/dropdown.css') }}">
@@ -15,7 +14,7 @@
     @stack('styles')
 </head>
 
-<body style="font-family: '{{ getFontFamilyByLocale(app()->getLocale()) }}', Arial;">
+<body style="font-family: 'Khmer OS Siemreap Regular', Arial;">
     @php
         $user = auth()->user();
         if (!$user) {
@@ -55,18 +54,23 @@
                     <a href="{{ route('admin.dashboard') }}"
                         class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">@lang('dashboard')</a>
                     @php
-                        $isActiveCategoriesMenu =
-                            request()->routeIs('admin.categories') || request()->routeIs('admin.category.create');
+                        $isActiveCategoriesMenu = request()->routeIs('admin.categories')
+                            || request()->routeIs('admin.category.create')
+                            || request()->routeIs('admin.category.edit');
+
+                        $isActiveProductsMenu = request()->routeIs('admin.products')
+                            || request()->routeIs('admin.product.create')
+                            || request()->routeIs('admin.product.edit');
                     @endphp
                     <a href="{{ route('admin.categories') }}"
-                        class="{{ $isActiveCategoriesMenu ? 'active' : '' }}">Categories</a>
-                    <a href="{{ route('admin.product.list') }}"
-                        class="{{ request()->routeIs('admin.product.list') ? 'active' : '' }}">Products</a>
+                        class="{{ $isActiveCategoriesMenu ? 'active' : '' }}">{{ __('categories') }}</a>
+                    <a href="{{ route('admin.products') }}"
+                        class="{{ $isActiveProductsMenu ? 'active' : '' }}">{{ __('products') }}</a>
 
                     {{-- Menu Super Admin --}}
                 @elseif ($manager)
                     <a href="{{ route('manager.dashboard') }}"
-                        class="{{ request()->routeIs('manager.dashboard') ? 'active' : '' }}">Dashboard</a>
+                        class="{{ request()->routeIs('manager.dashboard') ? 'active' : '' }}">@lang('dashboard')</a>
                 @endif
             </div>
         </div>
@@ -81,22 +85,37 @@
         <div class="main-header">
             <h1>@yield('header-title')</h1>
             <div class="dropdown-wrapper">
-                <button class="dropdown-toggle" id="dropdownBranchToggle">
-                    {{ $user->getActiveBranch()->name }}
-                </button>
-                @if ($user->getBranches()->count() >= 2)
-                    <ul class="dropdown-menu" id="dropdownBranchMenu">
-                        @foreach ($user->getBranches() as $branch)
-                            <li data-value="branch-{{ $branch->_id }}">
-                                <form id="branch-{{ $branch->_id }}" action="{{ route('select.branch.post', ['user_id' => $user->_id, 'branch_id' => $branch->_id]) }}" method="POST" style="display: none;">
-                                    @csrf
-                                </form>
-                                <a onclick="event.preventDefault(); document.getElementById('branch-{{ $branch->_id }}').submit();">
-                                    {{ $branch->name }}
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
+                @if (!$superAdmin)
+                    <button class="dropdown-toggle" id="dropdownBranchToggle">
+                        {{ $user->getActiveBranch()->name }}
+                    </button>
+                    @if ($user->getBranches()->count() >= 2)
+                        @php
+                            $branches = auth()->user()->getBranches();
+                            $activeBranch = auth()->user()->getActiveBranch();
+
+                            // Move active branch to top
+                            if ($activeBranch) {
+                                $branches = $branches
+                                    ->sortByDesc(function ($branch) use ($activeBranch) {
+                                        return $branch->id === $activeBranch->id ? 1 : 0;
+                                    })
+                                    ->values();
+                            }
+                        @endphp
+                        <ul class="dropdown-menu" id="dropdownBranchMenu">
+                            @foreach ($branches as $branch)
+                                <li data-value="branch-{{ $branch->_id }}">
+                                    <form id="branch-{{ $branch->_id }}" action="{{ route('select.branch.post', ['user_id' => $user->_id, 'branch_id' => $branch->_id]) }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
+                                    <a onclick="event.preventDefault(); document.getElementById('branch-{{ $branch->_id }}').submit();">
+                                        {{ $branch->name }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
                 @endif
                 <div class="circle-img" id="dropdownLanguageToggle">
                     <img src="{{ asset('storage/default-images/flags/' . app()->getLocale() . '.png') }}" alt="language">

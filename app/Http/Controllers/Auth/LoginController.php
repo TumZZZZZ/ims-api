@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enum\Constants;
 use App\Http\Controllers\Controller;
 use App\Mail\SendOTPMail;
 use App\Models\User;
@@ -46,8 +47,10 @@ class LoginController extends Controller
 
         Auth::login($user);
 
-        $user->active_on = $user->getBranches()->first()->_id;
-        $user->save();
+        if (in_array($user->role, [Constants::ROLE_ADMIN, Constants::ROLE_MANAGER])) {
+            $user->active_on = $user->getBranches()->first()->_id;
+            $user->save();
+        }
 
         if ($user->role === 'SUPER_ADMIN') {
             return redirect()->route('super-admin.dashboard');

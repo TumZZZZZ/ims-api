@@ -59,14 +59,7 @@
     </div>
 
     {{-- Pagination --}}
-    <div class="pagination-wrapper">
-        @if ($data->isNotEmpty())
-            <div>
-                Showing {{ $data->firstItem() }}–{{ $data->lastItem() }} of {{ $data->total() }}
-            </div>
-        @endif
-        {{ $data->links() }}
-    </div>
+    @include('layouts.pagination')
 
     @push('scripts')
         <script src="{{ asset('js/search.js') }}"></script>

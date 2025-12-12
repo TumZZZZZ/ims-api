@@ -46,10 +46,10 @@ class User extends Authenticatable
 
     public function getBranches()
     {
-        return Store::whereIn('_id', $this->store_ids)
+        return $this->store_ids ? Store::whereIn('_id', $this->store_ids)
             ->whereNotNull('parent_id')
             ->whereNull('deleted_at')
-            ->get();
+            ->get() : collect([]);
     }
 
     public function getFullName()

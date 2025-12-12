@@ -3,11 +3,12 @@ input[type="text"],
 input[type="search"],
 input[type="number"],
 input[type="email"],
-input[type="password"] {
+input[type="password"],
+textarea {
     padding: 10px 15px;
     border-radius: 8px;
     border: 1px solid #ccc;
-    width: 250px;
+    width: 100%;
     color: var(--dark); /* text color */
     background: #fffaf3; /* light background */
     transition: border 0.3s ease, box-shadow 0.3s ease;
@@ -26,6 +27,8 @@ input[type="search"]:focus,
 input[type="number"]:focus,
 input[type="email"]:focus,
 input[type="password"]:focus,
+textarea:hover,
+textarea:focus,
 select:focus {
     border-color: var(--gold);
     box-shadow: 0 0 5px rgba(164, 126, 60, 0.5);
@@ -162,4 +165,8 @@ table tbody tr td {
     width: 250px;
     margin-bottom: 10px;
     font-size:14px;
+}
+
+textarea {
+    font-family: "Khmer OS Siemreap Regular", Arial, sans-serif;
 }

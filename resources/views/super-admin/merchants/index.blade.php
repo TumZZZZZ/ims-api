@@ -56,12 +56,12 @@
                         <td><span id="status-{{ $merchant->id }}" style="color: #{{ $merchant->active ? '4CAF50' : 'FFD700' }};">{{ $merchant->active ? __('activate') : __('suspend') }}</span></td>
                         <td class="text-center">
                             <button id="action-btn-{{ $merchant->id }}" class="btn"
-                                onclick="openDialog('{{ $merchant->id }}', '{{ $merchant->name }}', '{{ !$merchant->active ? __('activate') : __('suspend') }}')"
+                                onclick="openDialog('super-admin/merchants', '{{ $merchant->id }}', '{{ $merchant->name }}', '{{ !$merchant->active ? __('activate') : __('suspend') }}')"
                                 style="background:#{{ !$merchant->active ? '4CAF50' : 'FFD700' }};">
                                 {{ !$merchant->active ? __('activate') : __('suspend') }}
                             </button>
                             <button class="btn"
-                                onclick="openDialog('{{ $merchant->id }}', '{{ $merchant->name }}', '{{ __('delete') }}')"
+                                onclick="openDialog('super-admin/merchants/delete', '{{ $merchant->id }}', '{{ $merchant->name }}', '{{ __('delete') }}')"
                                 style="background: #F44336;">{{ __('delete') }}
                             </button>
                             <button class="btn"
@@ -80,21 +80,26 @@
     </div>
 
     {{-- Pagination --}}
-    <div class="pagination-wrapper">
-        @if ($data->isNotEmpty())
-            <div>
-                Showing {{ $data->firstItem() }}–{{ $data->lastItem() }} of {{ $data->total() }}
-            </div>
-        @endif
-        {{ $data->links() }}
-    </div>
+    @include('layouts.pagination')
 
     <!-- ===== Modal ===== -->
     @include('modal')
 
     @push('scripts')
         <script src="{{ asset('js/search.js') }}"></script>
+        <script src="{{ asset('js/actions.js') }}"></script>
         <script>
+            // Pass the translated template to JS
+            window.confirmationTemplate = @json(__('confirmation_action', [
+                'action' => ':action',
+                'objectName' => ':object_name'
+            ]));
+
+            window.objectActionTemplate = @json(__('object_action_successfully', [
+                    'objectName' => ':object_name',
+                    'action' => ':action'
+                ])
+            );
 
             // Check if Laravel has a success message
             @if(session('success_message'))
@@ -107,140 +112,6 @@
                     toast.style.display = "none";
                 }, 5000);
             @endif
-
-            // Show toast from sessionStorage (after page reload)
-            document.addEventListener('DOMContentLoaded', function () {
-                const deleteMerchantMessage = sessionStorage.getItem('delete_merchant_message');
-                if (deleteMerchantMessage) {
-                    const toast = document.getElementById("toast");
-                    toast.innerHTML = deleteMerchantMessage;
-                    toast.style.display = "block";
-
-                    sessionStorage.removeItem('delete_merchant_message');
-
-                    setTimeout(() => {
-                        toast.style.display = "none";
-                    }, 5000);
-                }
-            });
-
-            // Modal
-            let currentMerchantId = '';
-            let currentMerchantName = '';
-            let currentAction = '';
-
-            function openDialog(merchantId, merchantName, action) {
-                currentMerchantId = merchantId;
-                currentMerchantName = merchantName;
-                currentAction = action;
-
-                // Get the localized string with placeholders from Blade
-                let template = @json(__('confirm_merchant_action', ['action' => ':action', 'merchantName' => ':merchantName']));
-
-                // Replace placeholders with actual values in JS
-                let confirmationMessage = template
-                    .replace(':action', action.toLowerCase())
-                    .replace(':merchantName', merchantName);
-
-                document.getElementById("modal-message").innerHTML = confirmationMessage;
-                document.getElementById("modal").style.display = "flex";
-            }
-
-            function closeDialog() {
-                document.getElementById("modal").style.display = "none";
-            }
-
-            function confirmAction() {
-
-                let action = currentAction.toUpperCase();
-
-                // Handle delete action separately
-                if (['DELETE'].includes(action)) {
-                    const url = `/super-admin/merchants/delete/${currentMerchantId}?merchant_name=${encodeURIComponent(currentMerchantName)}`;
-
-                    fetch(url, {
-                        method: "DELETE",
-                        headers: {
-                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                            "Content-Type": "application/json"
-                        }
-                    })
-                    .then(response => response.json()) // <-- parse JSON
-                    .then(data => {
-                        if (data.success) {
-                            closeDialog();
-
-                            // Store message in sessionStorage for reload
-                            sessionStorage.setItem('delete_merchant_message', data.message);
-
-                            // Reload page
-                            window.location.reload();
-                        } else {
-                            alert('Failed to delete merchant.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error:", error);
-                    });
-                    return;
-                }
-
-                // AJAX request to suspend/activate merchant
-                if (['SUSPEND', 'ACTIVATE'].includes(action)) {
-                    const url = `/super-admin/merchants/${currentMerchantId}/suspend-or-activate`;
-
-                    fetch(url, {
-                        method: "POST",
-                        headers: {
-                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            merchant_name: currentMerchantName,
-                            action: currentAction,
-                            active: currentAction === "Suspend" ? 0 : 1
-                        })
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            closeDialog();
-
-                            // Update columns status & action
-                            const statusSpan = document.getElementById(`status-${currentMerchantId}`);
-                            const actionBtn = document.getElementById(`action-btn-${currentMerchantId}`);
-
-                            if (currentAction.toLowerCase() === "suspend") {
-                                statusSpan.textContent = "Suspend";
-                                statusSpan.style.color = "#FFD700";
-
-                                actionBtn.textContent = "Activate";
-                                actionBtn.style.background = "#4CAF50";
-                                actionBtn.setAttribute("onclick", `openDialog('${currentMerchantId}', '${currentMerchantName}', 'activate')`);
-                            } else {
-                                statusSpan.textContent = "Activate";
-                                statusSpan.style.color = "#4CAF50";
-
-                                actionBtn.textContent = "Suspend";
-                                actionBtn.style.background = "#FFD700";
-                                actionBtn.setAttribute("onclick", `openDialog('${currentMerchantId}', '${currentMerchantName}', 'suspend')`);
-                            }
-
-                            // Display success message
-                            const toast = document.getElementById("toast");
-                            toast.innerHTML = `<strong>${currentMerchantName}</strong> has been ${currentAction.toLowerCase()}ed successfully.`;
-                            toast.style.display = "block";
-
-                            // Disapear after 5 seconds
-                            setTimeout(() => {
-                                toast.style.display = "none";
-                            }, 5000);
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error:", error);
-                    });
-                }
-            }
         </script>
     @endpush
 

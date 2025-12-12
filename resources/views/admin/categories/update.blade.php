@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', __('create_category'))
-@section('header-title', __('create_category'))
+@section('title', __('edit_category'))
+@section('header-title', __('edit_category'))
 
 @section('content')
 
@@ -13,23 +13,24 @@
         </button>
     </div>
 
-    <form action="{{ route('admin.category.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('admin.category.update', $data->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
+        @method('PUT')
 
         <div class="row">
             <div class="col-left">
                 <div class="upload-box" id="uploadBox">
                     <input type="file" id="imageInput" name="image" accept="image/*">
-                    <img id="previewImage" src="" alt="" class="hidden">
-                <span id="uploadText">{{ __('upload_image') }}</span>
-                    <button type="button" class="delete-icon hidden" id="deleteImage">×</button>
+                    <img id="previewImage" src="{{ $data->image_url }}" alt="" class="{{ $data->image_url ? '' : 'hidden' }}">
+                    <span id="uploadText" class="{{ $data->image_url ? 'hidden' : '' }}">{{ __('upload_image') }}</span>
+                    <button type="button" class="delete-icon {{ $data->image_url ? '' : 'hidden' }}" id="deleteImage">×</button>
                 </div>
             </div>
 
             <div class="col-right">
                 <div>
                     <label>@lang('name')<span>*</span></label>
-                    <input type="text" name="name" value="{{ old('name') }}"
+                    <input type="text" name="name" value="{{ $data->name }}"
                         placeholder="@lang('enter_category_name')" required>
                 </div>
 
@@ -47,7 +48,7 @@
                         </option>
 
                         @foreach ($parentCategories as $parentCategory)
-                            <option value="{{ $parentCategory->id }}">
+                            <option value="{{ $parentCategory->id }}" {{ $data->parent_id == $parentCategory->id ? 'selected' : '' }}>
                                 <div class="custom-option">
                                     <span class="option-text">{{ $parentCategory->name }}</span>
                                 </div>
@@ -58,7 +59,7 @@
 
                 </div>
 
-                <button type="submit" class="submit-btn">@lang('create')</button>
+                <button type="submit" class="submit-btn">@lang('update')</button>
             </div>
         </div>
 

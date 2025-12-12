@@ -81,7 +81,7 @@ class SVSuperAdmin
 
             // Create history
             unset($params['_token']);
-            createHistory(Auth::user()->id, 'Created '.$params['merchant_name'], $merchant->_id, $params);
+            createHistory(Auth::user()->id, __('created_an_object', ['object' => __('merchant')]), $merchant->_id, $params);
         });
     }
 
@@ -116,6 +116,8 @@ class SVSuperAdmin
             if (request()->hasFile('image')) {
                 uploadImage($merchant->_id, 'stores', request()->file('image'));
                 unset($params['image']);
+            } else {
+                removeImage($merchant->_id, 'stores');
             }
 
             // Update merchant info
@@ -124,7 +126,7 @@ class SVSuperAdmin
             $merchant->save();
 
             // Create history
-            createHistory(Auth::user()->id, 'Updated '.$params['merchant_name'], $merchantId, $historyDetails);
+            createHistory(Auth::user()->id, __('updated_an_object', ['object' => __('merchant')]), $merchantId, $historyDetails);
         });
     }
 
@@ -141,7 +143,7 @@ class SVSuperAdmin
             $merchant->branches()->update(['deleted_at' => now()]);
 
             // Create history
-            createHistory(Auth::user()->id, 'Deleted '.$merchant->name, $merchantId);
+            createHistory(Auth::user()->id, __('deleted_an_object', ['object' => __('merchant')]), $merchantId);
         });
     }
 
@@ -157,7 +159,7 @@ class SVSuperAdmin
             $merchant->branches()->update(['active' => $params['active']]);
 
             // Create history
-            createHistory(Auth::user()->id, ucfirst($params['action'])." ".$params['merchant_name'], $merchantId);
+            createHistory(Auth::user()->id, __(strtolower($params['action']).'_an_object', ['object' => __('merchant')]), $merchantId);
         });
     }
 

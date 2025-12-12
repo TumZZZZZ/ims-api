@@ -3,6 +3,7 @@
 use App\Models\History;
 use App\Models\Image;
 use App\Models\Store;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 if (! function_exists('createHistory')) {
@@ -79,6 +80,22 @@ if (!function_exists('uploadImage')) {
     }
 }
 
+if (!function_exists('removeImage')) {
+    /**
+     * @param string $objectId
+     * @param string $collection
+     * @param file $image
+     * @return string
+     */
+    function removeImage($objectId, $collection)
+    {
+        $image = Image::where('object_id', $objectId)->where('collection', $collection)->first();
+        if ($image) {
+            $image->delete();
+        }
+    }
+}
+
 if (!function_exists('mongodbTransaction')) {
     /**
      * Run multiple MongoDB operations in a transaction.
@@ -144,5 +161,54 @@ if (!function_exists('getFontFamilyByLocale')) {
                 return 'Poppins';
                 break;
         }
+    }
+}
+
+if (!function_exists('amountFormat')) {
+    function amountFormat($amount, $currencyCode = 'USD')
+    {
+        switch ($currencyCode) {
+            case 'USD':
+                return '$' . number_format($amount, 2);
+            case 'KHR':
+                return number_format($amount, 0) . '៛';
+            default:
+                return number_format($amount, 2);
+        }
+    }
+}
+
+if (!function_exists('getCurrencySymbolByCurrencyCode')) {
+    function getCurrencySymbolByCurrencyCode($currencyCode)
+    {
+        switch ($currencyCode) {
+            case 'USD':
+                return '$';
+            case 'KHR':
+                return '៛';
+            default:
+                return '';
+        }
+    }
+}
+
+if (!function_exists('convertAmountsToCents')) {
+    function convertAmountsToCents($amounts)
+    {
+        return $amounts * 100;
+    }
+}
+
+if (!function_exists('convertCentsToAmounts')) {
+    function convertCentsToAmounts($cents)
+    {
+        return $cents / 100;
+    }
+}
+
+if (!function_exists('getCurrencyCode')) {
+    function getCurrencyCode()
+    {
+        return session('currency_code') ?? Auth::user()->getActiveBranch()->currency_code;
     }
 }

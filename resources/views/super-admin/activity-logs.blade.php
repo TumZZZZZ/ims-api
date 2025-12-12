@@ -31,7 +31,7 @@
                 @forelse ($data as $activity)
                     <tr>
                         <td>{{ $activity->user->getFullName() }}</td>
-                        <td>{{ !$activity->store->parent_id ? $activity->store->name : "-" }}</td>
+                        <td>{{ !$activity->store->parent_id ? $activity->store->name : (@$activity->store->merchant->name ?? "-") }}</td>
                         <td>{{ $activity->store->parent_id ? $activity->store->name : "-" }}</td>
                         <td>{{ App\Enum\Constants::ROLES[$activity->user->role] }}</td>
                         <td>{{ $activity->action }}</td>
@@ -47,14 +47,7 @@
     </div>
 
     {{-- Pagination --}}
-    <div class="pagination-wrapper">
-        @if ($data->isNotEmpty())
-            <div>
-                Showing {{ $data->firstItem() }}–{{ $data->lastItem() }} of {{ $data->total() }}
-            </div>
-        @endif
-        {{ $data->links() }}
-    </div>
+    @include('layouts.pagination')
 
     @push('scripts')
         <script src="{{ asset('js/search.js') }}"></script>

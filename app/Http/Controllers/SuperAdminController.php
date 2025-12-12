@@ -37,7 +37,7 @@ class SuperAdminController extends BaseApi
     public function storeMerchant(Request $request)
     {
         $this->getService()->storeMerchant($request->all());
-        return redirect()->route('super-admin.merchants')->with('success_message', '<strong>'.$request->merchant_name.'</strong> created successfully');
+        return redirect()->route('super-admin.merchants')->with('success_message', __('object_created_successfully', ['object' => __('merchant'), 'object_name' => $request->merchant_name]));
     }
 
     public function updateMerchantForm($merchantId)
@@ -50,7 +50,7 @@ class SuperAdminController extends BaseApi
     public function updateMerchant(Request $request, $merchantId)
     {
         $this->getService()->updateMerchant($merchantId, $request->all());
-        return redirect()->route('super-admin.merchants')->with('success_message', '<strong>'.$request->merchant_name.'</strong> updated successfully');
+        return redirect()->route('super-admin.merchants')->with('success_message', __('object_updated_successfully', ['object' => __('merchant'), 'object_name' => $request->merchant_name]));
     }
 
     public function deleteMerchant(Request $request, $merchantId)
@@ -58,7 +58,7 @@ class SuperAdminController extends BaseApi
         $this->getService()->deleteMerchant($merchantId);
         return response()->json([
             'success' => true,
-            'message' => '<strong>'.$request->merchant_name.'</strong> deleted successfully',
+            'message' => __('object_deleted_successfully', ['object' => __('merchant'), 'object_name' => $request->name]),
             'code'    => 200,
         ]);
     }
@@ -66,7 +66,7 @@ class SuperAdminController extends BaseApi
     public function suspendOrActivate(Request $request, $merchantId)
     {
         $this->getService()->suspendOrActivateMerchant($merchantId, $request->all());
-        return back()->with('success_message', $request->merchant_name . ' successfully ' . $request->action);
+        return back()->with('success_message', __('object_action_successfully', ['object_name' => $request->name, 'action' => $request->action]));
     }
 
     public function getBranches(Request $request)

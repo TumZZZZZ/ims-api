@@ -1,3 +1,10 @@
+@font-face {
+    font-family: 'Khmer OS Siemreap Regular';
+    src: url('/fonts/Khmer-OS-Siemreap-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
 :root {
     --gold: #a47e3c;
     --dark: #3c2a21;
@@ -12,7 +19,8 @@
 
 body {
     margin: 0;
-    font-family: "Segoe UI", Arial, sans-serif;
+    font-family: "Khmer OS Siemreap Regular", Arial, sans-serif;
+    font-size: 16px;
     display: flex;
     height: 100vh;
     background: var(--light);
@@ -52,7 +60,7 @@ body {
     color: #fffaf3;
     text-decoration: none;
     padding: 14px 30px;
-    font-size: 15px;
+    font-size: 18px;
     border-left: 4px solid transparent;
     transition: all 0.3s ease;
 }

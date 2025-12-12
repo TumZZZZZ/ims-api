@@ -60,9 +60,18 @@ Route::middleware('web')->group(function () {
             Route::get('/', [AdminController::class, 'getCategories'])->name('admin.categories');
             Route::get('create', [AdminController::class, 'createCategoryForm'])->name('admin.category.create');
             Route::post('store', [AdminController::class, 'storeCategory'])->name('admin.category.store');
+            Route::get('edit/{category_id}', [AdminController::class, 'editCategoryForm'])->name('admin.category.edit');
+            Route::put('update/{category_id}', [AdminController::class, 'updateCategory'])->name('admin.category.update');
             Route::delete('delete/{category_id}', [AdminController::class, 'deleteCategory'])->name('admin.category.delete');
         });
-        Route::get('product-list', [AdminController::class, 'productList'])->name('admin.product.list');
+        Route::group(['prefix' => 'products'], function () {
+            Route::get('/', [AdminController::class, 'getProducts'])->name('admin.products');
+            Route::get('create', [AdminController::class, 'createProductForm'])->name('admin.product.create');
+            Route::post('store', [AdminController::class, 'storeProduct'])->name('admin.product.store');
+            Route::get('edit/{product_id}', [AdminController::class, 'editProductForm'])->name('admin.product.edit');
+            Route::put('update/{product_id}', [AdminController::class, 'updateProduct'])->name('admin.product.update');
+            Route::delete('delete/{product_id}', [AdminController::class, 'deleteProduct'])->name('admin.product.delete');
+        });
     });
 
     /**

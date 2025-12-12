@@ -1,153 +1,113 @@
 @extends('layouts.app')
 
-@section('title', 'Products')
-@section('header-title', 'Products')
+@section('title', __('products'))
+@section('header-title', __('products'))
 
 @section('content')
 
-    <!-- Action bar: Search + Buttons -->
-    <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 25px; flex-wrap: wrap;">
-        <!-- Search -->
-        <input type="text" id="search" placeholder="Search products..."
-            style="padding:10px 15px; border-radius:8px; border:1px solid #ccc; width: 250px; margin-bottom: 10px;">
-
-        <!-- Buttons -->
+    <div class="action-bar">
+        {{-- Keep search during pagination --}}
+        <input type="text"
+               id="search"
+               placeholder="{{ __('search') }}"
+               value="{{ request('search') }}">
+        {{-- Buttons --}}
         <div>
-            <button
-                style="background-color: var(--gold); color:white; padding:10px 18px; border:none; border-radius:6px; margin-right:10px; cursor:pointer;">
-                Import
-            </button>
-            <button
-                style="background-color: var(--dark); color:white; padding:10px 18px; border:none; border-radius:6px; cursor:pointer;">
-                Create
+            <button class="btn" style="background: #4CAF50;"
+                onclick="window.location.href='/admin/products/create'">
+                + @lang('create')
             </button>
         </div>
     </div>
 
-    <!-- Products Table -->
-    <div style="height:80%; overflow-y:auto; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.05);">
-        <table style="width:100%; border-collapse: collapse; background:white;">
-            <thead style="background: var(--gold); color:white; text-align:left; position:sticky; top:0; z-index:2;">
+    {{-- Categories Table --}}
+    <div class="table-wrapper">
+        <table class="activity-table">
+            <thead class="table-header">
                 <tr>
-                    <th style="padding:12px;">Image</th>
-                    <th style="padding:12px;">Name</th>
-                    <th style="padding:12px;">Cost</th>
-                    <th style="padding:12px;">Price</th>
-                    <th style="padding:12px;">Category</th>
-                    <th style="padding:12px;">In Stock</th>
-                    <th style="padding:12px;">Threshold</th>
-                    <th style="padding:12px; text-align:center;">Actions</th>
+                    <th></th>
+                    <th>@lang('barcode')</th>
+                    <th>@lang('name')</th>
+                    <th>@lang('price')</th>
+                    <th>@lang('cost')</th>
+                    <th>@lang('category')</th>
+                    <th>@lang('in_stock')</th>
+                    <th>@lang('threshold')</th>
+                    <th>@lang('actions')</th>
                 </tr>
             </thead>
-            <tbody id="products-body">
-                <!-- Example rows with color identification -->
-                <tr style="background:#f9f9f9;">
-                    <td style="display:flex; align-items:center;">
-                        <div
-                            style="margin-left:8px; width:50px; height:50px; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#fff;">
-                            <img src="https://s.lightorangebean.com/media/20240914145432/Veggie-Infused-Steamed-Rice_done.png" style="width:100%; height:100%; object-fit:contain;">
-                        </div>
-                    </td>
-                    <td style="padding:12px;">Rice</td>
-                    <td style="padding:12px;">$8.00</td>
-                    <td style="padding:12px;">$12.00</td>
-                    <td style="padding:12px;">Food</td>
-                    <td style="padding:12px;">100</td>
-                    <td style="padding:12px;">20</td>
-                    <td style="padding:12px; text-align:center;">
-                        <button style="background:#4CAF50; color:white; padding:6px 12px; border:none; border-radius:5px; cursor:pointer; margin-right:5px;">Edit</button>
-                        <button style="background:#F44336; color:white; padding:6px 12px; border:none; border-radius:5px; cursor:pointer;">Delete</button>
-                    </td>
-                </tr>
-                <tr style="background:#fff;">
-                    <td style="display:flex; align-items:center;">
-                        <span class="arrow"></span>
-                        <div
-                            style="margin-left:8px; width:50px; height:50px; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#fff;">
-                            <div
-                                style="width:50px; height:50px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:#c9a643; color:white; font-weight:bold; font-size:20px;">
-                                C
+
+            <tbody id="table-body">
+                @forelse ($data as $product)
+                    <tr>
+                        <td class="avatar-cell">
+                            <div class="avatar-wrapper">
+                                @if (@$product->image->url)
+                                    <div class="avatar-image-wrapper">
+                                        <img src="{{ $product->image->url }}" class="avatar-image">
+                                    </div>
+                                @else
+                                    <div class="avatar-initials">
+                                        {{ initials($product->name) }}
+                                    </div>
+                                @endif
                             </div>
-                        </div>
-                    </td>
-                    <td style="padding:12px;">Coffee</td>
-                    <td style="padding:12px;">$5.00</td>
-                    <td style="padding:12px;">$8.00</td>
-                    <td style="padding:12px;">Beverage</td>
-                    <td style="padding:12px;">50</td>
-                    <td style="padding:12px;">10</td>
-                    <td style="padding:12px; text-align:center;">
-                        <button style="background:#4CAF50; color:white; padding:6px 12px; border:none; border-radius:5px; cursor:pointer; margin-right:5px;">Edit</button>
-                        <button style="background:#F44336; color:white; padding:6px 12px; border:none; border-radius:5px; cursor:pointer;">Delete</button>
-                    </td>
-                </tr>
-                <tr style="background:#f9f9f9;">
-                    <td style="display:flex; align-items:center;">
-                        <span class="arrow"></span>
-                        <div
-                            style="margin-left:8px; width:50px; height:50px; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#fff;">
-                            <div
-                                style="width:50px; height:50px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:#c9a643; color:white; font-weight:bold; font-size:20px;">
-                                S
-                            </div>
-                        </div>
-                    </td>
-                    <td style="padding:12px;">Sugar</td>
-                    <td style="padding:12px;">$2.00</td>
-                    <td style="padding:12px;">$3.50</td>
-                    <td style="padding:12px;">Food</td>
-                    <td style="padding:12px;">200</td>
-                    <td style="padding:12px;">50</td>
-                    <td style="padding:12px; text-align:center;">
-                        <button style="background:#4CAF50; color:white; padding:6px 12px; border:none; border-radius:5px; cursor:pointer; margin-right:5px;">Edit</button>
-                        <button style="background:#F44336; color:white; padding:6px 12px; border:none; border-radius:5px; cursor:pointer;">Delete</button>
-                    </td>
-                </tr>
+                        </td>
+                        <td>{{ $product->barcode }}</td>
+                        <td>{{ $product->name }}</td>
+                        <td>{{ amountFormat(convertCentsToAmounts($product->assign->price), getCurrencyCode()) }}</td>
+                        <td>{{ amountFormat(convertCentsToAmounts($product->assign->cost), getCurrencyCode()) }}</td>
+                        <td>{{ $product->categories->pluck('name')->implode(',') }}</td>
+                        <td>{{ $product->assign->quantity }}</td>
+                        <td>{{ $product->assign->threshold }}</td>
+                        <td class="text-center">
+                            <button class="btn"
+                                onclick="openDialog('admin/products/delete', '{{ $product->id }}', '{{ $product->name }}', '{{ __('delete') }}')"
+                                style="background: #F44336;">{{ __('delete') }}
+                            </button>
+                            <button class="btn"
+                                onclick="window.location.href='/admin/products/edit/{{ $product->id }}'"
+                                style="background: #666666;">{{ __('edit') }}
+                            </button>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="10" class="text-center">{{ __('record_not_found') }}</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
 
-    <!-- Pagination (static style) -->
-    <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
-        <button style="padding:6px 12px; border:none; border-radius:5px; background:#f0f0f0; cursor:pointer;">«</button>
-        <button style="padding:6px 12px; border:none; border-radius:5px; background:#f0f0f0; cursor:pointer;">1</button>
-        <button style="padding:6px 12px; border:none; border-radius:5px; background:#f0f0f0; cursor:pointer;">2</button>
-        <button style="padding:6px 12px; border:none; border-radius:5px; background:#f0f0f0; cursor:pointer;">3</button>
-        <button style="padding:6px 12px; border:none; border-radius:5px; background:#f0f0f0; cursor:pointer;">»</button>
-    </div>
+    {{-- Pagination --}}
+    @include('layouts.pagination')
 
-    <!-- JS for search -->
-    <script>
-            const searchInput = document.getElementById('search');
-            const tableBody = document.getElementById('products-body');
-            const tableRows = tableBody.querySelectorAll('tr');
+    <!-- ===== Modal ===== -->
+    @include('modal')
 
-            searchInput.addEventListener('keyup', function() {
-                const query = this.value.toLowerCase();
-                let visibleCount = 0;
+    @push('scripts')
+        <script src="{{ asset('js/search.js') }}"></script>
+        <script src="{{ asset('js/actions.js') }}"></script>
+        <script>
+            // Pass the translated template to JS
+            window.confirmationTemplate = @json(__('confirmation_action', [
+                'action' => ':action',
+                'objectName' => ':object_name'
+            ]));
 
-                tableRows.forEach(row => {
-                    const productName = row.cells[0].textContent.toLowerCase();
-                    if (productName.includes(query)) {
-                        row.style.display = '';
-                        visibleCount++;
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
+            // Check if Laravel has a success message
+            @if(session('success_message'))
+                const toast = document.getElementById("toast");
+                toast.innerHTML = @json(session('success_message')); // safely pass the message
+                toast.style.display = "block";
 
-                // Remove existing "no product found" row
-                const existingNoRow = document.getElementById('no-product-row');
-                if (existingNoRow) existingNoRow.remove();
-
-                // If no rows visible, add "No product found" row
-                if (visibleCount === 0) {
-                    const noRow = document.createElement('tr');
-                    noRow.id = 'no-product-row';
-                    noRow.innerHTML = `<td colspan="7" style="text-align:center; padding:12px; color:#888;">No product found</td>`;
-                    tableBody.appendChild(noRow);
-                }
-            });
+                // Optional: hide toast after 5 seconds
+                setTimeout(() => {
+                    toast.style.display = "none";
+                }, 5000);
+            @endif
         </script>
+    @endpush
 
 @endsection
