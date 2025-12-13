@@ -11,11 +11,11 @@ class Product extends Model
     protected $collection = 'products';
 
     protected $fillable = [
-        'store_id', // As merchant ID
         'name',
+        'sku',
         'barcode',
         'description',
-        'unit',
+        'category_ids',
     ];
 
     public function image()
@@ -26,7 +26,7 @@ class Product extends Model
     public function assign()
     {
         return $this->hasOne(ProductAssign::class, 'product_id', '_id')
-            ->where('store_id', Auth::user()->active_on)
+            ->where('branch_id', Auth::user()->active_on)
             ->whereNull('deleted_at');
     }
 

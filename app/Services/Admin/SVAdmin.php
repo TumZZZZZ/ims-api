@@ -5,6 +5,7 @@ namespace App\Services\Admin;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductAssign;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class SVAdmin
@@ -13,7 +14,7 @@ class SVAdmin
     {
         $user = Auth::user();
         return Category::where('parent_id', null)
-            ->where('store_id', $user->getMerchant()->id)
+            ->whereIn('branch_ids', [$user->active_on])
             ->where('deleted_at', null)
             ->orderByDesc('created_at')
             ->get();
@@ -26,7 +27,7 @@ class SVAdmin
         return Category::when($search, function($query, $search) {
                 $query->where('name', 'like', '%'.$search.'%');
             })
-            ->where('store_id', $user->getMerchant()->id)
+            ->where('branch_ids', $user->active_on)
             ->where('deleted_at', null)
             ->orderByDesc('created_at')
             ->paginate(10);
@@ -39,7 +40,7 @@ class SVAdmin
             // Create category
             $category = Category::create([
                 'name'       => $params['name'],
-                'store_id'   => $user->getMerchant()->id,
+                'branch_ids' => [$user->active_on],
                 'parent_id'  => $params['parent_category_id'] ?? null,
             ]);
 
@@ -51,13 +52,13 @@ class SVAdmin
 
             // Create history
             unset($params['_token']);
-            createHistory($user->_id, __('created_an_object', ['object' => __('category')]), $user->active_on, $params);
+            createHistory($user->_id, __('created_an_object', ['object' => __('category')]), @$user->merchant->id, $user->active_on, $params);
         });
     }
 
-    public function getCategoryById($categoryId)
+    public function getCategoryById($id)
     {
-        $category = Category::where('_id', $categoryId)->first();
+        $category = Category::find($id);
         if (!$category) {
             abort(404, 'Category not found');
         }
@@ -90,7 +91,7 @@ class SVAdmin
 
             // Create history
             unset($params['_token']);
-            createHistory($user->_id, __('updated_an_object', ['object' => __('category')]), $user->active_on, $params);
+            createHistory($user->_id, __('updated_an_object', ['object' => __('category')]), @$user->merchant->id, $user->active_on, $params);
         });
     }
 
@@ -105,7 +106,7 @@ class SVAdmin
             $category->save();
 
             // Create history
-            createHistory($user->_id, __('deleted_an_object', ['object' => __('category')]), $user->active_on, [
+            createHistory($user->_id, __('deleted_an_object', ['object' => __('category')]), @$user->merchant->id, $user->active_on, [
                 'category_id' => (string)$category->_id,
                 'name'        => $category->name,
             ]);
@@ -115,7 +116,7 @@ class SVAdmin
     public function getAllCategories()
     {
         $user = Auth::user();
-        return Category::where('store_id', $user->getMerchant()->id)
+        return Category::whereIn('branch_ids', [$user->active_on])
             ->where('deleted_at', null)
             ->orderByDesc('created_at')
             ->get();
@@ -131,7 +132,7 @@ class SVAdmin
                     ->orWhere('barcode', 'like', '%'.$search.'%');
             })
             ->whereHas('assign', function ($query) use ($user) {
-                $query->where('store_id', $user->active_on);
+                $query->where('branch_id', $user->active_on);
             })
             ->where('deleted_at', null)
             ->orderByDesc('created_at')
@@ -144,9 +145,9 @@ class SVAdmin
         mongodbTransaction(function() use ($params, $user) {
             // Create product
             $product = Product::create([
-                'store_id' => $user->getMerchant()->id,
                 'name' => $params['name'],
-                'barcode' => $params['barcode'],
+                'sku' => $params['sku'],
+                'barcode' => $params['barcode'] ?? null,
                 'description' => $params['description'] ?? null
             ]);
 
@@ -162,32 +163,36 @@ class SVAdmin
             $category->product_ids = array_merge($category->product_ids, [$product->id]);
             $category->save();
 
+            // Assign category
+            $product->push('category_ids', $category->id);
+
             // Create product assigns
             foreach ($params['branches'] as $branch) {
                 ProductAssign::create([
-                    'store_id' => $branch['branch_id'],
+                    'branch_id' => $branch['branch_id'],
                     'product_id' => $product->id,
                     'price' => convertAmountsToCents($branch['price']),
                     'cost' => convertAmountsToCents($branch['cost']),
                     'quantity' => $branch['stock_quantity'],
                     'threshold' => $branch['threshold'],
                 ]);
+                // Assign branch
+                $category->push('branch_ids', $branch['branch_id']);
             }
 
             // Create history
             unset($params['_token']);
-            createHistory($user->_id, __('created_an_object', ['object' => __('product')]), $user->active_on, $params);
+            createHistory($user->_id, __('created_an_object', ['object' => __('product')]), @$user->merchant->id, $user->active_on, $params);
         });
     }
 
-    public function getProductById($productId)
+    public function getProductById($id)
     {
-        $product = Product::where('id', $productId)->first();
+        $product = Product::find($id);
         if (!$product) {
             abort(404, 'Product not found');
         }
 
-        $productAssign = $product->assign;
         $branches = [];
         foreach ($product->assignAll as $assign) {
             $branches[] = (object)[
@@ -204,6 +209,7 @@ class SVAdmin
             'id' => $product->id,
             'image_url' => $product->image->url ?? null,
             'name' => $product->name,
+            'sku' => $product->sku,
             'barcode' => $product->barcode,
             'description' => $product->description ?? null,
             'category_id' => $product->categories->first()->id,
@@ -219,7 +225,8 @@ class SVAdmin
 
             // Update product
             $product->name = $params['name'];
-            $product->barcode = $params['barcode'];
+            $product->sku = $params['sku'];
+            $product->barcode = $params['barcode'] ?? null;
             $product->description = $params['description'] ?? null;
             $product->save();
 
@@ -234,7 +241,7 @@ class SVAdmin
             // Update all product assign
             $productAssigns = $product->assignAll;
             foreach ($params['branches'] as $branch) {
-                $assign = $productAssigns->where('store_id', $branch['branch_id'])->where('product_id', $product->id)->first();
+                $assign = $productAssigns->where('branch_id', $branch['branch_id'])->where('product_id', $product->id)->first();
                 $assign->price = convertAmountsToCents($branch['price']);
                 $assign->cost = convertAmountsToCents($branch['cost']);
                 $assign->quantity = $branch['stock_quantity'];
@@ -244,7 +251,7 @@ class SVAdmin
 
             // Create history
             unset($params['_token']);
-            createHistory($user->_id, __('updated_an_object', ['object' => __('category')]), $user->active_on, $params);
+            createHistory($user->_id, __('updated_an_object', ['object' => __('category')]), @$user->merchant->id, $user->active_on, $params);
         });
     }
 
@@ -263,9 +270,32 @@ class SVAdmin
             ProductAssign::where('product_id', $product->id)->delete();
 
             // Create history
-            createHistory($user->_id, __('deleted_an_object', ['object' => __('product')]), $user->active_on, [
+            createHistory($user->_id, __('deleted_an_object', ['object' => __('product')]), @$user->merchant->id, $user->active_on, [
                 'name' => $product->name
             ]);
         });
+    }
+
+    public function getUsers(array $params)
+    {
+        $user = Auth::user();
+        $search = $params['search'] ?? null;
+        return User::with(['image'])
+            ->when($search, function($query, $search) {
+                $query->where('first_name', 'like', '%'.$search.'%')
+                    ->orWhere('first_name', 'like', '%'.$search.'%')
+                    ->orWhere('email', 'like', '%'.$search.'%')
+                    ->orWhere('phone_number', 'like', '%'.$search.'%');
+            })
+            ->where('merchant_id', $user->merchant->id)
+            ->where('deleted_at', null)
+            ->orderByDesc('created_at')
+            ->paginate(10);
+    }
+
+    public function getUserById($id)
+    {
+        $user = User::find($id);
+        return $user;
     }
 }

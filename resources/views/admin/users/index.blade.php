@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', __('products'))
-@section('header-title', __('products'))
+@section('title', __('users'))
+@section('header-title', __('users'))
 
 @section('content')
 
@@ -14,7 +14,7 @@
         {{-- Buttons --}}
         <div>
             <button class="btn" style="background: #4CAF50;"
-                onclick="window.location.href='/admin/products/create'">
+            onclick="window.location.href='/admin/users/create'">
                 + @lang('create')
             </button>
         </div>
@@ -26,54 +26,52 @@
             <thead class="table-header">
                 <tr>
                     <th></th>
-                    <th>@lang('sku')</th>
-                    <th>@lang('name')</th>
-                    <th>@lang('price')</th>
-                    <th>@lang('cost')</th>
-                    <th>@lang('category')</th>
-                    <th>@lang('in_stock')</th>
-                    <th>@lang('threshold')</th>
+                    <th>@lang('first_name')</th>
+                    <th>@lang('last_name')</th>
+                    <th>@lang('email')</th>
+                    <th>@lang('phone_number')</th>
+                    <th>@lang('role')</th>
                     <th>@lang('actions')</th>
                 </tr>
             </thead>
 
             <tbody id="table-body">
-                @forelse ($data as $product)
+                @forelse ($data as $user)
                     <tr>
                         <td class="avatar-cell">
                             <div class="avatar-wrapper">
-                                @if (@$product->image->url)
+                                @if (@$user->image->url)
                                     <div class="avatar-image-wrapper">
-                                        <img src="{{ $product->image->url }}" class="avatar-image">
+                                        <img src="{{ $user->image->url }}" class="avatar-image">
                                     </div>
                                 @else
                                     <div class="avatar-initials">
-                                        {{ initials($product->name) }}
+                                        {{ initials($user->getFullName()) }}
                                     </div>
                                 @endif
                             </div>
                         </td>
-                        <td>{{ $product->sku }}</td>
-                        <td>{{ $product->name }}</td>
-                        <td>{{ amountFormat(convertCentsToAmounts($product->assign->price), getCurrencyCode()) }}</td>
-                        <td>{{ amountFormat(convertCentsToAmounts($product->assign->cost), getCurrencyCode()) }}</td>
-                        <td>{{ $product->categories->pluck('name')->implode(',') }}</td>
-                        <td>{{ $product->assign->quantity }}</td>
-                        <td>{{ $product->assign->threshold }}</td>
+                        <td>{{ $user->first_name }}</td>
+                        <td>{{ $user->last_name }}</td>
+                        <td>{{ $user->email }}</td>
+                        <td>{{ $user->phone_number }}</td>
+                        <td>{{ App\Enum\Constants::ROLES[$user->role] }}</td>
                         <td class="text-center">
+                            @if ($user->id != auth()->user()->id)
+                                <button class="btn"
+                                    {{-- onclick="openDialog('admin/categories/delete', '{{ $user->id }}', '{{ $user->name }}', '{{ __('delete') }}')" --}}
+                                    style="background: #F44336;">{{ __('delete') }}
+                                </button>
+                            @endif
                             <button class="btn"
-                                onclick="openDialog('admin/products/delete', '{{ $product->id }}', '{{ $product->name }}', '{{ __('delete') }}')"
-                                style="background: #F44336;">{{ __('delete') }}
-                            </button>
-                            <button class="btn"
-                                onclick="window.location.href='/admin/products/edit/{{ $product->id }}'"
+                                onclick="window.location.href='/admin/users/edit/{{ $user->id }}'"
                                 style="background: #666666;">{{ __('edit') }}
                             </button>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="10" class="text-center">{{ __('record_not_found') }}</td>
+                        <td colspan="6" class="text-center">{{ __('record_not_found') }}</td>
                     </tr>
                 @endforelse
             </tbody>

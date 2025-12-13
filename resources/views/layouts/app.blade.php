@@ -34,20 +34,20 @@
                 @if ($superAdmin)
                     @php
                         $activeMerchantMenu =
-                            request()->routeIs('super-admin.merchants') ||
-                            request()->routeIs('super-admin.merchants.create.form') ||
-                            request()->routeIs('super-admin.merchants.update.form');
+                            request()->routeIs('super-admin.merchants.index') ||
+                            request()->routeIs('super-admin.merchant.create') ||
+                            request()->routeIs('super-admin.merchant.edit');
                     @endphp
                     <a href="{{ route('super-admin.dashboard') }}"
                         class="{{ request()->routeIs('super-admin.dashboard') ? 'active' : '' }}">@lang('dashboard')</a>
-                    <a href="{{ route('super-admin.merchants') }}"
+                    <a href="{{ route('super-admin.merchants.index') }}"
                         class="{{ $activeMerchantMenu ? 'active' : '' }}">@lang('merchants')</a>
-                    <a href="{{ route('super-admin.branches') }}"
-                        class="{{ request()->routeIs('super-admin.branches') ? 'active' : '' }}">@lang('branches')</a>
-                    <a href="{{ route('super-admin.users') }}"
-                        class="{{ request()->routeIs('super-admin.users') ? 'active' : '' }}">@lang('users')</a>
-                    <a href="{{ route('super-admin.activity-logs') }}"
-                        class="{{ request()->routeIs('super-admin.activity-logs') ? 'active' : '' }}">@lang('activity_logs')</a>
+                    <a href="{{ route('super-admin.branches.index') }}"
+                        class="{{ request()->routeIs('super-admin.branches.index') ? 'active' : '' }}">@lang('branches')</a>
+                    <a href="{{ route('super-admin.users.index') }}"
+                        class="{{ request()->routeIs('super-admin.users.index') ? 'active' : '' }}">@lang('users')</a>
+                    <a href="{{ route('super-admin.activity-logs.index') }}"
+                        class="{{ request()->routeIs('super-admin.activity-logs.index') ? 'active' : '' }}">@lang('activity_logs')</a>
 
                     {{-- Menu Super Admin --}}
                 @elseif ($admin)
@@ -61,11 +61,17 @@
                         $isActiveProductsMenu = request()->routeIs('admin.products')
                             || request()->routeIs('admin.product.create')
                             || request()->routeIs('admin.product.edit');
+
+                        $isActiveUsersMenu = request()->routeIs('admin.users')
+                            || request()->routeIs('admin.user.create')
+                            || request()->routeIs('admin.user.edit');
                     @endphp
                     <a href="{{ route('admin.categories') }}"
                         class="{{ $isActiveCategoriesMenu ? 'active' : '' }}">{{ __('categories') }}</a>
                     <a href="{{ route('admin.products') }}"
                         class="{{ $isActiveProductsMenu ? 'active' : '' }}">{{ __('products') }}</a>
+                    <a href="{{ route('admin.users') }}"
+                        class="{{ $isActiveUsersMenu ? 'active' : '' }}">{{ __('users') }}</a>
 
                     {{-- Menu Super Admin --}}
                 @elseif ($manager)

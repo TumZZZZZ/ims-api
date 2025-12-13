@@ -11,7 +11,8 @@ class History extends Model
 
     protected $fillable = [
         'user_id',
-        'store_id',
+        'merchant_id',
+        'branch_id',
         'action',
         'details',
     ];
@@ -21,8 +22,13 @@ class History extends Model
         return $this->hasOne(User::class, '_id', 'user_id');
     }
 
-    public function store()
+    public function merchant()
     {
-        return $this->hasOne(Store::class, '_id', 'store_id');
+        return $this->hasOne(Store::class, '_id', 'merchant_id');
+    }
+
+    public function branch()
+    {
+        return $this->hasOne(Store::class, '_id', 'branch_id');
     }
 }

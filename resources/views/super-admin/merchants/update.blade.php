@@ -14,7 +14,7 @@
         </button>
     </div>
 
-    <form action="{{ route('super-admin.merchants.update', $data->id) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('super-admin.merchant.update', $data->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 

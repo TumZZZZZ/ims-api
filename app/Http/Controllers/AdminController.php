@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\Admin\SVAdmin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends BaseApi
 {
@@ -102,6 +103,35 @@ class AdminController extends BaseApi
             'success' => true,
             'message' => __('object_deleted_successfully', ['object' => __('product'), 'object_name' => $request->name]),
             'code'    => 200,
+        ]);
+    }
+
+    public function promotions(Request $request)
+    {
+
+    }
+
+    public function getUsers(Request $request)
+    {
+        return view('admin.users.index', [
+            'data' => $this->getService()->getUsers($request->all()),
+        ]);
+    }
+
+    public function createUserForm()
+    {
+        return view('admin.users.create', [
+            'roles' => getRoles(),
+            'branches' => Auth::user()->getBranches(),
+        ]);
+    }
+
+    public function editUserForm($userId)
+    {
+        return view('admin.users.update', [
+            'data' => $this->getService()->getUserById($userId),
+            'roles' => getRoles(),
+            'branches' => Auth::user()->getBranches(),
         ]);
     }
 }

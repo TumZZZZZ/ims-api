@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use MongoDB\Laravel\Eloquent\Casts\ObjectId;
 use MongoDB\Laravel\Eloquent\Model;
 
 class Image extends Model
@@ -14,4 +15,8 @@ class Image extends Model
         'collection',
         'url',
     ];
+
+    // protected $casts = [
+    //     'object_id' => ObjectId::class,
+    // ];
 }

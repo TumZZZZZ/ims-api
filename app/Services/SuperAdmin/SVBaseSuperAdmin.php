@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 use function Symfony\Component\Clock\now;
 
-class SVSuperAdmin
+class SVBaseSuperAdmin
 {
     public function getDashboard()
     {
@@ -70,7 +70,7 @@ class SVSuperAdmin
 
             // create merchant admin user
             User::create([
-                'store_ids'     => [$merchant->_id],
+                'merchant_id'    => $merchant->_id,
                 'first_name'    => $params['first_name'],
                 'last_name'     => $params['last_name'],
                 'email'         => $params['email'],
@@ -81,7 +81,7 @@ class SVSuperAdmin
 
             // Create history
             unset($params['_token']);
-            createHistory(Auth::user()->id, __('created_an_object', ['object' => __('merchant')]), $merchant->_id, $params);
+            createHistory(Auth::user()->id, __('created_an_object', ['object' => __('merchant')]), $merchant->_id, null, $params);
         });
     }
 
@@ -126,7 +126,7 @@ class SVSuperAdmin
             $merchant->save();
 
             // Create history
-            createHistory(Auth::user()->id, __('updated_an_object', ['object' => __('merchant')]), $merchantId, $historyDetails);
+            createHistory(Auth::user()->id, __('updated_an_object', ['object' => __('merchant')]), $merchantId, null, $historyDetails);
         });
     }
 
@@ -143,7 +143,7 @@ class SVSuperAdmin
             $merchant->branches()->update(['deleted_at' => now()]);
 
             // Create history
-            createHistory(Auth::user()->id, __('deleted_an_object', ['object' => __('merchant')]), $merchantId);
+            createHistory(Auth::user()->id, __('deleted_an_object', ['object' => __('merchant')]), $merchantId, null);
         });
     }
 
@@ -159,7 +159,7 @@ class SVSuperAdmin
             $merchant->branches()->update(['active' => $params['active']]);
 
             // Create history
-            createHistory(Auth::user()->id, __(strtolower($params['action']).'_an_object', ['object' => __('merchant')]), $merchantId);
+            createHistory(Auth::user()->id, __(strtolower($params['action']).'_an_object', ['object' => __('merchant')]), $merchantId, null);
         });
     }
 
@@ -201,7 +201,7 @@ class SVSuperAdmin
     public function getUserActivities(array $params)
     {
         $search = $params['search'] ?? null;
-        return History::with(['user','store'])
+        return History::with(['user','merchant','branch'])
             ->when($search, function($query, $search) {
                 $query->where(function($q) use ($search) {
                     $q->where('action', 'like', '%'.$search.'%')
@@ -209,7 +209,10 @@ class SVSuperAdmin
                           $qu->where('first_name', 'like', '%'.$search.'%')
                              ->orWhere('last_name', 'like', '%'.$search.'%');
                       })
-                      ->orWhereHas('store', function($qu) use ($search) {
+                      ->orWhereHas('merchant', function($qu) use ($search) {
+                          $qu->where('name', 'like', '%'.$search.'%');
+                      })
+                      ->orWhereHas('branch', function($qu) use ($search) {
                           $qu->where('name', 'like', '%'.$search.'%');
                       });
                 });

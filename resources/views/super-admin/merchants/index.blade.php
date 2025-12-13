@@ -65,7 +65,7 @@
                                 style="background: #F44336;">{{ __('delete') }}
                             </button>
                             <button class="btn"
-                                onclick="window.location.href='/super-admin/merchants/update/{{ $merchant->id }}'"
+                                onclick="window.location.href='/super-admin/merchants/edit/{{ $merchant->id }}'"
                                 style="background: #666666;">{{ __('edit') }}
                             </button>
                         </td>

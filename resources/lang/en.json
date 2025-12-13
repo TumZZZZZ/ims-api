@@ -103,5 +103,11 @@
     "product": "Product",
     "description": "Description",
     "enter_product_details": "Enter product details",
-    "update_product": "Update Product"
+    "update_product": "Update Product",
+    "sku": "SKU",
+    "generate_sku": "Generate SKU",
+    "create_user": "Create User",
+    "select_role": "Select Role",
+    "select_branch": "Select Branch",
+    "update_user": "Update User"
 }

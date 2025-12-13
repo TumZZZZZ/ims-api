@@ -16,7 +16,6 @@ return new class extends Migration
             $collection->string('key');
             $collection->string('value');
             $collection->string('object_id');
-            $collection->string('object_type');
             $collection->timestamps();
             $collection->softDeletes();
         });
@@ -34,7 +33,6 @@ return new class extends Migration
 
         Schema::create('users', function (Blueprint $collection) {
             $collection->string('_id');
-            $collection->array('store_ids');
             $collection->string('first_name');
             $collection->string('last_name');
             $collection->string('email')->unique();
@@ -42,8 +40,10 @@ return new class extends Migration
             $collection->enum('role', ['SUPER_ADMIN','ADMIN','MANAGER','STAFF']);
             $collection->string('calling_code');
             $collection->string('phone_number');
-            $collection->string('verify_otp')->nullable();
+            $collection->string('verify_otp');
             $collection->string('active_on');
+            $collection->string('merchant_id');
+            $collection->array('branch_ids');
             $collection->timestamps();
             $collection->softDeletes();
         });
@@ -59,8 +59,8 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $collection) {
             $collection->string('_id');
             $collection->string('parent_id');
-            $collection->string('store_id');
             $collection->string('name');
+            $collection->array('branch_ids');
             $collection->array('product_ids');
             $collection->timestamps();
             $collection->softDeletes();
@@ -68,19 +68,18 @@ return new class extends Migration
 
         Schema::create('products', function (Blueprint $collection) {
             $collection->string('_id');
-            $collection->string('store_id');
             $collection->string('name');
             $collection->string('sku');
             $collection->string('barcode');
             $collection->string('description');
-            $collection->string('unit')->default('pcs');
+            $collection->array('category_ids');
             $collection->timestamps();
             $collection->softDeletes();
         });
 
         Schema::create('product_assigns', function (Blueprint $collection) {
             $collection->string('_id');
-            $collection->string('store_id');
+            $collection->string('branch_id');
             $collection->string('product_id');
             $collection->string('price')->default(0);
             $collection->string('cost')->default(0);
@@ -92,30 +91,24 @@ return new class extends Migration
 
         Schema::create('promotions', function (Blueprint $collection) {
             $collection->string('_id');
-            $collection->string('store_id');
+            $collection->string('branch_id');
             $collection->string('name');
             $collection->enum('type', ['AMOUNT','PERCENTAGE']);
             $collection->string('value')->default(0);
             $collection->datetimes('start_date');
             $collection->datetimes('end_date');
-            $collection->timestamps();
-            $collection->softDeletes();
-        });
-
-        Schema::create('promotion_assigns', function (Blueprint $collection) {
-            $collection->string('_id');
-            $collection->string('promotion_id');
-            $collection->string('category_id')->nullable();
-            $collection->string('product_id')->nullable();
+            $collection->array('category_ids');
+            $collection->array('product_ids');
             $collection->timestamps();
             $collection->softDeletes();
         });
 
         Schema::create('suppliers', function (Blueprint $collection) {
             $collection->string('_id');
-            $collection->string('store_id');
+            $collection->string('merchant_id');
             $collection->string('name');
             $collection->string('email');
+            $collection->string('calling_code');
             $collection->string('phone_number');
             $collection->string('address');
             $collection->timestamps();
@@ -124,34 +117,23 @@ return new class extends Migration
 
         Schema::create('purchase_orders', function (Blueprint $collection) {
             $collection->string('_id');
-            $collection->string('store_id');
+            $collection->string('branch_id');
             $collection->string('user_id');
+            $collection->string('supplier_id');
             $collection->string('order_number')->unique();
-            $collection->string('supplier_name');
-            $collection->string('supplier_email');
             $collection->datetimes('requested_date');
             $collection->datetimes('rejected_date');
             $collection->datetimes('recieved_date');
             $collection->enum('status', ['IN_REVIEW','REQUESTED','REJECTED','RECIEVED'])->default('IN_REVIEW');
             $collection->string('total_cost')->default(0);
-            $collection->timestamps();
-            $collection->softDeletes();
-        });
-
-        Schema::create('purchase_order_details', function (Blueprint $collection) {
-            $collection->string('_id');
-            $collection->string('purchase_order_id');
-            $collection->string('product_id');
-            $collection->string('quantity')->default(0);
-            $collection->string('unit_cost')->default(0);
-            $collection->string('total_cost')->default(0);
+            $collection->array('purchase_order_details'); // Object{product_id,quantity,unit_cost,total_cost}
             $collection->timestamps();
             $collection->softDeletes();
         });
 
         Schema::create('ledgers', function (Blueprint $collection) {
             $collection->string('_id');
-            $collection->string('stor_id');
+            $collection->string('branch_id');
             $collection->string('product_id');
             $collection->string('starting_quantity')->default(0);
             $collection->string('quantity')->default(0);
@@ -164,7 +146,7 @@ return new class extends Migration
 
         Schema::create('printers', function (Blueprint $collection) {
             $collection->string('_id');
-            $collection->string('store_id');
+            $collection->string('branch_id');
             $collection->string('name');
             $collection->string('ip_address');
             $collection->enum('connection_type', ['LAN']);
@@ -175,7 +157,8 @@ return new class extends Migration
         Schema::create('histories', function (Blueprint $collection) {
             $collection->string('_id');
             $collection->string('user_id');
-            $collection->string('store_id');
+            $collection->string('merchant_id');
+            $collection->string('branch_id');
             $collection->string('action');
             $collection->string('details');
             $collection->timestamps();
@@ -217,10 +200,8 @@ return new class extends Migration
         Schema::dropIfExists('products');
         Schema::dropIfExists('product_assigns');
         Schema::dropIfExists('promotions');
-        Schema::dropIfExists('promotion_assigns');
         Schema::dropIfExists('suppliers');
         Schema::dropIfExists('purchase_orders');
-        Schema::dropIfExists('purchase_order_details');
         Schema::dropIfExists('ledgers');
         Schema::dropIfExists('printers');
         Schema::dropIfExists('histories');

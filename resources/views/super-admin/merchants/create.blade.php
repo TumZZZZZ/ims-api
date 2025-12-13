@@ -14,7 +14,7 @@
         </button>
     </div>
 
-    <form action="{{ route('super-admin.merchants.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('super-admin.merchant.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <div class="row">

@@ -7,13 +7,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 if (! function_exists('createHistory')) {
-    function createHistory($userId, $value, $storeId = null, array $details = [])
+    function createHistory($userId, $value, $merchantId = null, $branchId = null, array $details = [])
     {
         History::create([
-            'user_id'  => $userId,
-            'store_id' => $storeId,
-            'action'   => $value,
-            'details'  => !empty($details) ? json_encode($details) : null,
+            'user_id' => $userId,
+            'merchant_id' => $merchantId,
+            'branch_id' => $branchId,
+            'action' => $value,
+            'details' => !empty($details) ? json_encode($details) : null,
         ]);
     }
 }
@@ -210,5 +211,25 @@ if (!function_exists('getCurrencyCode')) {
     function getCurrencyCode()
     {
         return session('currency_code') ?? Auth::user()->getActiveBranch()->currency_code;
+    }
+}
+
+if (!function_exists('getRoles')) {
+    function getRoles()
+    {
+        return [
+            (object)[
+                'key' => 'ADMIN',
+                'value' => 'Admin',
+            ],
+            (object)[
+                'key' => 'MANAGER',
+                'value' => 'Manager',
+            ],
+            (object)[
+                'key' => 'STAFF',
+                'value' => 'Staff',
+            ]
+        ];
     }
 }

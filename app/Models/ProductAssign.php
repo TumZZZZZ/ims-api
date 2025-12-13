@@ -13,7 +13,7 @@ class ProductAssign extends Model
     protected $collection = 'product_assigns';
 
     protected $fillable = [
-        'store_id',
+        'branch_id',
         'product_id',
         'quantity',
         'threshold',
@@ -23,6 +23,6 @@ class ProductAssign extends Model
 
     public function branch()
     {
-        return $this->belongsTo(Store::class, 'store_id', 'id');
+        return $this->belongsTo(Store::class, 'branch_id', 'id');
     }
 }

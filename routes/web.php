@@ -6,7 +6,13 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ErrorsController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\ManagerController;
-use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\SuperAdmin\{
+    ActivityLogController,
+    BranchController,
+    MerchantController,
+    SuperAdminBaseController,
+    UserController
+};
 
 Route::middleware('web')->group(function () {
 
@@ -31,22 +37,33 @@ Route::middleware('web')->group(function () {
      */
     Route::prefix('super-admin')->middleware('role:SUPER_ADMIN')->group(function () {
         // Dashboard
-        Route::get('dashboard', [SuperAdminController::class, 'dashboard'])->name('super-admin.dashboard');
+        Route::get('dashboard', [SuperAdminBaseController::class, 'dashboard'])->name('super-admin.dashboard');
 
         // Merchants
         Route::group(['prefix' => 'merchants'], function () {
-            Route::get('/', [SuperAdminController::class, 'getMerchants'])->name('super-admin.merchants');
-            Route::post('/{merchant_id}/suspend-or-activate', [SuperAdminController::class, 'suspendOrActivate']);
-            Route::get('create', [SuperAdminController::class, 'createMerchantForm'])->name('super-admin.merchants.create.form');
-            Route::post('store', [SuperAdminController::class, 'storeMerchant'])->name('super-admin.merchants.store');
-            Route::get('update/{merchant_id}', [SuperAdminController::class, 'updateMerchantForm'])->name('super-admin.merchants.update.form');
-            Route::put('update/{merchant_id}', [SuperAdminController::class, 'updateMerchant'])->name('super-admin.merchants.update');
-            Route::delete('delete/{merchant_id}', [SuperAdminController::class, 'deleteMerchant'])->name('super-admin.merchants.delete');
+            Route::get('/', [MerchantController::class, 'index'])->name('super-admin.merchants.index');
+            Route::post('/{merchant_id}/suspend-or-activate', [MerchantController::class, 'suspendOrActivate']);
+            Route::get('create', [MerchantController::class, 'create'])->name('super-admin.merchant.create');
+            Route::post('store', [MerchantController::class, 'store'])->name('super-admin.merchant.store');
+            Route::get('edit/{merchant_id}', [MerchantController::class, 'edit'])->name('super-admin.merchant.edit');
+            Route::put('update/{merchant_id}', [MerchantController::class, 'update'])->name('super-admin.merchant.update');
+            Route::delete('delete/{merchant_id}', [MerchantController::class, 'delete'])->name('super-admin.merchant.delete');
         });
 
-        Route::get('branches', [SuperAdminController::class, 'getBranches'])->name('super-admin.branches');
-        Route::get('users', [SuperAdminController::class, 'getUsers'])->name('super-admin.users');
-        Route::get('activity-logs', [SuperAdminController::class, 'getActivityLogs'])->name('super-admin.activity-logs');
+        // Branches
+        Route::group(['prefix' => 'branches'], function() {
+            Route::get('/', [BranchController::class, 'index'])->name('super-admin.branches.index');
+        });
+
+        // Users
+        Route::group(['prefix' => 'users'], function() {
+            Route::get('/', [UserController::class, 'index'])->name('super-admin.users.index');
+        });
+
+        // Activities
+        Route::group(['prefix' => 'activity-logs'], function() {
+            Route::get('/', [ActivityLogController::class, 'index'])->name('super-admin.activity-logs.index');
+        });
     });
 
     /**
@@ -71,6 +88,12 @@ Route::middleware('web')->group(function () {
             Route::get('edit/{product_id}', [AdminController::class, 'editProductForm'])->name('admin.product.edit');
             Route::put('update/{product_id}', [AdminController::class, 'updateProduct'])->name('admin.product.update');
             Route::delete('delete/{product_id}', [AdminController::class, 'deleteProduct'])->name('admin.product.delete');
+        });
+        Route::group(['prefix' => 'users'], function () {
+            Route::get('/', [AdminController::class, 'getUsers'])->name('admin.users');
+            Route::get('create', [AdminController::class, 'createUserForm'])->name('admin.user.create');
+            Route::post('store', [AdminController::class, 'storeUser'])->name('admin.user.store');
+            Route::get('edit/{product_id}', [AdminController::class, 'editUserForm'])->name('admin.user.edit');
         });
     });
 

@@ -53,9 +53,9 @@
                             required>
                     </div>
                     <div style="position: relative; width: 50%;">
-                        <label>@lang('barcode')<span>*</span></label>
-                        <input type="text" id="barcodeInput" name="barcode" value="{{ $data->barcode }}"
-                            placeholder="@lang('enter_barcode')" required style="padding-right: 40px;">
+                        <label>@lang('sku')<span>*</span></label>
+                        <input type="text" id="generateSKU" name="sku" value="{{ $data->sku }}"
+                            placeholder="@lang('generate_sku')" required style="padding-right: 40px;">
                         <!-- Black clean refresh icon -->
                         <span id="barcodeIcon" onclick="generateBarcode()"
                             style="position:absolute; right:15px; bottom:11px; cursor:pointer; width:18px; height:18px; display:flex; align-items:center; justify-content:center;"
@@ -72,28 +72,35 @@
                     </div>
                 </div>
 
-                <div>
-                    <label>@lang('category')<span>*</span></label>
-                    <select name="category_id" required>
-                        <button>
-                            <selectedcontent></selectedcontent>
-                        </button>
+                <div style="display: flex;">
+                    <div style="width: 50%; padding-right: 20px;">
+                        <label>@lang('category')<span>*</span></label>
+                        <select name="category_id" required>
+                            <button>
+                                <selectedcontent></selectedcontent>
+                            </button>
 
-                        <option value="">
-                            <div class="custom-option">
-                                <span class="option-text">{{ __('select_category') }}</span>
-                            </div>
-                        </option>
-
-                        @foreach ($categories as $category)
-                            <option value="{{ $category->id }}" {{ $category->id == $data->category_id ? 'selected' : '' }}>
+                            <option value="">
                                 <div class="custom-option">
-                                    <span class="option-text">{{ $category->name }}</span>
+                                    <span class="option-text">{{ __('select_category') }}</span>
                                 </div>
                             </option>
-                        @endforeach
 
-                    </select>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}" {{ $category->id == $data->category_id ? 'selected' : '' }}>
+                                    <div class="custom-option">
+                                        <span class="option-text">{{ $category->name }}</span>
+                                    </div>
+                                </option>
+                            @endforeach
+
+                        </select>
+                    </div>
+                    <div style="width: 50%;">
+                        <label>@lang('barcode')(@lang('optional'))</label>
+                        <input type="text" name="barcode" value="{{ $data->barcode }}"
+                            placeholder="@lang('enter_barcode')" required style="padding-right: 40px;">
+                    </div>
                 </div>
 
                 <label for="description">@lang('description')(@lang('optional'))</label>
@@ -157,7 +164,7 @@
                 // Generate 13-digit barcode
                 let barcode = Math.floor(1000000000000 + Math.random() * 9000000000000);
 
-                document.getElementById('barcodeInput').value = barcode;
+                document.getElementById('generateSKU').value = barcode;
             }
         </script>
     @endpush

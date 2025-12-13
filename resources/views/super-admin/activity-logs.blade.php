@@ -31,8 +31,8 @@
                 @forelse ($data as $activity)
                     <tr>
                         <td>{{ $activity->user->getFullName() }}</td>
-                        <td>{{ !$activity->store->parent_id ? $activity->store->name : (@$activity->store->merchant->name ?? "-") }}</td>
-                        <td>{{ $activity->store->parent_id ? $activity->store->name : "-" }}</td>
+                        <td>{{ $activity->merchant->name ?? "-" }}</td>
+                        <td>{{ $activity->branch->name ?? "-" }}</td>
                         <td>{{ App\Enum\Constants::ROLES[$activity->user->role] }}</td>
                         <td>{{ $activity->action }}</td>
                         <td>{{ Carbon\Carbon::parse($activity->created_at)->setTimezone(getTimezone())->format('m/d/Y h:i A') }}</td>
