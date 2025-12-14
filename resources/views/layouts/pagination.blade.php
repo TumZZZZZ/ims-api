@@ -10,7 +10,11 @@
 
     @if ($data->isNotEmpty())
         <div style="margin-bottom: 10px; padding-top: 5px;">
-            Showing {{ $data->firstItem() }}–{{ $data->lastItem() }} of {{ $data->total() }}
+            {{ __('showing_of', [
+                'start_from' => $data->firstItem(),
+                'per_page' => $data->lastItem(),
+                'total' => $data->total()
+            ]) }}
         </div>
 
         <div style="display:flex; justify-content:flex-end; gap:10px;">

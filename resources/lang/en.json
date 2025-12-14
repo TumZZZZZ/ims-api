@@ -149,5 +149,6 @@
     "received_date": "Received Date",
     "rejected_date": "Rejected Date",
     "total_cost": "Total Cost",
-    "rejected": "Rejected"
+    "rejected": "Rejected",
+    "showing_of": "showing :start_from-:per_page of :total"
 }

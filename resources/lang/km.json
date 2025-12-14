@@ -149,5 +149,6 @@
     "received_date": "កាលបរិច្ឆេទទទួល",
     "rejected_date": "កាលបរិច្ឆេទបដិសេធ",
     "total_cost": "ថ្លៃសរុប",
-    "rejected": "បានបដិសេធ"
+    "rejected": "បានបដិសេធ",
+    "showing_of": "កំពុងបង្ហាញ :start_from-:per_page នៃ :total"
 }
