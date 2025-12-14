@@ -222,12 +222,12 @@
             <div class="dropdown-wrapper">
                 @if (!$superAdmin)
                     <button class="dropdown-toggle" id="dropdownBranchToggle">
-                        {{ $user->getActiveBranch()->name }}
+                        {{ @$user->getActiveBranch()->name }}
                     </button>
-                    @if ($user->getBranches()->count() >= 2)
+                    @if (@$user->getBranches()->count() >= 2)
                         @php
-                            $branches = auth()->user()->getBranches();
-                            $activeBranch = auth()->user()->getActiveBranch();
+                            $branches = @$user->getBranches();
+                            $activeBranch = @$user->getActiveBranch();
 
                             // Move active branch to top
                             if ($activeBranch) {
