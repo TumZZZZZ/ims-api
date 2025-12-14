@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enum\Constants;
 use App\Http\Controllers\Controller;
 use App\Mail\SendOTPMail;
 use App\Models\User;
@@ -40,11 +41,47 @@ class LoginController extends Controller
             return back()->withErrors(['email' => 'Invalid credentials'])->withInput();
         }
 
+        if ($user->getBranches()->count() >= 2) {
+            return redirect()->route('select.branch')->with('user', $user);
+        }
+
         Auth::login($user);
+
+        if (in_array($user->role, [Constants::ROLE_ADMIN, Constants::ROLE_MANAGER])) {
+            $user->active_on = $user->getBranches()->first()->_id;
+            $user->save();
+        }
 
         if ($user->role === 'SUPER_ADMIN') {
             return redirect()->route('super-admin.dashboard');
         } elseif ($user->role === 'ADMIN') {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->role === 'MANAGER') {
+            return redirect()->route('manager.dashboard');
+        }
+    }
+
+    public function showSelectBranch()
+    {
+        return view('auth.select-branch');
+    }
+
+    public function selectBranch(Request $request)
+    {
+        $user = User::find($request->user_id);
+
+        if (Auth::user()) {
+            $user->active_on = $request->branch_id;
+            $user->save();
+            return redirect()->back();
+        }
+
+        Auth::login($user);
+
+        $user->active_on = $request->branch_id;
+        $user->save();
+
+        if ($user->role === 'ADMIN') {
             return redirect()->route('admin.dashboard');
         } elseif ($user->role === 'MANAGER') {
             return redirect()->route('manager.dashboard');

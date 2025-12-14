@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/png" href="{{ asset('storage/default-images/favicon.png') }}">
     <title>Khmer Angkor | Sign In</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 </head>
 
@@ -22,7 +21,7 @@
                 <div class="logo" aria-hidden="true">KA</div>
                 <div>
                     <h1 id="signinTitle">Khmer Angkor — Sign In</h1>
-                    <p>Welcome back — sign in to continue to your dashboard</p>
+                    <p style="font-size: 14px;">Welcome back — sign in to continue to your dashboard</p>
                 </div>
             </header>
 

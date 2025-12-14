@@ -5,8 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/png" href="{{ asset('storage/default-images/favicon.png') }}">
-    <title>Khmer Angkor | Sign In</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Khmer Angkor | Reset Password</title>
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 </head>
 
@@ -22,7 +21,7 @@
                 <div class="logo" aria-hidden="true">KA</div>
                 <div>
                     <h1>Reset Password</h1>
-                    <p>Enter your new password to complete the process</p>
+                    <p style="font-size: 14px;">Enter your new password to complete the process</p>
                 </div>
             </header>
 

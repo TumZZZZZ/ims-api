@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Auth;
 use MongoDB\Laravel\Eloquent\Model;
 
 class Product extends Model
@@ -11,9 +12,10 @@ class Product extends Model
 
     protected $fillable = [
         'name',
+        'sku',
         'barcode',
         'description',
-        'unit',
+        'category_ids',
     ];
 
     public function image()
@@ -21,7 +23,14 @@ class Product extends Model
         return $this->hasOne(Image::class, 'object_id', '_id')->whereNull('deleted_at');
     }
 
-    public function assigns()
+    public function assign()
+    {
+        return $this->hasOne(ProductAssign::class, 'product_id', '_id')
+            ->where('branch_id', Auth::user()->active_on)
+            ->whereNull('deleted_at');
+    }
+
+    public function assignAll()
     {
         return $this->hasMany(ProductAssign::class, 'product_id', '_id')
             ->whereNull('deleted_at');

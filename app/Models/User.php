@@ -15,7 +15,6 @@ class User extends Authenticatable
     protected $collection = 'users';
 
     protected $fillable = [
-        'store_id',
         'first_name',
         'last_name',
         'email',
@@ -24,6 +23,9 @@ class User extends Authenticatable
         'calling_code',
         'phone_number',
         'verify_otp',
+        'active_on',
+        'merchant_id',
+        'branch_ids',
     ];
 
     protected $hidden = [
@@ -35,8 +37,26 @@ class User extends Authenticatable
         return $this->hasOne(Image::class, 'object_id', '_id')->whereNull('deleted_at');
     }
 
-    public function store()
+    public function merchant()
     {
-        return $this->belongsTo(Store::class, 'store_id', '_id')->whereNull('deleted_at');
+        return $this->hasOne(Store::class, '_id', 'merchant_id')->whereNull('deleted_at');
+    }
+
+    public function getBranches()
+    {
+        return $this->branch_ids ? Store::whereIn('_id', $this->branch_ids)
+            ->whereNotNull('parent_id')
+            ->whereNull('deleted_at')
+            ->get() : collect([]);
+    }
+
+    public function getFullName()
+    {
+        return $this->first_name." ".$this->last_name;
+    }
+
+    public function getActiveBranch()
+    {
+        return Store::find($this->active_on);
     }
 }
