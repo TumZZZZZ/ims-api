@@ -193,6 +193,7 @@ input:focus {
     cursor: pointer;
     font-size: 15px;
     box-shadow: 0 8px 20px rgba(255, 169, 52, 0.12);
+    font-family: "Khmer OS Siemreap Regular", Arial, sans-serif;
 }
 
 .btn:active {
