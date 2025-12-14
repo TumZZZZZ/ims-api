@@ -34,13 +34,18 @@ class DefaultDataSeeder extends Seeder
                 'location' => 'Near IU, Sen Sok, Phnom Penh, Cambodia',
                 'branches' => [
                     [
-                        'name'          => 'KFC Riverside',
-                        'location'      => 'Riverside, Phnom Penh, Cambodia',
+                        'name'          => 'PK KFC',
+                        'location'      => 'Toul Kork, Phnom Penh, Cambodia',
                         'currency_code' => 'KHR',
                     ],
                     [
-                        'name'          => 'KFC Toul Kork',
-                        'location'      => 'Toul Kork, Phnom Penh, Cambodia',
+                        'name'          => 'Chenny KFC',
+                        'location'      => 'Phnom Penh, Cambodia',
+                        'currency_code' => 'USD',
+                    ],
+                    [
+                        'name'          => 'Justin KFC',
+                        'location'      => 'Kompong Cham, Cambodia',
                         'currency_code' => 'USD',
                     ],
                 ],
@@ -87,13 +92,13 @@ class DefaultDataSeeder extends Seeder
             $admin = User::updateOrCreate(
                 [
                     'merchant_id'  => $newMerchant->_id,
-                    'email'        => 'jeffjustin178@gmail.com',
+                    'email'        => 'admin@gmail.com',
                     'phone_number' => '0876555653',
                 ],
                 [
                     'branch_ids' => $branchIds,
                     'first_name' => "I'm",
-                    'last_name'  => 'Justin',
+                    'last_name'  => 'Admin',
                     'password'   => Hash::make('Admin1234!'),
                     'role'       => 'ADMIN',
                 ]
