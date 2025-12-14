@@ -126,6 +126,7 @@ return new class extends Migration
             $collection->datetimes('recieved_date');
             $collection->enum('status', ['IN_REVIEW','REQUESTED','REJECTED','RECIEVED'])->default('IN_REVIEW');
             $collection->integer('total_cost')->default(0);
+            $collection->string('reason');
             $collection->array('purchase_order_details'); // Object{product_id,quantity,unit_cost,total_cost}
             $collection->timestamps();
             $collection->softDeletes();

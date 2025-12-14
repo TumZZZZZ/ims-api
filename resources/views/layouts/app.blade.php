@@ -126,7 +126,13 @@
                         ],
                         [
                             'label' => __('purchase_orders'),
-                            'route' => 'inventory.purchase-orders.index',
+                            'route' => 'inventory.purchase-orders.closed',
+                            'active' => [
+                                'inventory.purchase-orders.closed',
+                                'inventory.purchase-orders.draft',
+                                'inventory.purchase-orders.sent',
+                                'inventory.purchase-orders.rejected',
+                            ],
                         ],
                         [
                             'label' => __('ledgers'),
@@ -152,7 +158,12 @@
                 ],
                 [
                     'label' => __('purchase_orders'),
-                    'route' => 'inventory.purchase-orders.index',
+                    'route' => 'inventory.purchase-orders.closed',
+                    'active' => [
+                        'inventory.purchase-orders.closed',
+                        'inventory.purchase-orders.draft',
+                        'inventory.purchase-orders.sent',
+                    ],
                 ],
                 [
                     'label' => __('ledgers'),
@@ -220,7 +231,7 @@
         <div class="main-header">
             <h1>@yield('header-title')</h1>
             <div class="dropdown-wrapper">
-                @if (!$superAdmin)
+                @if (!$superAdmin && @$user->getActiveBranch())
                     <button class="dropdown-toggle" id="dropdownBranchToggle">
                         {{ @$user->getActiveBranch()->name }}
                     </button>

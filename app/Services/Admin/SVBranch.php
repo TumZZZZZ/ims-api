@@ -38,6 +38,10 @@ class SVBranch
 
             // Assign user
             $user->push('branch_ids', $branch->id);
+            if (!@$user->getActiveBranch()) {
+                $user->active_on = $branch->id;
+                $user->save();
+            }
 
             // Save image if exists
             if (request()->hasFile('image')) {

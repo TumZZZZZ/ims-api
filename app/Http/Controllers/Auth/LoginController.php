@@ -48,8 +48,11 @@ class LoginController extends Controller
         Auth::login($user);
 
         if (in_array($user->role, [Constants::ROLE_ADMIN, Constants::ROLE_MANAGER])) {
-            $user->active_on = $user->getBranches()->first()->_id;
-            $user->save();
+            $branch = @$user->getBranches()->first();
+            if ($branch) {
+                $user->active_on = $branch->_id;
+                $user->save();
+            }
         }
 
         if ($user->role === 'SUPER_ADMIN') {

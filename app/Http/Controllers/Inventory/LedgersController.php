@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Inventory;
 
 use App\Http\Controllers\BaseApi;
-use App\Services\Admin\SVLedgers;
+use App\Services\Inventory\SVLedgers;
 use Illuminate\Http\Request;
 
 class LedgersController extends BaseApi

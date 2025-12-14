@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Admin;
+namespace App\Services\Inventory;
 
 use App\Models\Supplier;
 use Illuminate\Support\Facades\Auth;

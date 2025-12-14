@@ -3,7 +3,107 @@
 @section('title', __('purchase_orders'))
 @section('header-title', __('purchase_orders'))
 
+@push('styles')
+    <style>
+        /* Container */
+        .cycle-tab-container {
+            margin: 0 auto;
+            font-size: 16px;
+        }
+
+        /* Tabs wrapper */
+        .cycle-tabs {
+            display: flex;
+            gap: 20px;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Tab item */
+        .cycle-tab-item {
+            width: 180px;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Tab link */
+        .cycle-tab-item a {
+            display: block;
+            padding: 12px 0;
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            text-align: center;
+        }
+
+        /* Hover / focus */
+        .cycle-tab-item a:hover {
+            color: var(--gold);
+        }
+
+        /* Active underline animation */
+        .cycle-tab-item::after {
+            content: "";
+            display: block;
+            height: 3px;
+            background-color: var(--gold);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.25s ease;
+        }
+
+        /* Active tab */
+        .cycle-tab-item.active a {
+            color: var(--gold);
+        }
+
+        .cycle-tab-item.active::after {
+            transform: scaleX(1);
+        }
+
+        /* Fade animation (if needed for content) */
+        .fade {
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        .fade.active {
+            opacity: 1;
+        }
+
+    </style>
+@endpush
+
+@php
+    $closedTab      = 'closed';
+    $draftTab       = 'draft';
+    $sentTab        = 'sent';
+    $rejectedTab    = 'rejected';
+@endphp
+
 @section('content')
+
+    <div class="cycle-tab-container">
+        <ul class="cycle-tabs">
+            <li class="cycle-tab-item {{ $activeTab == $closedTab ? 'active' : '' }}">
+                <a href="{{ route('inventory.purchase-orders.closed') }}">@lang('closed')</a>
+            </li>
+            <li class="cycle-tab-item {{ $activeTab == $draftTab ? 'active' : '' }}">
+                <a href="{{ route('inventory.purchase-orders.draft') }}">@lang('draft')</a>
+            </li>
+            <li class="cycle-tab-item {{ $activeTab == $sentTab ? 'active' : '' }}">
+                <a href="{{ route('inventory.purchase-orders.sent') }}">@lang('sent')</a>
+            </li>
+            <li class="cycle-tab-item {{ $activeTab == $rejectedTab ? 'active' : '' }}">
+                <a href="{{ route('inventory.purchase-orders.rejected') }}">@lang('rejected')</a>
+            </li>
+        </ul>
+    </div>
+
+    <div style="padding-top: 35px;"></div>
 
     <div class="action-bar">
         {{-- Keep search during pagination --}}
@@ -13,73 +113,101 @@
                value="{{ request('search') }}">
         {{-- Buttons --}}
         <div>
-            <button class="btn" style="background: #4CAF50;"
-            onclick="window.location.href='/inventory/purchase-orders/create'">
-                + @lang('create')
-            </button>
+            @if ($activeTab == 'closed')
+                <button class="btn" style="background: #4CAF50;"
+                    {{-- onclick="window.location.href='/inventory/purchase-orders/create'" --}}
+                >
+                    + @lang('create')
+                </button>
+            @endif
         </div>
     </div>
 
-    {{-- Categories Table --}}
     <div class="table-wrapper">
         <table class="activity-table">
             <thead class="table-header">
                 <tr>
-                    <th></th>
-                    <th>@lang('first_name')</th>
-                    <th>@lang('last_name')</th>
-                    <th>@lang('email')</th>
-                    <th>@lang('phone_number')</th>
-                    <th>@lang('role')</th>
-                    <th>@lang('actions')</th>
+                    @if ($activeTab == $closedTab)
+                        <th>@lang('order_no')</th>
+                        <th>@lang('branch')</th>
+                        <th>@lang('supplier')</th>
+                        <th>@lang('requested_date')</th>
+                        <th>@lang('received_date')</th>
+                        <th>@lang('status')</th>
+                        <th>@lang('total_cost')</th>
+                    @elseif ($activeTab == $draftTab)
+                        <th>@lang('order_no')</th>
+                        <th>@lang('branch')</th>
+                        <th>@lang('supplier')</th>
+                        <th>@lang('status')</th>
+                        <th>@lang('total_cost')</th>
+                        <th>@lang('actions')</th>
+                    @elseif ($activeTab == $sentTab)
+                        <th>@lang('order_no')</th>
+                        <th>@lang('branch')</th>
+                        <th>@lang('supplier')</th>
+                        <th>@lang('requested_date')</th>
+                        <th>@lang('status')</th>
+                        <th>@lang('total_cost')</th>
+                    @elseif ($activeTab == $rejectedTab)
+                        <th>@lang('order_no')</th>
+                        <th>@lang('branch')</th>
+                        <th>@lang('supplier')</th>
+                        <th>@lang('rejected_date')</th>
+                        <th>@lang('status')</th>
+                        <th>@lang('total_cost')</th>
+                        <th>@lang('reason')</th>
+                    @endif
                 </tr>
             </thead>
 
             <tbody id="table-body">
-                {{-- @forelse ($data as $user)
+                @forelse($data as $po)
                     <tr>
-                        <td class="avatar-cell">
-                            <div class="avatar-wrapper">
-                                @if (@$user->image->url)
-                                    <div class="avatar-image-wrapper">
-                                        <img src="{{ $user->image->url }}" class="avatar-image">
-                                    </div>
-                                @else
-                                    <div class="avatar-initials">
-                                        {{ initials($user->getFullName()) }}
-                                    </div>
-                                @endif
-                            </div>
-                        </td>
-                        <td>{{ $user->first_name }}</td>
-                        <td>{{ $user->last_name }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>{{ $user->phone_number }}</td>
-                        <td>{{ App\Enum\Constants::ROLES[$user->role] }}</td>
-                        <td class="text-center">
-                            @if ($user->id != auth()->user()->id)
-                                <button class="btn"
-                                    onclick="openDialog('admin/categories/delete', '{{ $user->id }}', '{{ $user->name }}', '{{ __('delete') }}')"
-                                    style="background: #F44336;">{{ __('delete') }}
-                                </button>
-                            @endif
-                            <button class="btn"
-                                onclick="window.location.href='/admin/users/edit/{{ $user->id }}'"
-                                style="background: #666666;">{{ __('edit') }}
-                            </button>
-                        </td>
+                        @if ($activeTab == $closedTab)
+                            <td>{{ $po->order_number }}</td>
+                            <td>{{ $po->branch->name }}</td>
+                            <td>{{ $po->supplier->name }}</td>
+                            <td>{{ $po->requested_date }}</td>
+                            <td>{{ $po->received_date }}</td>
+                            <td>{{ $po->status }}</td>
+                            <td>{{ $po->total_cost }}</td>
+                        @elseif ($activeTab == $draftTab)
+                            <td>{{ $po->order_number }}</td>
+                            <td>{{ $po->branch->name }}</td>
+                            <td>{{ $po->supplier->name }}</td>
+                            <td>{{ $po->status }}</td>
+                            <td>{{ $po->total_cost }}</td>
+                            <td></td>
+                        @elseif ($activeTab == $sentTab)
+                            <td>{{ $po->order_number }}</td>
+                            <td>{{ $po->branch->name }}</td>
+                            <td>{{ $po->supplier->name }}</td>
+                            <td>{{ $po->requested_date }}</td>
+                            <td>{{ $po->status }}</td>
+                            <td>{{ $po->total_cost }}</td>
+                        @elseif ($activeTab == $rejectedTab)
+                            <td>{{ $po->order_number }}</td>
+                            <td>{{ $po->branch->name }}</td>
+                            <td>{{ $po->supplier->name }}</td>
+                            <td>{{ $po->rejected_date }}</td>
+                            <td>{{ $po->status }}</td>
+                            <td>{{ $po->total_cost }}</td>
+                            <td>{{ $po->reason }}</td>
+                        @endif
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="text-center">{{ __('record_not_found') }}</td>
+                        <td colspan="7" class="text-center">{{ __('record_not_found') }}</td>
                     </tr>
-                @endforelse --}}
+                @endforelse
             </tbody>
         </table>
     </div>
 
+
     {{-- Pagination --}}
-    {{-- @include('layouts.pagination') --}}
+    @include('layouts.pagination')
 
     <!-- ===== Modal ===== -->
     @include('modal')
@@ -105,6 +233,16 @@
                     toast.style.display = "none";
                 }, 5000);
             @endif
+
+            // Tab-Pane change function
+            const tabs = document.querySelectorAll('.cycle-tab-item');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                });
+            });
         </script>
     @endpush
 

@@ -185,6 +185,7 @@ body {
     cursor: pointer;
     transition: background 0.3s ease;
     box-shadow: 0 2px 4px var(--shadow);
+    font-family: "Khmer OS Siemreap Regular", Arial, sans-serif;
 }
 
 .main-header button:hover {
@@ -504,6 +505,7 @@ input[type="text"], select {
     color: #fffaf3;
     font-size: 18px;
     height: 55px;
+    font-family: "Khmer OS Siemreap Regular", Arial, sans-serif;
 }
 
 .menu-parent:hover {

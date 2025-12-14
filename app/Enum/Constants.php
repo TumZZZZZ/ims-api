@@ -24,4 +24,9 @@ class Constants
         'INCREASEMENT' => 'Adjustment Increase',
         'DECREASEMENT' => 'Adjustment Decrease'
     ];
+
+    const  PURCHASE_ORDER_STATUS_CLOSED = "CLOSED";
+    const  PURCHASE_ORDER_STATUS_DRAFT = "DRAFT";
+    const  PURCHASE_ORDER_STATUS_SENT = "SENT";
+    const  PURCHASE_ORDER_STATUS_REJECTED = "REJECTED";
 }

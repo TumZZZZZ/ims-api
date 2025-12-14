@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Inventory;
 
 use App\Http\Controllers\BaseApi;
-use App\Services\Admin\SVSupplier;
+use App\Services\Inventory\SVSupplier;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class SupplierController extends BaseApi
 {

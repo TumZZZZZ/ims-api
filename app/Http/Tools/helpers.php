@@ -267,3 +267,12 @@ if (!function_exists('getCurrencyNameByCode')) {
         return $currency->name ?? "Unkown Currency";
     }
 }
+
+if (!function_exists('getValidateRequiredBranch')) {
+    function getValidateRequiredBranch()
+    {
+        return back()->with([
+            'error_message' => __('required_create_branch_first')
+        ])->withInput();
+    }
+}

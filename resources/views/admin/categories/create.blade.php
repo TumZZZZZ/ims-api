@@ -64,8 +64,26 @@
 
     </form>
 
+    <!-- ===== Modal ===== -->
+    @include('modal')
+
     @push('scripts')
         <script src="{{ asset('js/image.js') }}"></script>
+        {{-- Check if Laravel has a error message --}}
+        @if(session('error_message'))
+            <script>
+                const toast = document.getElementById("toast");
+                toast.innerHTML = @json(session('error_message'));
+                toast.style.display = "block";
+                toast.style.color = "#FF0000";
+                toast.style.border = "1px solid #FF0000";
+
+                setTimeout(() => {
+                    toast.style.display = "none";
+                }, 5000);
+            </script>
+        @endif
+
     @endpush
 
 @endsection

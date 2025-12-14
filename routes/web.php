@@ -16,12 +16,14 @@ use App\Http\Controllers\Admin\{
     BaseAdminController,
     BranchController as AdminBranchController,
     CategoryController,
-    LedgersController,
     ProductController,
     PromotionController,
-    PurchaseOrderController,
-    SupplierController,
     UserController as AdminUserController
+};
+use App\Http\Controllers\Inventory\{
+    SupplierController,
+    PurchaseOrderController,
+    LedgersController
 };
 
 Route::middleware('web')->group(function () {
@@ -154,7 +156,10 @@ Route::middleware('web')->group(function () {
 
         // Purchase Orders routes
         Route::prefix('purchase-orders')->group(function () {
-            Route::get('/', [PurchaseOrderController::class, 'index'])->name('inventory.purchase-orders.index');
+            Route::get('/closed', [PurchaseOrderController::class, 'closed'])->name('inventory.purchase-orders.closed');
+            Route::get('/draft', [PurchaseOrderController::class, 'draft'])->name('inventory.purchase-orders.draft');
+            Route::get('/sent', [PurchaseOrderController::class, 'sent'])->name('inventory.purchase-orders.sent');
+            Route::get('/rejected', [PurchaseOrderController::class, 'rejected'])->name('inventory.purchase-orders.rejected');
         });
 
         // Ledgers routes

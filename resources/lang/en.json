@@ -140,5 +140,14 @@
     "create_supplier": "Create Supplier",
     "update_supplier":"Update Supplier",
     "supplier": "Supplier",
-    "reason": "Reason"
+    "reason": "Reason",
+    "required_create_branch_first": "You don't have branch yet, Pls create branch before do any operations.",
+    "draft": "Draft",
+    "sent": "Sent",
+    "order_no": "Order No",
+    "requested_date": "Requested Date",
+    "received_date": "Received Date",
+    "rejected_date": "Rejected Date",
+    "total_cost": "Total Cost",
+    "rejected": "Rejected"
 }

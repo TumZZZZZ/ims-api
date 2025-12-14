@@ -6,6 +6,7 @@ use App\Http\Controllers\BaseApi;
 use App\Services\Admin\SVCategory;
 use App\Services\Admin\SVProduct;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends BaseApi
 {
@@ -30,6 +31,7 @@ class ProductController extends BaseApi
 
     public function store(Request $request)
     {
+        if (!@Auth::user()->getActiveBranch()) return getValidateRequiredBranch();
         $this->getService()->store($request->all());
         return redirect()->route('admin.products.index')->with('success_message', __('object_created_successfully', ['object' => __('product'), 'object_name' => $request->name]));
     }

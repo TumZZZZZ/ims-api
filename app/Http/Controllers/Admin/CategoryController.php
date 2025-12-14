@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\BaseApi;
 use App\Services\Admin\SVCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends BaseApi
 {
@@ -29,6 +30,7 @@ class CategoryController extends BaseApi
 
     public function store(Request $request)
     {
+        if (!@Auth::user()->getActiveBranch()) return getValidateRequiredBranch();
         $this->getService()->store($request->all());
         return redirect()->route('admin.categories.index')->with('success_message', __('object_created_successfully', ['object' => __('category'), 'object_name' => $request->name]));
     }
