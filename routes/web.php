@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ErrorsController;
 use App\Http\Controllers\LanguageController;
@@ -12,6 +11,17 @@ use App\Http\Controllers\SuperAdmin\{
     MerchantController,
     SuperAdminBaseController,
     UserController
+};
+use App\Http\Controllers\Admin\{
+    BaseAdminController,
+    BranchController as AdminBranchController,
+    CategoryController,
+    LedgersController,
+    ProductController,
+    PromotionController,
+    PurchaseOrderController,
+    SupplierController,
+    UserController as AdminUserController
 };
 
 Route::middleware('web')->group(function () {
@@ -72,28 +82,47 @@ Route::middleware('web')->group(function () {
      * =================================================
      */
     Route::prefix('admin')->middleware('role:ADMIN')->group(function () {
-        Route::get('dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-        Route::group(['prefix' => 'categories'], function () {
-            Route::get('/', [AdminController::class, 'getCategories'])->name('admin.categories');
-            Route::get('create', [AdminController::class, 'createCategoryForm'])->name('admin.category.create');
-            Route::post('store', [AdminController::class, 'storeCategory'])->name('admin.category.store');
-            Route::get('edit/{category_id}', [AdminController::class, 'editCategoryForm'])->name('admin.category.edit');
-            Route::put('update/{category_id}', [AdminController::class, 'updateCategory'])->name('admin.category.update');
-            Route::delete('delete/{category_id}', [AdminController::class, 'deleteCategory'])->name('admin.category.delete');
-        });
-        Route::group(['prefix' => 'products'], function () {
-            Route::get('/', [AdminController::class, 'getProducts'])->name('admin.products');
-            Route::get('create', [AdminController::class, 'createProductForm'])->name('admin.product.create');
-            Route::post('store', [AdminController::class, 'storeProduct'])->name('admin.product.store');
-            Route::get('edit/{product_id}', [AdminController::class, 'editProductForm'])->name('admin.product.edit');
-            Route::put('update/{product_id}', [AdminController::class, 'updateProduct'])->name('admin.product.update');
-            Route::delete('delete/{product_id}', [AdminController::class, 'deleteProduct'])->name('admin.product.delete');
+        Route::get('dashboard', [BaseAdminController::class, 'dashboard'])->name('admin.dashboard');
+        Route::group(['prefix' => 'branches'], function () {
+            Route::get('/', [AdminBranchController::class, 'index'])->name('admin.branches.index');
+            Route::get('create', [AdminBranchController::class, 'create'])->name('admin.branch.create');
+            Route::post('store', [AdminBranchController::class, 'store'])->name('admin.branch.store');
+            Route::get('edit/{id}', [AdminBranchController::class, 'edit'])->name('admin.branch.edit');
+            Route::put('update/{id}', [AdminBranchController::class, 'update'])->name('admin.branch.update');
+            Route::delete('delete/{id}', [AdminBranchController::class, 'delete'])->name('admin.branch.delete');
+            Route::post('{id}/close-or-open', [AdminBranchController::class, 'closeOrOpen']);
         });
         Route::group(['prefix' => 'users'], function () {
-            Route::get('/', [AdminController::class, 'getUsers'])->name('admin.users');
-            Route::get('create', [AdminController::class, 'createUserForm'])->name('admin.user.create');
-            Route::post('store', [AdminController::class, 'storeUser'])->name('admin.user.store');
-            Route::get('edit/{product_id}', [AdminController::class, 'editUserForm'])->name('admin.user.edit');
+            Route::get('/', [AdminUserController::class, 'index'])->name('admin.users.index');
+            Route::get('create', [AdminUserController::class, 'create'])->name('admin.user.create');
+            Route::post('store', [AdminUserController::class, 'store'])->name('admin.user.store');
+            Route::get('edit/{product_id}', [AdminUserController::class, 'edit'])->name('admin.user.edit');
+            Route::put('update/{id}', [AdminUserController::class, 'update'])->name('admin.user.update');
+            Route::delete('delete/{id}', [AdminUserController::class, 'delete'])->name('admin.user.delete');
+        });
+        Route::group(['prefix' => 'categories'], function () {
+            Route::get('/', [CategoryController::class, 'index'])->name('admin.categories.index');
+            Route::get('create', [CategoryController::class, 'create'])->name('admin.category.create');
+            Route::post('store', [CategoryController::class, 'store'])->name('admin.category.store');
+            Route::get('edit/{category_id}', [CategoryController::class, 'edit'])->name('admin.category.edit');
+            Route::put('update/{category_id}', [CategoryController::class, 'update'])->name('admin.category.update');
+            Route::delete('delete/{category_id}', [CategoryController::class, 'delete'])->name('admin.category.delete');
+        });
+        Route::group(['prefix' => 'products'], function () {
+            Route::get('/', [ProductController::class, 'index'])->name('admin.products.index');
+            Route::get('create', [ProductController::class, 'create'])->name('admin.product.create');
+            Route::post('store', [ProductController::class, 'store'])->name('admin.product.store');
+            Route::get('edit/{product_id}', [ProductController::class, 'edit'])->name('admin.product.edit');
+            Route::put('update/{product_id}', [ProductController::class, 'update'])->name('admin.product.update');
+            Route::delete('delete/{product_id}', [ProductController::class, 'delete'])->name('admin.product.delete');
+        });
+        Route::group(['prefix' => 'promotions'], function () {
+            Route::get('/', [PromotionController::class, 'index'])->name('admin.promotions.index');
+            Route::get('create', [PromotionController::class, 'create'])->name('admin.promotion.create');
+            Route::post('store', [PromotionController::class, 'store'])->name('admin.promotion.store');
+            Route::get('edit/{id}', [PromotionController::class, 'edit'])->name('admin.promotion.edit');
+            Route::put('update/{id}', [PromotionController::class, 'update'])->name('admin.promotion.update');
+            Route::delete('delete/{id}', [PromotionController::class, 'delete'])->name('admin.promotion.delete');
         });
     });
 
@@ -104,6 +133,34 @@ Route::middleware('web')->group(function () {
      */
     Route::prefix('manager')->middleware('role:MANAGER')->group(function () {
         Route::get('dashboard', [ManagerController::class, 'dashboard'])->name('manager.dashboard');
+    });
+
+    /**
+     * =================================================
+     *                  INVENTORY
+     * =================================================
+     */
+    Route::prefix('inventory')->middleware('role:ADMIN|MANAGER')->group(function () {
+
+        // Suppliers routes
+        Route::prefix('suppliers')->group(function () {
+            Route::get('/', [SupplierController::class, 'index'])->name('inventory.suppliers.index');
+            Route::get('create', [SupplierController::class, 'create'])->name('inventory.supplier.create');
+            Route::post('store', [SupplierController::class, 'store'])->name('inventory.supplier.store');
+            Route::get('edit/{id}', [SupplierController::class, 'edit'])->name('inventory.supplier.edit');
+            Route::put('update/{id}', [SupplierController::class, 'update'])->name('inventory.supplier.update');
+            Route::delete('delete/{id}', [SupplierController::class, 'destroy'])->name('inventory.supplier.destroy');
+        });
+
+        // Purchase Orders routes
+        Route::prefix('purchase-orders')->group(function () {
+            Route::get('/', [PurchaseOrderController::class, 'index'])->name('inventory.purchase-orders.index');
+        });
+
+        // Ledgers routes
+        Route::prefix('ledgers')->group(function () {
+            Route::get('/', [LedgersController::class, 'index'])->name('inventory.ledgers.index');
+        });
     });
 
     /**

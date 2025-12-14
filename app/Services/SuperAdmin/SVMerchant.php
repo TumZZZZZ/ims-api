@@ -86,8 +86,6 @@ class SVMerchant
             if (request()->hasFile('image')) {
                 uploadImage($merchant->_id, 'stores', request()->file('image'));
                 unset($params['image']);
-            } else {
-                removeImage($merchant->_id, 'stores');
             }
 
             // Update merchant info

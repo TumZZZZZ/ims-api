@@ -144,4 +144,69 @@ function confirmAction() {
             console.error("Error:", error);
         });
     }
+
+    // AJAX request to suspend/activate merchant
+    if (['CLOSE','OPEN'].includes(action)) {
+        const url = `/${baseUrl}/${currentObjectId}/close-or-open`;
+
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: currentObjectName,
+                action: currentAction,
+                active: currentAction === "Close" ? 0 : 1
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                closeDialog();
+
+                // Update columns status & action
+                const statusSpan = document.getElementById(`status-${currentObjectId}`);
+                const actionBtn = document.getElementById(`action-btn-${currentObjectId}`);
+
+                if (currentAction.toLowerCase() === "close") {
+                    statusSpan.textContent = "Close";
+                    statusSpan.style.color = "#FFD700";
+
+                    actionBtn.textContent = "Open";
+                    actionBtn.style.background = "#4CAF50";
+                    actionBtn.setAttribute("onclick", `openDialog('${baseUrl}', '${currentObjectId}', '${currentObjectName}', 'open')`);
+                } else {
+                    statusSpan.textContent = "Open";
+                    statusSpan.style.color = "#4CAF50";
+
+                    actionBtn.textContent = "Close";
+                    actionBtn.style.background = "#FFD700";
+                    actionBtn.setAttribute("onclick", `openDialog('${baseUrl}', '${currentObjectId}', '${currentObjectName}', 'close')`);
+                }
+
+                // Display success message
+                const toast = document.getElementById("toast");
+
+                // Get the localized string with placeholders from Blade
+                let objectActionTemplate = window.objectActionTemplate;
+
+                // Replace placeholders with actual values in JS
+                let actionMessage = objectActionTemplate
+                    .replace(":action", currentAction.toLowerCase())
+                    .replace(":object_name", currentObjectName);
+
+                toast.innerHTML = actionMessage;
+                toast.style.display = "block";
+
+                // Disapear after 5 seconds
+                setTimeout(() => {
+                    toast.style.display = "none";
+                }, 5000);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    }
 }

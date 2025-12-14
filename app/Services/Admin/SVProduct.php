@@ -5,124 +5,11 @@ namespace App\Services\Admin;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductAssign;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
-class SVAdmin
+class SVProduct
 {
-    public function getParentCategories()
-    {
-        $user = Auth::user();
-        return Category::where('parent_id', null)
-            ->whereIn('branch_ids', [$user->active_on])
-            ->where('deleted_at', null)
-            ->orderByDesc('created_at')
-            ->get();
-    }
-
-    public function getCategories(array $params)
-    {
-        $user = Auth::user();
-        $search = $params['search'] ?? null;
-        return Category::when($search, function($query, $search) {
-                $query->where('name', 'like', '%'.$search.'%');
-            })
-            ->where('branch_ids', $user->active_on)
-            ->where('deleted_at', null)
-            ->orderByDesc('created_at')
-            ->paginate(10);
-    }
-
-    public function storeCategory(array $params)
-    {
-        $user = Auth::user();
-        mongoDBTransaction(function() use ($params, $user) {
-            // Create category
-            $category = Category::create([
-                'name'       => $params['name'],
-                'branch_ids' => [$user->active_on],
-                'parent_id'  => $params['parent_category_id'] ?? null,
-            ]);
-
-            // Save image if exists
-            if (request()->hasFile('image')) {
-                uploadImage($category->_id, 'categories', request()->file('image'));
-                unset($params['image']);
-            }
-
-            // Create history
-            unset($params['_token']);
-            createHistory($user->_id, __('created_an_object', ['object' => __('category')]), @$user->merchant->id, $user->active_on, $params);
-        });
-    }
-
-    public function getCategoryById($id)
-    {
-        $category = Category::find($id);
-        if (!$category) {
-            abort(404, 'Category not found');
-        }
-        return (object)[
-            'id'            => (string)$category->_id,
-            'image_url'     => $category->image->url ?? null,
-            'name'          => $category->name,
-            'parent_id'     => $category->parent_id,
-        ];
-    }
-
-    public function updateCategory($categoryId, array $params)
-    {
-        $user = Auth::user();
-        mongoDBTransaction(function() use ($categoryId, $params, $user) {
-            $category = Category::find($categoryId);
-
-            // Update category
-            $category->name = $params['name'];
-            $category->parent_id = $params['parent_category_id'] ?? null;
-            $category->save();
-
-            // Update image if exists
-            if (request()->hasFile('image')) {
-                uploadImage($category->_id, 'categories', request()->file('image'));
-                unset($params['image']);
-            } else {
-                removeImage($category->_id, 'categories');
-            }
-
-            // Create history
-            unset($params['_token']);
-            createHistory($user->_id, __('updated_an_object', ['object' => __('category')]), @$user->merchant->id, $user->active_on, $params);
-        });
-    }
-
-    public function deleteCategory($categoryId)
-    {
-        $user = Auth::user();
-        mongoDBTransaction(function() use ($categoryId, $user) {
-            $category = Category::find($categoryId);
-
-            // Soft delete category
-            $category->deleted_at = now();
-            $category->save();
-
-            // Create history
-            createHistory($user->_id, __('deleted_an_object', ['object' => __('category')]), @$user->merchant->id, $user->active_on, [
-                'category_id' => (string)$category->_id,
-                'name'        => $category->name,
-            ]);
-        });
-    }
-
-    public function getAllCategories()
-    {
-        $user = Auth::user();
-        return Category::whereIn('branch_ids', [$user->active_on])
-            ->where('deleted_at', null)
-            ->orderByDesc('created_at')
-            ->get();
-    }
-
-    public function getProducts(array $params)
+    public function getWithPagination(array $params)
     {
         $user = Auth::user();
         $search = $params['search'] ?? null;
@@ -139,7 +26,7 @@ class SVAdmin
             ->paginate(10);
     }
 
-    public function storeProduct(array $params)
+    public function store(array $params)
     {
         $user = Auth::user();
         mongodbTransaction(function() use ($params, $user) {
@@ -186,7 +73,7 @@ class SVAdmin
         });
     }
 
-    public function getProductById($id)
+    public function getById($id)
     {
         $product = Product::find($id);
         if (!$product) {
@@ -217,7 +104,7 @@ class SVAdmin
         ];
     }
 
-    public function updateProduct($productId, array $params)
+    public function update($productId, array $params)
     {
         $user = Auth::user();
         mongoDBTransaction(function() use ($productId, $params, $user) {
@@ -234,8 +121,6 @@ class SVAdmin
             if (request()->hasFile('image')) {
                 uploadImage($product->_id, 'products', request()->file('image'));
                 unset($params['image']);
-            } else {
-                removeImage($product->_id, 'products');
             }
 
             // Update all product assign
@@ -255,7 +140,7 @@ class SVAdmin
         });
     }
 
-    public function deleteProduct($productId)
+    public function delete($productId)
     {
         $user = Auth::user();
         mongoDBTransaction(function() use ($productId, $user) {
@@ -276,26 +161,13 @@ class SVAdmin
         });
     }
 
-    public function getUsers(array $params)
+    public function getAllProducts()
     {
         $user = Auth::user();
-        $search = $params['search'] ?? null;
-        return User::with(['image'])
-            ->when($search, function($query, $search) {
-                $query->where('first_name', 'like', '%'.$search.'%')
-                    ->orWhere('first_name', 'like', '%'.$search.'%')
-                    ->orWhere('email', 'like', '%'.$search.'%')
-                    ->orWhere('phone_number', 'like', '%'.$search.'%');
+        return Product::with(['assign'])
+            ->whereHas('assign', function ($query) use ($user) {
+                $query->where('branch_id', $user->active_on);
             })
-            ->where('merchant_id', $user->merchant->id)
-            ->where('deleted_at', null)
-            ->orderByDesc('created_at')
-            ->paginate(10);
-    }
-
-    public function getUserById($id)
-    {
-        $user = User::find($id);
-        return $user;
+            ->get();
     }
 }

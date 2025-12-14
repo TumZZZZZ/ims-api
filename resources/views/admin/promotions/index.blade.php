@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', __('users'))
-@section('header-title', __('users'))
+@section('title', __('promotions'))
+@section('header-title', __('promotions'))
 
 @section('content')
 
@@ -14,7 +14,7 @@
         {{-- Buttons --}}
         <div>
             <button class="btn" style="background: #4CAF50;"
-            onclick="window.location.href='/admin/users/create'">
+            onclick="window.location.href='/admin/promotions/create'">
                 + @lang('create')
             </button>
         </div>
@@ -25,46 +25,36 @@
         <table class="activity-table">
             <thead class="table-header">
                 <tr>
-                    <th></th>
-                    <th>@lang('first_name')</th>
-                    <th>@lang('last_name')</th>
-                    <th>@lang('email')</th>
-                    <th>@lang('phone_number')</th>
-                    <th>@lang('role')</th>
+                    <th>@lang('name')</th>
+                    <th>@lang('start_date')</th>
+                    <th>@lang('end_date')</th>
+                    <th>@lang('status')</th>
                     <th>@lang('actions')</th>
                 </tr>
             </thead>
 
             <tbody id="table-body">
-                @forelse ($data as $user)
+                @forelse ($data as $promotion)
+                    @php
+                        $status = Carbon\Carbon::parse($promotion->end_date)->isPast()
+                            ? __('expired')
+                            : __('active');
+                        $colorCode = Carbon\Carbon::parse($promotion->end_date)->isPast() ? 'F44336' : '4CAF50';
+                        $startDate = Carbon\Carbon::parse($promotion->start_date)->setTimezone(getTimezone())->format('m/d/Y h:i A');
+                        $endDate = Carbon\Carbon::parse($promotion->end_date)->setTimezone(getTimezone())->format('m/d/Y h:i A');
+                    @endphp
                     <tr>
-                        <td class="avatar-cell">
-                            <div class="avatar-wrapper">
-                                @if (@$user->image->url)
-                                    <div class="avatar-image-wrapper">
-                                        <img src="{{ $user->image->url }}" class="avatar-image">
-                                    </div>
-                                @else
-                                    <div class="avatar-initials">
-                                        {{ initials($user->getFullName()) }}
-                                    </div>
-                                @endif
-                            </div>
-                        </td>
-                        <td>{{ $user->first_name }}</td>
-                        <td>{{ $user->last_name }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>{{ $user->phone_number }}</td>
-                        <td>{{ App\Enum\Constants::ROLES[$user->role] }}</td>
+                        <td>{{ $promotion->name }}</td>
+                        <td>{{ $startDate }}</td>
+                        <td>{{ $endDate }}</td>
+                        <td><span style="color: #{{ $colorCode }}">{{ $status }}</span></td>
                         <td class="text-center">
-                            @if ($user->id != auth()->user()->id)
-                                <button class="btn"
-                                    onclick="openDialog('admin/users/delete', '{{ $user->id }}', '{{ $user->first_name.' '.$user->last_name }}', '{{ __('delete') }}')"
-                                    style="background: #F44336;">{{ __('delete') }}
-                                </button>
-                            @endif
                             <button class="btn"
-                                onclick="window.location.href='/admin/users/edit/{{ $user->id }}'"
+                                onclick="openDialog('admin/promotions/delete', '{{ $promotion->id }}', '{{ $promotion->name }}', '{{ __('delete') }}')"
+                                style="background: #F44336;">{{ __('delete') }}
+                            </button>
+                            <button class="btn"
+                                onclick="window.location.href='/admin/promotions/edit/{{ $promotion->id }}'"
                                 style="background: #666666;">{{ __('edit') }}
                             </button>
                         </td>
@@ -93,12 +83,6 @@
                 'action' => ':action',
                 'objectName' => ':object_name'
             ]));
-
-            window.objectActionTemplate = @json(__('object_action_successfully', [
-                    'objectName' => ':object_name',
-                    'action' => ':action'
-                ])
-            );
 
             // Check if Laravel has a success message
             @if(session('success_message'))

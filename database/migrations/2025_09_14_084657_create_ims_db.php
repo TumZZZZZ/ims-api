@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('meta', function (Blueprint $collection) {
             $collection->string('_id');
             $collection->string('key');
-            $collection->string('value');
+            $collection->integer('value');
             $collection->string('object_id');
             $collection->timestamps();
             $collection->softDeletes();
@@ -81,10 +81,10 @@ return new class extends Migration
             $collection->string('_id');
             $collection->string('branch_id');
             $collection->string('product_id');
-            $collection->string('price')->default(0);
-            $collection->string('cost')->default(0);
-            $collection->string('quantity')->default(0);
-            $collection->string('threshold')->default(0);
+            $collection->integer('price')->default(0);
+            $collection->integer('cost')->default(0);
+            $collection->integer('quantity')->default(0);
+            $collection->integer('threshold')->default(0);
             $collection->timestamps();
             $collection->softDeletes();
         });
@@ -125,7 +125,7 @@ return new class extends Migration
             $collection->datetimes('rejected_date');
             $collection->datetimes('recieved_date');
             $collection->enum('status', ['IN_REVIEW','REQUESTED','REJECTED','RECIEVED'])->default('IN_REVIEW');
-            $collection->string('total_cost')->default(0);
+            $collection->integer('total_cost')->default(0);
             $collection->array('purchase_order_details'); // Object{product_id,quantity,unit_cost,total_cost}
             $collection->timestamps();
             $collection->softDeletes();
@@ -135,11 +135,12 @@ return new class extends Migration
             $collection->string('_id');
             $collection->string('branch_id');
             $collection->string('product_id');
-            $collection->string('starting_quantity')->default(0);
-            $collection->string('quantity')->default(0);
-            $collection->string('unit_cost')->default(0);
-            $collection->string('cost')->default(0);
+            $collection->integer('starting_quantity')->default(0);
+            $collection->integer('quantity')->default(0);
+            $collection->integer('unit_cost')->default(0);
+            $collection->integer('cost')->default(0);
             $collection->enum('type', ['SALE','PURCHASE_ORDER','INCREASEMENT','DECREASEMENT']);
+            $collection->string('reason');
             $collection->timestamps();
             $collection->softDeletes();
         });
@@ -165,26 +166,28 @@ return new class extends Migration
             $collection->softDeletes();
         });
 
-        // Schema::create('orders', function (Blueprint $collection) {
-        //     $collection->string('_id');
-        //     $collection->string('store_id');
-        //     $collection->string('sale_by');
-        //     $collection->date('date');
-        //     $collection->timestamps();
-        //     $collection->softDeletes();
-        // });
+        Schema::create('orders', function (Blueprint $collection) {
+            $collection->string('_id');
+            $collection->string('branch_id');
+            $collection->string('sale_by'); // objectId of user
+            $collection->date('date');
+            $collection->timestamps();
+            $collection->softDeletes();
+        });
 
-        // Schema::create('order_details', function (Blueprint $collection) {
-        //     $collection->string('_id');
-        //     $collection->string('order_id');
-        //     $collection->string('category_id');
-        //     $collection->string('product_id');
-        //     $collection->date('price');
-        //     $collection->date('cost');
-        //     $collection->date('quantity');
-        //     $collection->timestamps();
-        //     $collection->softDeletes();
-        // });
+        Schema::create('order_details', function (Blueprint $collection) {
+            $collection->string('_id');
+            $collection->string('order_id');
+            $collection->string('category_id');
+            $collection->string('product_id');
+            $collection->string('discount_id');
+            $collection->integer('price');
+            $collection->integer('cost');
+            $collection->integer('quantity');
+            $collection->integer('discount_amount');
+            $collection->timestamps();
+            $collection->softDeletes();
+        });
     }
 
     /**
@@ -204,6 +207,8 @@ return new class extends Migration
         Schema::dropIfExists('purchase_orders');
         Schema::dropIfExists('ledgers');
         Schema::dropIfExists('printers');
+        Schema::dropIfExists('orders');
+        Schema::dropIfExists('order_details');
         Schema::dropIfExists('histories');
     }
 };

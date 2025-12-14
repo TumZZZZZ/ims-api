@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', __('users'))
-@section('header-title', __('users'))
+@section('title', __('branches'))
+@section('header-title', __('branches'))
 
 @section('content')
 
@@ -14,7 +14,7 @@
         {{-- Buttons --}}
         <div>
             <button class="btn" style="background: #4CAF50;"
-            onclick="window.location.href='/admin/users/create'">
+            onclick="window.location.href='/admin/branches/create'">
                 + @lang('create')
             </button>
         </div>
@@ -26,45 +26,48 @@
             <thead class="table-header">
                 <tr>
                     <th></th>
-                    <th>@lang('first_name')</th>
-                    <th>@lang('last_name')</th>
-                    <th>@lang('email')</th>
-                    <th>@lang('phone_number')</th>
-                    <th>@lang('role')</th>
-                    <th>@lang('actions')</th>
+                    <th>{{ __('name') }}</th>
+                    <th>{{ __('currency') }}</th>
+                    <th>{{ __('address') }}</th>
+                    <th>{{ __('available') }}</th>
+                    <th>{{ __('actions') }}</th>
                 </tr>
             </thead>
 
             <tbody id="table-body">
-                @forelse ($data as $user)
+                @forelse ($data as $branch)
                     <tr>
                         <td class="avatar-cell">
                             <div class="avatar-wrapper">
-                                @if (@$user->image->url)
+                                @if (@$branch->image->url)
                                     <div class="avatar-image-wrapper">
-                                        <img src="{{ $user->image->url }}" class="avatar-image">
+                                        <img src="{{ $branch->image->url }}" class="avatar-image">
                                     </div>
                                 @else
                                     <div class="avatar-initials">
-                                        {{ initials($user->getFullName()) }}
+                                        {{ initials($branch->name) }}
                                     </div>
                                 @endif
                             </div>
                         </td>
-                        <td>{{ $user->first_name }}</td>
-                        <td>{{ $user->last_name }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>{{ $user->phone_number }}</td>
-                        <td>{{ App\Enum\Constants::ROLES[$user->role] }}</td>
+                        <td>{{ $branch->name }}</td>
+                        <td>{{ getCurrencyNameByCode($branch->currency_code) }}</td>
+                        <td>{{ $branch->location }}</td>
+                        <td><span id="status-{{ $branch->id }}" style="color: #{{ $branch->active ? '4CAF50' : 'F44336' }};">{{ $branch->active ? __('open') : __('closed') }}</span></td>
                         <td class="text-center">
-                            @if ($user->id != auth()->user()->id)
+                            <button id="action-btn-{{ $branch->id }}" class="btn"
+                                onclick="openDialog('admin/branches', '{{ $branch->id }}', '{{ $branch->name }}', '{{ !$branch->active ? __('open') : __('close') }}')"
+                                style="background:#{{ !$branch->active ? '4CAF50' : 'FFD700' }};">
+                                {{ !$branch->active ? __('open') : __('close') }}
+                            </button>
+                            @if ($branch->id != auth()->user()->active_on)
                                 <button class="btn"
-                                    onclick="openDialog('admin/users/delete', '{{ $user->id }}', '{{ $user->first_name.' '.$user->last_name }}', '{{ __('delete') }}')"
+                                    onclick="openDialog('admin/branches/delete', '{{ $branch->id }}', '{{ $branch->name }}', '{{ __('delete') }}')"
                                     style="background: #F44336;">{{ __('delete') }}
                                 </button>
                             @endif
                             <button class="btn"
-                                onclick="window.location.href='/admin/users/edit/{{ $user->id }}'"
+                                onclick="window.location.href='/admin/branches/edit/{{ $branch->id }}'"
                                 style="background: #666666;">{{ __('edit') }}
                             </button>
                         </td>

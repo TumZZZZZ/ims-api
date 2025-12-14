@@ -103,6 +103,7 @@ select {
   display: flex;
   gap: 0.5rem;
   justify-content: space-between;
+  padding: 0.1rem 0.25rem;
 }
 
 .no-support {

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use MongoDB\Laravel\Eloquent\Casts\ObjectId;
 use MongoDB\Laravel\Eloquent\Model;
 
 class Store extends Model
@@ -17,10 +16,6 @@ class Store extends Model
         'currency_code',
         'active',
     ];
-
-    // protected $casts = [
-    //     'parent_id' => ObjectId::class,
-    // ];
 
     public function admin()
     {

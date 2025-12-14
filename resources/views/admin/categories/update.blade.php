@@ -19,12 +19,7 @@
 
         <div class="row">
             <div class="col-left">
-                <div class="upload-box" id="uploadBox">
-                    <input type="file" id="imageInput" name="image" accept="image/*">
-                    <img id="previewImage" src="{{ $data->image_url }}" alt="" class="{{ $data->image_url ? '' : 'hidden' }}">
-                    <span id="uploadText" class="{{ $data->image_url ? 'hidden' : '' }}">{{ __('upload_image') }}</span>
-                    <button type="button" class="delete-icon {{ $data->image_url ? '' : 'hidden' }}" id="deleteImage">×</button>
-                </div>
+                @include('layouts.update-image-object')
             </div>
 
             <div class="col-right">

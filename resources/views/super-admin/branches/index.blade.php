@@ -45,9 +45,9 @@
                         </td>
                         <td>{{ $branch->name }}</td>
                         <td>{{ $branch->merchant->name }}</td>
-                        <td>{{ $branch->currency_code }}</td>
+                        <td>{{ getCurrencyNameByCode($branch->currency_code) }}</td>
                         <td>{{ $branch->location }}</td>
-                        <td><span style="color: #{{ $branch->active ? '4CAF50' : 'F44336' }};">{{ $branch->active ? 'Open' : 'Closed' }}</span></td>
+                        <td><span style="color: #{{ $branch->active ? '4CAF50' : 'F44336' }};">{{ $branch->active ? __('open') : __('closed') }}</span></td>
                     </tr>
                 @empty
                     <tr>

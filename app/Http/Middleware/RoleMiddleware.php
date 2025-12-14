@@ -28,7 +28,7 @@ class RoleMiddleware
         }
 
         // Check role (assuming you have a `role` column on users table)
-        if (Auth::user()->role !== $role) {
+        if (!in_array(Auth::user()->role, explode('|', $role))) {
             return redirect()->route('403.page');
         }
 

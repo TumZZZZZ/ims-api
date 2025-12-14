@@ -21,7 +21,7 @@
                 <div class="upload-box" id="uploadBox">
                     <input type="file" id="imageInput" name="image" accept="image/*">
                     <img id="previewImage" src="" alt="" class="hidden">
-                <span id="uploadText">{{ __('upload_image') }}</span>
+                    <span id="uploadText">{{ __('upload_image') }}</span>
                     <button type="button" class="delete-icon hidden" id="deleteImage">×</button>
                 </div>
             </div>
@@ -43,8 +43,8 @@
                 <div style="display: flex;">
                     <div style="width: 50%; padding-right: 20px;">
                         <label>@lang('email')<span>*</span></label>
-                        <input type="email" name="email" value="{{ old('email') }}"
-                            placeholder="@lang('enter_email')" required>
+                        <input type="email" name="email" value="{{ old('email') }}" placeholder="@lang('enter_email')"
+                            required>
                     </div>
                     <div style="width: 50%;">
                         <label>@lang('phone_number')<span>*</span></label>
@@ -76,17 +76,16 @@
                     </div>
                     <div style="width: 50%;">
                         <label>@lang('branch')<span>*</span></label>
-                        <div class="custom-multi-select-wrapper">
+                        <div class="custom-multi-select-wrapper" data-placeholder="{{ __('select_branch') }}">
                             <button type="button" class="custom-multi-select-btn">
-                                <span class="selected-items">{{ __('select_branch') }}</span>
+                                <span class="selected-items"></span>
                             </button>
+
                             <ul class="custom-multi-options">
-                                @foreach($branches as $branch)
-                                    <li class="custom-option">
-                                        <label>
-                                            <input type="checkbox" name="branch_ids[]" value="{{ $branch->id }}">
-                                            <span style="color: var(--dark)">{{ $branch->name }}</span>
-                                        </label>
+                                @foreach ($branches as $branch)
+                                    <li>
+                                        <input type="checkbox" name="branch_ids[]" value="{{ $branch->id }}">
+                                        <span class="option-text">{{ $branch->name }}</span>
                                     </li>
                                 @endforeach
                             </ul>
@@ -98,12 +97,14 @@
                 <div style="display: flex;">
                     <div style="width: 50%; padding-right: 20px;">
                         <label>@lang('password')<span>*</span></label>
-                        <input type="text" id="password" name="password" value="{{ old('password') }}" placeholder="@lang('enter_password')" required>
+                        <input type="text" id="password" name="password" value="{{ old('password') }}"
+                            placeholder="@lang('enter_password')" required>
                         <small id="strength_msg"></small>
                     </div>
                     <div style="width: 50%;">
                         <label>@lang('confirmation_password')<span>*</span></label>
-                        <input type="text" id="password_confirmation" name="password_confirmation" value="{{ old('password_confirmation') }}" placeholder="@lang('enter_confirmation_password')" required disabled>
+                        <input type="text" id="password_confirmation" name="password_confirmation"
+                            value="{{ old('password_confirmation') }}" placeholder="@lang('enter_confirmation_password')" required disabled>
                     </div>
                 </div>
 

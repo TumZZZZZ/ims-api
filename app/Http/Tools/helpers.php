@@ -233,3 +233,37 @@ if (!function_exists('getRoles')) {
         ];
     }
 }
+
+if (!function_exists('isActive')) {
+    function isActive($routes)
+    {
+        return request()->routeIs((array) $routes);
+    }
+}
+
+if (!function_exists('getAvailableCurrencies')) {
+    function getAvailableCurrencies()
+    {
+        return [
+            (object)[
+                'code'      => 'KHR',
+                'name'      => 'Cambodian Riel',
+                'symbol'    => '៛'
+            ],
+            (object)[
+                'code'      => 'USD',
+                'name'      => 'United States Dollar',
+                'symbol'    => '$'
+            ]
+        ];
+    }
+}
+
+if (!function_exists('getCurrencyNameByCode')) {
+    function getCurrencyNameByCode($currencyCode)
+    {
+        $availableCurrencies = collect(getAvailableCurrencies());
+        $currency = $availableCurrencies->where('code', $currencyCode)->first();
+        return $currency->name ?? "Unkown Currency";
+    }
+}

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', __('users'))
-@section('header-title', __('users'))
+@section('title', __('purchase_orders'))
+@section('header-title', __('purchase_orders'))
 
 @section('content')
 
@@ -14,7 +14,7 @@
         {{-- Buttons --}}
         <div>
             <button class="btn" style="background: #4CAF50;"
-            onclick="window.location.href='/admin/users/create'">
+            onclick="window.location.href='/inventory/purchase-orders/create'">
                 + @lang('create')
             </button>
         </div>
@@ -36,7 +36,7 @@
             </thead>
 
             <tbody id="table-body">
-                @forelse ($data as $user)
+                {{-- @forelse ($data as $user)
                     <tr>
                         <td class="avatar-cell">
                             <div class="avatar-wrapper">
@@ -59,7 +59,7 @@
                         <td class="text-center">
                             @if ($user->id != auth()->user()->id)
                                 <button class="btn"
-                                    onclick="openDialog('admin/users/delete', '{{ $user->id }}', '{{ $user->first_name.' '.$user->last_name }}', '{{ __('delete') }}')"
+                                    onclick="openDialog('admin/categories/delete', '{{ $user->id }}', '{{ $user->name }}', '{{ __('delete') }}')"
                                     style="background: #F44336;">{{ __('delete') }}
                                 </button>
                             @endif
@@ -73,13 +73,13 @@
                     <tr>
                         <td colspan="6" class="text-center">{{ __('record_not_found') }}</td>
                     </tr>
-                @endforelse
+                @endforelse --}}
             </tbody>
         </table>
     </div>
 
     {{-- Pagination --}}
-    @include('layouts.pagination')
+    {{-- @include('layouts.pagination') --}}
 
     <!-- ===== Modal ===== -->
     @include('modal')
@@ -93,12 +93,6 @@
                 'action' => ':action',
                 'objectName' => ':object_name'
             ]));
-
-            window.objectActionTemplate = @json(__('object_action_successfully', [
-                    'objectName' => ':object_name',
-                    'action' => ':action'
-                ])
-            );
 
             // Check if Laravel has a success message
             @if(session('success_message'))

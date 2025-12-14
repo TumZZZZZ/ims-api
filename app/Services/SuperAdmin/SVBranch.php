@@ -3,6 +3,7 @@
 namespace App\Services\SuperAdmin;
 
 use App\Models\Store;
+use Illuminate\Support\Facades\Auth;
 
 class SVBranch
 {

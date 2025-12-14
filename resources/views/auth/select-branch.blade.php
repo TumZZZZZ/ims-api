@@ -34,7 +34,7 @@
             <div style="width: 150px; height: 150px;">
                 @if (@$branch->image)
                     <img src="{{ $branch->image->url }}" alt="branch"
-                        style="width: 100%; height: 100%; object-fit: cover;">
+                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                 @else
                     <div
                         style="text-align: center; width: 150px; height: 150px; background-color: #ccc; display: flex; justify-content: center; align-items: center; font-size: 48px; color: #555; border-radius: 50%; font-weight: bold;">

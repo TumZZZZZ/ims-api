@@ -37,6 +37,15 @@ body {
     flex-direction: column;
     justify-content: space-between;
     box-shadow: 2px 0 8px var(--shadow);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar > div:first-child {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0; /* IMPORTANT */
 }
 
 .sidebar-header {
@@ -48,11 +57,35 @@ body {
     font-weight: bold;
     text-align: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    position: sticky;
+    top: 0;
 }
 
 .menu {
-    flex-grow: 1;
-    padding: 20px 0;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0; /* IMPORTANT */
+    padding: 12px 0;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+}
+
+.menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.menu::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.menu::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    transition: background 0.3s;
+}
+
+.menu::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.45);
 }
 
 .menu a {
@@ -73,36 +106,43 @@ body {
 }
 
 .user-profile {
+    position: sticky;
+    bottom: 0;
     background: rgba(255, 255, 255, 0.1);
     padding: 15px 10px;
     text-align: center;
     border-top: 1px solid rgba(255, 255, 255, 0.3);
+
+    /* prevent layout shift */
+    box-sizing: border-box;
+    will-change: auto;
 }
 
 .user-profile img {
     width: 85px;
     height: 85px;
+    min-width: 85px;
+    min-height: 85px;
+
     border-radius: 50%;
     border: 2px solid var(--beige);
-    /* margin-bottom: 10px; */
-    object-fit:cover;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 8px;
 }
 
 .user-profile h4 {
     margin: 0;
     font-size: 16px;
+    line-height: 1.2;
     color: #fffaf3;
 }
 
 .user-profile p {
+    margin: 4px 0 0;
     font-size: 13px;
-    margin: 3px 0 0;
+    line-height: 1.2;
     color: #e0d5b9;
-}
-
-.circle-profile {
-    width: 15px;
-    height: 15px;
 }
 
 /* Main */
@@ -447,4 +487,61 @@ input[type="text"], select {
     color: white;
     font-weight: bold;
     font-size: 20px;
+}
+
+/* Group Menu  */
+.menu-parent {
+    width: 100%;
+    background: none;
+    border: none;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    padding-left: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    color: #fffaf3;
+    font-size: 18px;
+    height: 55px;
+}
+
+.menu-parent:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.menu-parent.active {
+    color: #fffaf3;
+}
+
+.menu-parent .arrow {
+    transition: transform 0.3s;
+}
+
+.menu-group.open .menu-parent .arrow {
+    transform: rotate(180deg);
+}
+
+.menu-children {
+    display: none;
+    flex-direction: column;
+    padding-left: 30px;
+}
+
+.menu-group.open .menu-children {
+    display: flex;
+}
+
+.menu-children a {
+    font-size: 18px;
+    color: #fffaf3;
+    text-decoration: none;
+}
+
+.menu-children a:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.menu-children a.active {
+    color: #fffaf3;
 }
