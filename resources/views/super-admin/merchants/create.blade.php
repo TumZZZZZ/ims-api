@@ -22,7 +22,7 @@
                 <div class="upload-box" id="uploadBox">
                     <input type="file" id="imageInput" name="image" accept="image/*">
                     <img id="previewImage" src="" alt="" class="hidden">
-                    <span id="uploadText">Upload Image</span>
+                    <span id="uploadText">@lang('upload_image')</span>
                     <button type="button" class="delete-icon hidden" id="deleteImage">×</button>
                 </div>
             </div>
