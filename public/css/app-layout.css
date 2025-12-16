@@ -387,6 +387,8 @@ input[type="text"], select {
     cursor: pointer;
     align-self: flex-end;
     margin-top: 10px;
+    font-family: "Khmer OS Siemreap Regular", Arial, sans-serif;
+    font-size: 16px;
 }
 
 @media (max-width: 768px) {

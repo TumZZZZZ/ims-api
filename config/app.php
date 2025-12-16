@@ -16,6 +16,7 @@ return [
     'name' => env('APP_NAME', 'Laravel'),
     'api_url' => env('API_URL', 'http://localhost:8000'),
     'super_admin_password' => env('SUPER_ADMIN_PASSWORD'),
+    'base_aws_s3_url' => env('BASE_AWS_S3_URL'),
 
     /*
     |--------------------------------------------------------------------------

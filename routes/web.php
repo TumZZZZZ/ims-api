@@ -26,6 +26,8 @@ use App\Http\Controllers\Inventory\{
     LedgersController
 };
 
+Route::get('po-draft', fn() => view('po-draft'));
+
 Route::middleware('web')->group(function () {
 
     Route::get('/', fn() => redirect()->route('login'));

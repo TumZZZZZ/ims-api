@@ -55,8 +55,9 @@ select {
     gap: 0.5rem;
     justify-content: space-between;
     min-width: 100%;
-    padding: 0.5rem;
+    min-height: 51px;
     transition: border 0.4s ease;
+    align-items: center;
   }
 
   &:open > button,

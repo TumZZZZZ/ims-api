@@ -5,6 +5,7 @@ use App\Models\Image;
 use App\Models\Store;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 if (! function_exists('createHistory')) {
     function createHistory($userId, $value, $merchantId = null, $branchId = null, array $details = [])
@@ -56,13 +57,9 @@ if (!function_exists('uploadImage')) {
      */
     function uploadImage($objectId, $collection, $image)
     {
-        $filename = uniqid() . '.' . $image->getClientOriginalExtension();
-        $imagePath = public_path('storage/images/'.$collection);
-        if (!file_exists($imagePath)) {
-            mkdir($imagePath, 0777, true);
-        }
-        $image->move($imagePath, $filename);
-        $imageUrl = asset('storage/images/'.$collection.'/'.$filename);
+        $fileName = $objectId . '.' . $image->getClientOriginalExtension();
+        $path = Storage::disk('s3')->putFileAs('images/categories', $image, $fileName, 'public');
+        $imageUrl = Storage::disk('s3')->url($path);
 
         // Upsert image record
         $image = Image::where('object_id', $objectId)
