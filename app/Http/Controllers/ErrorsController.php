@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\API\BaseApi;
+
 class ErrorsController extends BaseApi
 {
     public function unauthorized()
