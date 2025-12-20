@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Inventory;
 
 use App\Http\Controllers\Controller;
+use App\Models\PurchaseOrder;
 use App\Services\Admin\SVProduct;
 use App\Services\Inventory\SVPurchaseOrder;
 use Illuminate\Http\Request;
@@ -54,6 +55,7 @@ class PurchaseOrderController extends Controller
     public function create()
     {
         return view('inventory.purchase-orders.create', [
+            'po_number' => PurchaseOrder::generatePONumber(),
             'products' => (new SVProduct)->getAllProducts(),
         ]);
     }
@@ -65,5 +67,11 @@ class PurchaseOrderController extends Controller
             'roles' => getRoles(),
             'branches' => Auth::user()->getBranches(),
         ]);
+    }
+
+    public function store(Request $request)
+    {
+        return $this->getService()->store($request->all());
+        return redirect()->route('inventory.suppliers.index')->with('success_message', __('object_created_successfully', ['object' => __('purchase_order'), 'object_name' => $request->po_number]));
     }
 }

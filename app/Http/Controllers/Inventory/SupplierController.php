@@ -15,7 +15,7 @@ class SupplierController extends Controller
 
     public function index(Request $request)
     {
-        return view('inventory.ledgers.index', [
+        return view('inventory.suppliers.index', [
             'data' => $this->getService()->getWithPagination($request->all()),
         ]);
     }

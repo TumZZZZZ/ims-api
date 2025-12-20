@@ -37,4 +37,15 @@ class PurchaseOrder extends Model
     {
         return $this->hasOne(Supplier::class, '_id', 'supplier_id')->whereNull('deleted_at');
     }
+
+    public static function generatePONumber(): string
+    {
+        do {
+            // Generate 12-digit number
+            $number = random_int(100000000000, 999999999999);
+            $poNumber = "PO-{$number}";
+        } while (self::where('po_number', $poNumber)->exists());
+
+        return $poNumber;
+    }
 }

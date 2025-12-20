@@ -58,6 +58,7 @@ class SVSetting
 
         return [
             'message' => __('configuration_saved_successfully'),
+            'channel_id' => $channelId,
         ];
     }
 

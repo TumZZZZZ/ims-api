@@ -41,9 +41,11 @@ class SVAuth
         ];
     }
 
-    public function logout()
+    public function logout($user)
     {
-        $user = Auth::user();
+        # Free user
+        $user->active_on = null;
+        $user->save();
         $user->currentAccessToken()->delete();
 
         return [];

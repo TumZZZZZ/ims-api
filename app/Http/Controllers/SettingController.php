@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\Constants;
 use App\Http\Controllers\API\BaseApi;
 use App\Services\SVSetting;
 use Illuminate\Http\Request;
@@ -27,7 +28,7 @@ class SettingController extends BaseApi
         try {
             $request->validate([
                 'tab' => 'required|string|in:telegram_config',
-                'type' => 'required|string|in:receive_invoice',
+                'type' => 'required|string|in:'.Constants::TELEGRAM_CONFIG_TYPE_RECEIVE_INVOICE.','.Constants::TELEGRAM_CONFIG_TYPE_LOWER_STOCK_ALERT,
                 'channel_id' => 'nullable|string',
             ]);
             $data = $this->getService()->setupConfig($request->all());

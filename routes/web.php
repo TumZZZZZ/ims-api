@@ -164,11 +164,12 @@ Route::middleware('web')->group(function () {
 
         // Purchase Orders routes
         Route::prefix('purchase-orders')->group(function () {
-            Route::get('/closed', [PurchaseOrderController::class, 'closed'])->name('inventory.purchase-orders.closed');
-            Route::get('/draft', [PurchaseOrderController::class, 'draft'])->name('inventory.purchase-orders.draft');
-            Route::get('/sent', [PurchaseOrderController::class, 'sent'])->name('inventory.purchase-orders.sent');
-            Route::get('/rejected', [PurchaseOrderController::class, 'rejected'])->name('inventory.purchase-orders.rejected');
-            Route::get('/create', [PurchaseOrderController::class, 'create'])->name('inventory.purchase-order.create');
+            Route::get('closed', [PurchaseOrderController::class, 'closed'])->name('inventory.purchase-orders.closed');
+            Route::get('draft', [PurchaseOrderController::class, 'draft'])->name('inventory.purchase-orders.draft');
+            Route::get('sent', [PurchaseOrderController::class, 'sent'])->name('inventory.purchase-orders.sent');
+            Route::get('rejected', [PurchaseOrderController::class, 'rejected'])->name('inventory.purchase-orders.rejected');
+            Route::get('create', [PurchaseOrderController::class, 'create'])->name('inventory.purchase-order.create');
+            Route::get('store', [PurchaseOrderController::class, 'store'])->name('inventory.purchase-order.store');
         });
 
         // Ledgers routes

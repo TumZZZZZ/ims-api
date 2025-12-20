@@ -39,4 +39,9 @@ class SVPurchaseOrder
     {
         return PurchaseOrder::find($id);
     }
+
+    public function store(array $params)
+    {
+
+    }
 }

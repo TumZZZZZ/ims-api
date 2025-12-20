@@ -128,12 +128,16 @@
                             <label>@lang('price')({{ getCurrencySymbolByCurrencyCode($branch->currency_code) }})<span>*</span></label>
                             <input type="number" name="branches[{{ $loop->index }}][price]"
                                 value="{{ old('branches.' . $loop->index . '.price') }}" placeholder="@lang('enter_price')"
+                                step="0.01"
+                                min="0"
                                 required>
                         </div>
                         <div style="width: 25%; padding-right: 20px;">
                             <label>@lang('cost')({{ getCurrencySymbolByCurrencyCode($branch->currency_code) }})<span>*</span></label>
                             <input type="number" name="branches[{{ $loop->index }}][cost]"
                                 value="{{ old('branches.' . $loop->index . '.cost') }}" placeholder="@lang('enter_cost')"
+                                step="0.01"
+                                min="0"
                                 required>
                         </div>
 

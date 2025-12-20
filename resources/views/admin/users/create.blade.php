@@ -90,6 +90,9 @@
                                 @endforeach
                             </ul>
                         </div>
+                        <small id="branchRoleMsg" style="color:#dc3545; display:none;">
+                            {{ __('staff_only_one_branch') }}
+                        </small>
                     </div>
 
                 </div>
@@ -138,18 +141,23 @@
                 const roleSelect = document.querySelector('select[name="role"]');
                 const branchCheckboxes = document.querySelectorAll('input[name="branch_ids[]"]');
                 const submitFormUser = document.getElementById('submitFormUser');
+                const branchMsg = document.getElementById('branchRoleMsg');
 
                 function enforceStaffRule(changedCheckbox = null) {
                     const role = roleSelect.value;
                     const checked = Array.from(branchCheckboxes).filter(cb => cb.checked);
 
                     if (role === 'STAFF') {
+                        branchMsg.style.display = 'block';
+
                         // If user checks more than one → keep only latest
                         if (checked.length > 1 && changedCheckbox) {
                             checked.forEach(cb => {
                                 if (cb !== changedCheckbox) cb.checked = false;
                             });
                         }
+                    }  else {
+                        branchMsg.style.display = 'none';
                     }
                 }
 

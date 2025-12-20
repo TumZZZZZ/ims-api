@@ -51,22 +51,22 @@
                 <div style="display:flex;">
                     <div style="width:50%; padding-right:20px;">
                         <label>@lang('buyer')</label>
-                        <input type="text" name="buyer" required>
+                        <input type="text" name="buyer" value="{{ auth()->user()->getActiveBranch()->name }}" readonly>
                     </div>
                     <div style="width:50%;">
                         <label>@lang('po_number')</label>
-                        <input type="text" name="po_number" required>
+                        <input type="text" name="po_number" value="{{ $po_number }}" readonly>
                     </div>
                 </div>
 
                 <div style="display:flex;">
                     <div style="width:50%; padding-right:20px;">
                         <label>@lang('address')</label>
-                        <textarea name="address" rows="3"></textarea>
+                        <textarea name="address" rows="3" readonly>{{ auth()->user()->getActiveBranch()->name }}</textarea>
                     </div>
                     <div style="width:50%;">
                         <label>@lang('order_date')</label>
-                        <input type="datetime-local" name="order_date">
+                        <input type="datetime-local" name="order_date" value="{{ now()->setTimezone(getTimezone()) }}">
                     </div>
                 </div>
             </div>
@@ -78,11 +78,16 @@
 
         <div class="row">
             <div class="col-right">
-                <label>@lang('supplier')</label>
-                <input type="text" name="supplier">
-
-                <label>@lang('address')</label>
-                <textarea name="supplier_address" rows="2"></textarea>
+                <div style="display: flex">
+                    <div style="width: 50%; padding-right: 25px;">
+                        <label>@lang('supplier')</label>
+                        <input type="text" name="supplier">
+                    </div>
+                    <div style="width: 50%;">
+                        <label>@lang('address')</label>
+                        <textarea name="supplier_address" rows="2"></textarea>
+                    </div>
+                </div>
             </div>
         </div>
 
