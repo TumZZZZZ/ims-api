@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
-use App\Http\Controllers\BaseApi;
+use App\Http\Controllers\Controller;
 use App\Services\SuperAdmin\SVMerchant;
 use Illuminate\Http\Request;
 
-class MerchantController extends BaseApi
+class MerchantController extends Controller
 {
     public function getService()
     {

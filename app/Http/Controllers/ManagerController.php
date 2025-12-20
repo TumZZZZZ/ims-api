@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-class ManagerController extends BaseApi
+class ManagerController extends Controller
 {
     public function dashboard()
     {

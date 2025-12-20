@@ -1,10 +1,14 @@
 <?php
 
+use App\Enum\Constants;
 use App\Models\History;
 use App\Models\Image;
+use App\Models\Meta;
+use App\Models\Order;
 use App\Models\Store;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
 if (! function_exists('createHistory')) {
@@ -271,5 +275,44 @@ if (!function_exists('getValidateRequiredBranch')) {
         return back()->with([
             'error_message' => __('required_create_branch_first')
         ])->withInput();
+    }
+}
+
+if (!function_exists('getTelegramChannelIDFormatted')) {
+    function getTelegramChannelIDFormatted($channelID)
+    {
+        $channelID = ltrim($channelID, "-");
+        if (strpos($channelID, "100") !== 0) $channelID = "100" . $channelID;
+        $channelID = "-" . $channelID;
+        return $channelID;
+    }
+}
+
+if (!function_exists('sendMessageToTelegram')) {
+    function sendMessageToTelegram($payload)
+    {
+        $botToken = config('app.telegram_bot_token');
+        $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
+        Http::timeout(20)->post($url, $payload)->throw();
+    }
+}
+
+if (!function_exists('getReceiveInvoiceConfig')) {
+    function getReceiveInvoiceConfig()
+    {
+        $user = Auth::user();
+        return Meta::where('key', Constants::TELEGRAM_RECEIVE_INVOICE)->where('object_id', $user->active_on)->first();
+    }
+}
+
+if (!function_exists('generateOrderNumber')) {
+    function generateOrderNumber()
+    {
+        $user = Auth::user();
+        $lastOrder = Order::where('branch_id', $user->active_on)
+            ->where('status', Constants::ORDER_STATUS_PAID)
+            ->orderByDesc('order_number')
+            ->first();
+        return $lastOrder ? $lastOrder->order_number + 1 : 1;
     }
 }

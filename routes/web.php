@@ -25,6 +25,7 @@ use App\Http\Controllers\Inventory\{
     PurchaseOrderController,
     LedgersController
 };
+use App\Http\Controllers\SettingController;
 
 Route::get('po-draft', fn() => view('po-draft'));
 
@@ -128,6 +129,11 @@ Route::middleware('web')->group(function () {
             Route::put('update/{id}', [PromotionController::class, 'update'])->name('admin.promotion.update');
             Route::delete('delete/{id}', [PromotionController::class, 'delete'])->name('admin.promotion.delete');
         });
+        Route::group(['prefix' => 'setting'], function() {
+            Route::get('telegram-config', [SettingController::class, 'telegramConfig'])->name('setting.telegram-config');
+            Route::post('setup-config', [SettingController::class, 'setupConfig'])->name('setting.setup-config');
+            Route::post('send-test', [SettingController::class, 'sendTest'])->name('setting.send-test');
+        });
     });
 
     /**
@@ -162,6 +168,7 @@ Route::middleware('web')->group(function () {
             Route::get('/draft', [PurchaseOrderController::class, 'draft'])->name('inventory.purchase-orders.draft');
             Route::get('/sent', [PurchaseOrderController::class, 'sent'])->name('inventory.purchase-orders.sent');
             Route::get('/rejected', [PurchaseOrderController::class, 'rejected'])->name('inventory.purchase-orders.rejected');
+            Route::get('/create', [PurchaseOrderController::class, 'create'])->name('inventory.purchase-order.create');
         });
 
         // Ledgers routes

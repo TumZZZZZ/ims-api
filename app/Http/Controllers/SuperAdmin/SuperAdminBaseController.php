@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
-use App\Http\Controllers\BaseApi;
+use App\Http\Controllers\Controller;
 use App\Services\SuperAdmin\SVBaseSuperAdmin;
 
-class SuperAdminBaseController extends BaseApi
+class SuperAdminBaseController extends Controller
 {
     public function getService()
     {

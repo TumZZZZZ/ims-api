@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\BaseApi;
+use App\Http\Controllers\Controller;
 use App\Services\Admin\SVCategory;
 use App\Services\Admin\SVProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class ProductController extends BaseApi
+class ProductController extends Controller
 {
     public function getService()
     {

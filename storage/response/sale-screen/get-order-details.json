@@ -1,0 +1,20 @@
+{
+    "status": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "order_id": "69458e8b5ddc7807260a4840",
+        "order_details": [
+            {
+                "id": "694585fd5ddc7807260a483c",
+                "name": "Tara Dejesus",
+                "image_url": null,
+                "price": "1,005៛",
+                "quantity": 3
+            }
+        ],
+        "subtotal": "1,005៛",
+        "discount": "0៛",
+        "total": "1,005៛"
+    }
+}

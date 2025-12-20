@@ -132,6 +132,7 @@
                                 'inventory.purchase-orders.draft',
                                 'inventory.purchase-orders.sent',
                                 'inventory.purchase-orders.rejected',
+                                'inventory.purchase-order.create',
                             ],
                         ],
                         [
@@ -140,6 +141,13 @@
                         ],
                     ],
                 ],
+                [
+                    'label' => __('setting'),
+                    'route' => 'setting.telegram-config',
+                    'active' => [
+                        'setting.telegram-config'
+                    ]
+                ]
             ],
 
             'manager' => [
@@ -163,6 +171,8 @@
                         'inventory.purchase-orders.closed',
                         'inventory.purchase-orders.draft',
                         'inventory.purchase-orders.sent',
+                        'inventory.purchase-orders.rejected',
+                        'inventory.purchase-order.create',
                     ],
                 ],
                 [

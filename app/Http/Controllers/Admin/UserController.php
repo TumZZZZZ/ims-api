@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\BaseApi;
+use App\Enum\Constants;
+use App\Http\Controllers\Controller;
 use App\Services\Admin\SVUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
-class UserController extends BaseApi
+class UserController extends Controller
 {
     public function getService()
     {
@@ -31,6 +33,9 @@ class UserController extends BaseApi
 
     public function store(Request $request)
     {
+        if ($request->role === Constants::ROLE_STAFF && count($request->branch_ids) >= 2) {
+            return redirect()->route('admin.users.index')->with('error_message', 'Staff must select exactly one branch');
+        }
         $this->getService()->store($request->all());
         return redirect()->route('admin.users.index')->with('success_message', __('object_created_successfully', ['object' => __('user'), 'object_name' => $request->first_name." ".$request->last_name]));
     }

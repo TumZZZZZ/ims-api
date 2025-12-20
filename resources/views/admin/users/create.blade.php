@@ -13,7 +13,7 @@
         </button>
     </div>
 
-    <form action="{{ route('admin.user.store') }}" method="POST" enctype="multipart/form-data">
+    <form id="submitFormUser" action="{{ route('admin.user.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <div class="row">
@@ -114,10 +114,70 @@
 
     </form>
 
+    @include('modal')
+
     @push('scripts')
         <script src="{{ asset('js/image.js') }}"></script>
         <script src="{{ asset('js/multi-selection.js') }}"></script>
         <script src="{{ asset('js/password.js') }}"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+
+                const toast = document.getElementById('toast');
+
+                function showToast(message, success = true) {
+                    toast.textContent = message;
+                    toast.style.color = success ? '#28a745' : '#dc3545';
+                    toast.style.border = success ? '1px solid #28a745' : '1px solid #dc3545';
+                    toast.style.display = 'block';
+                    setTimeout(() => {
+                        toast.style.display = 'none';
+                    }, 5000);
+                }
+
+                const roleSelect = document.querySelector('select[name="role"]');
+                const branchCheckboxes = document.querySelectorAll('input[name="branch_ids[]"]');
+                const submitFormUser = document.getElementById('submitFormUser');
+
+                function enforceStaffRule(changedCheckbox = null) {
+                    const role = roleSelect.value;
+                    const checked = Array.from(branchCheckboxes).filter(cb => cb.checked);
+
+                    if (role === 'STAFF') {
+                        // If user checks more than one → keep only latest
+                        if (checked.length > 1 && changedCheckbox) {
+                            checked.forEach(cb => {
+                                if (cb !== changedCheckbox) cb.checked = false;
+                            });
+                        }
+                    }
+                }
+
+                // When role changes
+                roleSelect.addEventListener('change', function () {
+                    enforceStaffRule();
+                });
+
+                // When branch checkbox changes
+                branchCheckboxes.forEach(cb => {
+                    cb.addEventListener('change', function () {
+                        enforceStaffRule(cb);
+                    });
+                });
+
+                // Final submit validation (safety)
+                submitFormUser.addEventListener('submit', function (e) {
+                    const role = roleSelect.value;
+                    const checked = Array.from(branchCheckboxes).filter(cb => cb.checked);
+
+                    if (role === 'STAFF' && checked.length !== 1) {
+                        e.preventDefault();
+                        showToast("{{ __('staff_must_select_exactly_one_branch') }}", false);
+                    }
+                });
+
+            });
+        </script>
     @endpush
 
 @endsection

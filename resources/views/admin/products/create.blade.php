@@ -57,7 +57,7 @@
                             placeholder="@lang('generate_sku')" required style="padding-right: 40px;">
                         <!-- Black clean refresh icon -->
                         <span id="barcodeIcon" onclick="generateBarcode()"
-                            style="position:absolute; right:15px; bottom:15px; cursor:pointer; display:flex; align-items:center; justify-content:center;"
+                            style="position:absolute; right:15px; bottom:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;"
                             title="Auto-generate barcode">
                             <svg id="refreshSvg" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                                 viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round"

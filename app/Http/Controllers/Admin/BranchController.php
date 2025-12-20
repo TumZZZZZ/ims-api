@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\BaseApi;
+use App\Http\Controllers\Controller;
 use App\Services\Admin\SVBranch;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class BranchController extends BaseApi
+class BranchController extends Controller
 {
     public function getService()
     {

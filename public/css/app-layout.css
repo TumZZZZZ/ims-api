@@ -276,6 +276,14 @@ footer {
     text-align: center;
 }
 
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
 /* Form CSS */
 .btn-gold {
     background-color: var(--gold);
@@ -381,9 +389,9 @@ input[type="text"], select {
 .submit-btn {
     background: #4CAF50;
     color: white;
+    padding: 5px 10px;
     border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     align-self: flex-end;
     margin-top: 10px;

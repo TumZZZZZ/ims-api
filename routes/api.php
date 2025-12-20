@@ -1,74 +1,29 @@
 <?php
 
+use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\SaleScreenController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\StoreController;
-use App\Http\Controllers\SuperAdminDashboardController;
-use App\Http\Controllers\UploadController;
 
 Route::prefix('v1')->group(function () {
 
     Route::post('login', [AuthController::class, 'login']);
 
-        # Forgot Password & Verify OTP & Reset Password
-        Route::post('send-mail-verification', [AuthController::class, 'sendMailVerification']);
-        Route::post('verify-otp', [AuthController::class, 'verifyOTP']);
-        Route::post('reset-password', [AuthController::class, 'resetPassword']);
-
     Route::middleware('auth:sanctum')->group(function () {
+
         Route::post('logout', [AuthController::class, 'logout']);
-        Route::get('profile', [AuthController::class, 'getProfile']);
 
-        # Update Profile
-        Route::group(['middleware' => 'role:ADMIN,MANAGER'], function () {
-            Route::put('profile/{id}', [AuthController::class, 'updateProfile']);
-        });
-
-        Route::post('upload', [UploadController::class, 'store']);
-
-        # Super Admin Routes
-        Route::group([
-            'middleware' => 'role:SUPER_ADMIN',
-            'prefix'     => 'super-admin',
-        ], function () {
-            Route::get('dashboard', [SuperAdminDashboardController::class, 'index']);
-            Route::post('stores', [StoreController::class, 'create']);
-        });
-
-        # Admin Routes
-        Route::group([
-            'middleware' => 'role:ADMIN',
-            'prefix'     => 'admin',
-        ], function () {
-
-            # Store Management
-            Route::get('stores', [StoreController::class, 'index']);
-            Route::put('stores/{id}', [StoreController::class, 'update']);
-
-            # Product Management
-            Route::apiResource('products', ProductController::class);
-
-            # Export & Import Products
-            Route::get('product-export', [ProductController::class, 'export']);
-            Route::post('product-import', [ProductController::class, 'import']);
-
-        });
-
-        # Manager Routes
-        Route::group([
-            'middleware' => 'role:MANAGER',
-            'prefix'     => 'manager',
-        ], function () {
-
-        });
-
-        # Staff Routes
-        Route::group([
-            'middleware' => 'role:STAFF',
-            'prefix'     => 'staff',
-        ], function () {
-
+        /**
+         * SALE SCREEN
+         */
+        Route::group(['prefix' => 'sale-screen'], function() {
+            Route::get('get-payment-methods', [SaleScreenController::class, 'getPaymentMethods']);
+            Route::get('get-all-categories', [SaleScreenController::class, 'getAllCategories']);
+            Route::get('get-product-by-category/{category_id}', [SaleScreenController::class, 'getProductByCategory']);
+            Route::get('get-order-details', [SaleScreenController::class, 'getOrderDetails']);
+            Route::post('add-order', [SaleScreenController::class, 'addOrder']);
+            Route::put('adjust-order-quantity/{order_id}', [SaleScreenController::class, 'adjustOrderQuantity']);
+            Route::delete('remove-item-from-order/{order_id}', [SaleScreenController::class, 'removeProductFromOrder']);
+            Route::post('place-order', [SaleScreenController::class, 'placeOrder']);
         });
 
     });

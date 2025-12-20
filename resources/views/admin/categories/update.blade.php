@@ -30,27 +30,21 @@
                 </div>
 
                 <div>
-                    <label>@lang('parent_category') (@lang('optional'))</label>
-                    <select name="parent_category_id">
-                        <button>
-                            <selectedcontent></selectedcontent>
+                    <label>@lang('select_product') (@lang('optional'))</label>
+                    <div class="custom-multi-select-wrapper" data-placeholder="{{ __('select_product') }}">
+                        <button type="button" class="custom-multi-select-btn">
+                            <span class="selected-items"></span>
                         </button>
 
-                        <option value="">
-                            <div class="custom-option">
-                                <span class="option-text">{{ __('select_parent_category') }}</span>
-                            </div>
-                        </option>
-
-                        @foreach ($parentCategories as $parentCategory)
-                            <option value="{{ $parentCategory->id }}" {{ $data->parent_id == $parentCategory->id ? 'selected' : '' }}>
-                                <div class="custom-option">
-                                    <span class="option-text">{{ $parentCategory->name }}</span>
-                                </div>
-                            </option>
-                        @endforeach
-
-                    </select>
+                        <ul class="custom-multi-options">
+                            @foreach ($products as $product)
+                                <li>
+                                    <input type="checkbox" name="product_ids[]" value="{{ $product->id }}" {{ in_array($product->id, $data->product_ids) ? 'checked' : '' }}>
+                                    <span class="option-text">{{ $product->name }}</span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
 
                 </div>
 
@@ -62,6 +56,7 @@
 
     @push('scripts')
         <script src="{{ asset('js/image.js') }}"></script>
+        <script src="{{ asset('js/multi-selection.js') }}"></script>
     @endpush
 
 @endsection

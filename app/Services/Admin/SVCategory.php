@@ -31,7 +31,7 @@ class SVCategory
             $category = Category::create([
                 'name'       => $params['name'],
                 'branch_ids' => [$user->active_on],
-                'parent_id'  => $params['parent_category_id'] ?? null,
+                'product_ids' => $params['product_ids'] ?? [],
             ]);
 
             // Save image if exists
@@ -56,7 +56,7 @@ class SVCategory
             'id'            => (string)$category->_id,
             'image_url'     => $category->image->url ?? null,
             'name'          => $category->name,
-            'parent_id'     => $category->parent_id,
+            'product_ids'   => $category->product_ids ?? [],
         ];
     }
 
@@ -110,13 +110,15 @@ class SVCategory
             ->get();
     }
 
-    public function getParentCategories()
+    public function getProducts()
     {
         $user = Auth::user();
-        return Category::where('parent_id', null)
-            ->whereIn('branch_ids', [$user->active_on])
-            ->where('deleted_at', null)
-            ->orderByDesc('created_at')
+        return Product::with('assign')
+            ->whereHas('assign', function ($query) use ($user) {
+                $query->where('branch_id', $user->active_on)
+                    ->whereNull('deleted_at');
+            })
+            ->whereNull('deleted_at')
             ->get();
     }
 }

@@ -1,0 +1,37 @@
+{
+    "status": true,
+    "code": 200,
+    "message": "Success",
+    "data": [
+        {
+            "id": "69457e65358b276cce0db4eb",
+            "image_url": null,
+            "name": "CASH"
+        },
+        {
+            "id": "69457e65358b276cce0db4ec",
+            "image_url": null,
+            "name": "ABA"
+        },
+        {
+            "id": "69457e65358b276cce0db4ed",
+            "image_url": null,
+            "name": "ACLEDA"
+        },
+        {
+            "id": "69457e65358b276cce0db4ee",
+            "image_url": null,
+            "name": "WING"
+        },
+        {
+            "id": "69457e65358b276cce0db4ef",
+            "image_url": null,
+            "name": "FTB"
+        },
+        {
+            "id": "69457e65358b276cce0db4f0",
+            "image_url": null,
+            "name": "SATHAPANA"
+        }
+    ]
+}

@@ -150,5 +150,20 @@
     "rejected_date": "Rejected Date",
     "total_cost": "Total Cost",
     "rejected": "Rejected",
-    "showing_of": "showing :start_from-:per_page of :total"
+    "showing_of": "showing :start_from-:per_page of :total",
+    "this_is_a_test_message_from": "This is a test message from <b>:object_name</b>",
+    "configuration_saved_successfully": "Configuration saved successfully",
+    "telegram_config": "Telegram Config",
+    "receive_invoice_channel": "Receive Invoice Channel",
+    "send_test": "Send Test",
+    "enter_channel_id": "Enter channel id",
+    "sent_successfully": "Sent successfully",
+    "order_number": "Order Number",
+    "order_details": "Order Details",
+    "discount": "Discount",
+    "total": "Total",
+    "payment_method": "Payment Method",
+    "lower_stock_alert_channel": "Lower Stock Alert Channel",
+    "staff_only_one_branch": "Staff only one branch",
+    "staff_must_select_exactly_one_branch": "Staff must select exactly one branch"
 }

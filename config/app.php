@@ -14,9 +14,11 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    'system_name' => env('SYSTEM_NAME', 'Khmer Angkor'),
     'api_url' => env('API_URL', 'http://localhost:8000'),
     'super_admin_password' => env('SUPER_ADMIN_PASSWORD'),
     'base_aws_s3_url' => env('BASE_AWS_S3_URL'),
+    'telegram_bot_token' => env('TELEGRAM_BO_TOKEN'),
 
     /*
     |--------------------------------------------------------------------------

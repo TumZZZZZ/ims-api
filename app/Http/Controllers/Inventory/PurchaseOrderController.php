@@ -2,30 +2,24 @@
 
 namespace App\Http\Controllers\Inventory;
 
-use App\Http\Controllers\BaseApi;
+use App\Http\Controllers\Controller;
+use App\Services\Admin\SVProduct;
 use App\Services\Inventory\SVPurchaseOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class PurchaseOrderController extends BaseApi
+class PurchaseOrderController extends Controller
 {
     public function getService()
     {
         return (new SVPurchaseOrder());
     }
 
-    public function index(Request $request)
-    {
-        return view('admin.purchase-orders.index', [
-            'data' => $this->getService()->getWithPagination($request->all()),
-        ]);
-    }
-
     public function closed(Request $request)
     {
         $tab = 'closed';
         $request->merge(['tab' => $tab]);
-        return view('admin.purchase-orders.index', [
+        return view('inventory.purchase-orders.index', [
             'data' => $this->getService()->getWithPagination($request->all()),
         ])->with('activeTab', $tab);
     }
@@ -34,7 +28,7 @@ class PurchaseOrderController extends BaseApi
     {
         $tab = 'draft';
         $request->merge(['tab' => $tab]);
-        return view('admin.purchase-orders.index', [
+        return view('inventory.purchase-orders.index', [
             'data' => $this->getService()->getWithPagination($request->all()),
         ])->with('activeTab', $tab);
     }
@@ -43,7 +37,7 @@ class PurchaseOrderController extends BaseApi
     {
         $tab = 'sent';
         $request->merge(['tab' => $tab]);
-        return view('admin.purchase-orders.index', [
+        return view('inventory.purchase-orders.index', [
             'data' => $this->getService()->getWithPagination($request->all()),
         ])->with('activeTab', $tab);
     }
@@ -52,16 +46,15 @@ class PurchaseOrderController extends BaseApi
     {
         $tab = 'rejected';
         $request->merge(['tab' => $tab]);
-        return view('admin.purchase-orders.index', [
+        return view('inventory.purchase-orders.index', [
             'data' => $this->getService()->getWithPagination($request->all()),
         ])->with('activeTab', $tab);
     }
 
     public function create()
     {
-        return view('admin.users.create', [
-            'roles' => getRoles(),
-            'branches' => Auth::user()->getBranches(),
+        return view('inventory.purchase-orders.create', [
+            'products' => (new SVProduct)->getAllProducts(),
         ]);
     }
 

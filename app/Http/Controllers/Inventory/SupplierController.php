@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Inventory;
 
-use App\Http\Controllers\BaseApi;
+use App\Http\Controllers\Controller;
 use App\Services\Inventory\SVSupplier;
 use Illuminate\Http\Request;
 
-class SupplierController extends BaseApi
+class SupplierController extends Controller
 {
     public function getService()
     {
@@ -15,25 +15,25 @@ class SupplierController extends BaseApi
 
     public function index(Request $request)
     {
-        return view('admin.suppliers.index', [
+        return view('inventory.ledgers.index', [
             'data' => $this->getService()->getWithPagination($request->all()),
         ]);
     }
 
     public function create()
     {
-        return view('admin.suppliers.create');
+        return view('inventory.suppliers.create');
     }
 
     public function store(Request $request)
     {
         $this->getService()->store($request->all());
-        return redirect()->route('admin.suppliers.index')->with('success_message', __('object_created_successfully', ['object' => __('supplier'), 'object_name' => $request->first_name." ".$request->last_name]));
+        return redirect()->route('inventory.suppliers.index')->with('success_message', __('object_created_successfully', ['object' => __('supplier'), 'object_name' => $request->first_name." ".$request->last_name]));
     }
 
     public function edit($userId)
     {
-        return view('admin.suppliers.update', [
+        return view('inventory.suppliers.update', [
             'data' => $this->getService()->getById($userId),
         ]);
     }
@@ -41,7 +41,7 @@ class SupplierController extends BaseApi
     public function update(Request $request, $branchId)
     {
         $this->getService()->update($branchId, $request->all());
-        return redirect()->route('admin.suppliers.index')->with('success_message', __('object_updated_successfully', ['object' => __('supplier'), 'object_name' => $request->first_name." ".$request->last_name]));
+        return redirect()->route('inventory.suppliers.index')->with('success_message', __('object_updated_successfully', ['object' => __('supplier'), 'object_name' => $request->first_name." ".$request->last_name]));
     }
 
     public function delete(Request $request, $branchId)

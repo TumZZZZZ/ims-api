@@ -35,7 +35,7 @@
                     </div>
                     <div style="width: 50%;">
                         <label>@lang('currency')<span>*</span></label>
-                        <select name="currency_code">
+                        <select name="currency_code" required>
                             <button>
                                 <selectedcontent></selectedcontent>
                             </button>

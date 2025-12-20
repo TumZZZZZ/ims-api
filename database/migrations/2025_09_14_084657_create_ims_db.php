@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('meta', function (Blueprint $collection) {
+        Schema::create('metas', function (Blueprint $collection) {
             $collection->string('_id');
             $collection->string('key');
             $collection->integer('value');
@@ -170,8 +170,11 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $collection) {
             $collection->string('_id');
             $collection->string('branch_id');
+            $collection->string('payment_id');
             $collection->string('sale_by'); // objectId of user
+            $collection->integer('order_number');
             $collection->date('date');
+            $collection->enum('status', ['NEW','CANCELLED','PAID']);
             $collection->timestamps();
             $collection->softDeletes();
         });
@@ -196,7 +199,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('meta');
+        Schema::dropIfExists('metas');
         Schema::dropIfExists('stores');
         Schema::dropIfExists('users');
         Schema::dropIfExists('images');

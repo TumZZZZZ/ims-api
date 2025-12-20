@@ -115,9 +115,8 @@
         <div>
             @if ($activeTab == 'closed')
                 <button class="btn" style="background: #4CAF50;"
-                    {{-- onclick="window.location.href='/inventory/purchase-orders/create'" --}}
-                >
-                    + @lang('create')
+                    onclick="window.location.href='/inventory/purchase-orders/create'"
+                > + @lang('create')
                 </button>
             @endif
         </div>

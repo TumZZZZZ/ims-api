@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
-use App\Http\Controllers\BaseApi;
+use App\Http\Controllers\Controller;
 use App\Services\SuperAdmin\SVActivityLog;
 use Illuminate\Http\Request;
 
-class ActivityLogController extends BaseApi
+class ActivityLogController extends Controller
 {
     public function getService()
     {

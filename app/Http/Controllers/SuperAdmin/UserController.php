@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
-use App\Http\Controllers\BaseApi;
+use App\Http\Controllers\Controller;
 use App\Services\SuperAdmin\SVUser;
 use Illuminate\Http\Request;
 
-class UserController extends BaseApi
+class UserController extends Controller
 {
     public function getService()
     {

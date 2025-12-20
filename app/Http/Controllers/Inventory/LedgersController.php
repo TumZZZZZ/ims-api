@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Inventory;
 
-use App\Http\Controllers\BaseApi;
+use App\Http\Controllers\Controller;
 use App\Services\Inventory\SVLedgers;
 use Illuminate\Http\Request;
 
-class LedgersController extends BaseApi
+class LedgersController extends Controller
 {
     public function getService()
     {
@@ -15,7 +15,7 @@ class LedgersController extends BaseApi
 
     public function index(Request $request)
     {
-        return view('admin.ledgers.index', [
+        return view('inventory.ledgers.index', [
             'data' => $this->getService()->getWithPagination($request->all()),
         ]);
     }

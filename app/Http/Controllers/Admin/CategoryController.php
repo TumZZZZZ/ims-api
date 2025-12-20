@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\BaseApi;
+use App\Http\Controllers\Controller;
 use App\Services\Admin\SVCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class CategoryController extends BaseApi
+class CategoryController extends Controller
 {
     public function getService()
     {
@@ -24,7 +24,7 @@ class CategoryController extends BaseApi
     public function create()
     {
         return view('admin.categories.create', [
-            'parentCategories' => $this->getService()->getParentCategories(),
+            'products' => $this->getService()->getProducts(),
         ]);
     }
 
@@ -39,7 +39,7 @@ class CategoryController extends BaseApi
     {
         return view('admin.categories.update', [
             'data' => $this->getService()->getById($categoryId),
-            'parentCategories' => $this->getService()->getParentCategories(),
+            'products' => $this->getService()->getProducts(),
         ]);
     }
 

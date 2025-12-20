@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Enum\Constants;
 use App\Models\Image;
+use App\Models\Meta;
 use Illuminate\Database\Seeder;
 use App\Models\Store;
 use App\Models\User;
@@ -34,20 +36,15 @@ class DefaultDataSeeder extends Seeder
                 'location' => 'Near IU, Sen Sok, Phnom Penh, Cambodia',
                 'branches' => [
                     [
-                        'name'          => 'PK KFC',
-                        'location'      => 'Toul Kork, Phnom Penh, Cambodia',
+                        'name'          => 'Phnom Penh KFC',
+                        'location'      => 'Sen Sok, Phnom Penh, Cambodia',
+                        'currency_code' => 'USD',
+                    ],
+                    [
+                        'name'          => 'Prey Veng KFC',
+                        'location'      => 'Prey Veng, Cambodia',
                         'currency_code' => 'KHR',
-                    ],
-                    [
-                        'name'          => 'Chenny KFC',
-                        'location'      => 'Phnom Penh, Cambodia',
-                        'currency_code' => 'USD',
-                    ],
-                    [
-                        'name'          => 'Justin KFC',
-                        'location'      => 'Kompong Cham, Cambodia',
-                        'currency_code' => 'USD',
-                    ],
+                    ]
                 ],
             ];
 
@@ -59,17 +56,6 @@ class DefaultDataSeeder extends Seeder
                     'location'      => $merchant['location'],
                     'currency_code' => null,
                     'active'        => 1,
-                ]
-            );
-
-            # Merchant logo
-            Image::firstOrCreate(
-                [
-                    'object_id'  => $newMerchant->_id,
-                    'collection' => 'stores',
-                ],
-                [
-                    'url' => asset('storage/images/stores/76e68975715a9.png'),
                 ]
             );
 
@@ -89,7 +75,7 @@ class DefaultDataSeeder extends Seeder
             }
 
             # Admin user
-            $admin = User::updateOrCreate(
+            $admin = User::firstOrCreate(
                 [
                     'merchant_id'  => $newMerchant->_id,
                     'email'        => 'admin@gmail.com',
@@ -105,15 +91,32 @@ class DefaultDataSeeder extends Seeder
             );
 
             # User image
-            Image::firstOrCreate(
+            $createParams = [
+                'object_id'  => $admin->_id,
+                'collection' => 'users',
+            ];
+            $updateparams = $createParams;
+            Image::firstOrCreate($createParams, $updateparams);
+
+            # Payment Method
+            $paymentMethods = [
+                Constants::PAYMENT_TYPE_CASH,
+                Constants::PAYMENT_TYPE_ABA,
+                Constants::PAYMENT_TYPE_ACLEDA,
+                Constants::PAYMENT_TYPE_WING,
+                Constants::PAYMENT_TYPE_FTB,
+                Constants::PAYMENT_TYPE_SATHAPANA,
+            ];
+            foreach ($paymentMethods as $paymentMethod) {
+                Meta::firstOrCreate(
                 [
-                    'object_id'  => $admin->_id,
-                    'collection' => 'users',
+                    'key' => Constants::PAYMENT_TYPE,
+                    'value' => $paymentMethod,
                 ],
                 [
-                    'url' => asset('storage/images/users/89e64975717a5.jpg'),
-                ]
-            );
+                    'object_id' => null,
+                ]);
+            }
         });
     }
 }
