@@ -18,17 +18,52 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
-            // API routes: return JSON
+        // 401 Unauthorized - API only
+        $exceptions->renderable(function (
+            \Illuminate\Auth\AuthenticationException $e,
+            $request
+        ) {
             if ($request->is('api/*')) {
                 return response()->json([
-                    'status'  => false,
+                    'success' => false,
+                    'message' => 'Unauthorized',
                     'code'    => 401,
-                    'message' => 'Unauthenticated.',
                 ], 401);
             }
 
-            // redirect to SPA entry point instead of `login`
-            return redirect(route('login')); // or wherever your SPA handles login
+            // non-API → normal behavior
+            return redirect()->route('login');
+        });
+
+        // 404 Not Found - API vs Web
+        $exceptions->renderable(function (
+            \Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e,
+            $request
+        ) {
+            // API route not found
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'API route not found',
+                    'code'    => 404,
+                ], 404);
+            }
+
+            // Web route not found
+            return redirect()->route('404.page');
+        });
+
+        // 405 Method Not Allowed - API only
+        $exceptions->renderable(function (
+            \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException $e,
+            $request
+        ) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'HTTP method not supported for this route',
+                    'code'    => 405,
+                ], 405);
+            }
         });
     })->create();

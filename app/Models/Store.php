@@ -10,8 +10,11 @@ class Store extends Model
     protected $collection = 'stores';
 
     protected $fillable = [
+        'parent_id',
         'name',
-        'location'
+        'location',
+        'currency_code',
+        'active',
     ];
 
     public function admin()
@@ -22,5 +25,15 @@ class Store extends Model
     public function image()
     {
         return $this->hasOne(Image::class, 'object_id', '_id')->whereNull('deleted_at');
+    }
+
+    public function merchant()
+    {
+        return $this->belongsTo(Store::class, 'parent_id', '_id')->whereNull('deleted_at');
+    }
+
+    public function branches()
+    {
+        return $this->hasMany(Store::class, 'parent_id', '_id')->whereNull('deleted_at');
     }
 }

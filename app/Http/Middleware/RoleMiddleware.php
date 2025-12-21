@@ -2,11 +2,12 @@
 
 namespace App\Http\Middleware;
 
-use App\Http\Controllers\BaseApi;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 
-class RoleMiddleware extends BaseApi
+class RoleMiddleware
 {
     /**
      * Handle an incoming request.
@@ -18,14 +19,17 @@ class RoleMiddleware extends BaseApi
      */
     public function handle(Request $request, Closure $next, $role)
     {
+        // Set the locale from session if available
+        App::setLocale(session('app_locale', config('app.locale')));
+
         // Ensure the user is logged in
-        if (! $request->user()) {
-            return $this->sendError('Unauthenticated', 401);
+        if (! Auth::check()) {
+            return redirect()->route('401.page');
         }
 
         // Check role (assuming you have a `role` column on users table)
-        if ($request->user()->role !== $role) {
-            return $this->sendError('Unauthorized', 403);
+        if (!in_array(Auth::user()->role, explode('|', $role))) {
+            return redirect()->route('403.page');
         }
 
         return $next($request);

@@ -1,173 +1,73 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <title>Khmer Angkor | Login</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <style>
-        /* Background inspired by Angkor temple colors */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: "Segoe UI", Arial, sans-serif;
-            height: 100vh;
-            background: linear-gradient(135deg, #a47e3c 0%, #3c2a21 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Container */
-        .login-box {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
-            padding: 40px 30px;
-            width: 100%;
-            max-width: 380px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-            text-align: center;
-        }
-
-        /* Company name */
-        .company {
-            font-family: 'Georgia', serif;
-            font-size: 28px;
-            font-weight: bold;
-            color: #a47e3c;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            font-size: 14px;
-            color: #6b5a4a;
-            margin-bottom: 25px;
-            font-style: italic;
-        }
-
-        /* Form title */
-        .login-box h2 {
-            color: #3c2a21;
-            font-size: 22px;
-            margin-bottom: 20px;
-            font-weight: 600;
-        }
-
-        /* Label */
-        .login-box label {
-            display: block;
-            text-align: left;
-            margin-bottom: 6px;
-            font-weight: 600;
-            color: #3c2a21;
-        }
-
-        /* Input fields */
-        .login-box input[type="email"],
-        .login-box input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 16px;
-            border: 1px solid #bba27e;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 14px;
-            background-color: #fffaf3;
-            color: #3c2a21;
-            transition: all 0.3s ease;
-        }
-
-        /* Hover + Focus with Angkor gold highlight */
-        .login-box input[type="email"]:hover,
-        .login-box input[type="password"]:hover,
-        .login-box input[type="email"]:focus,
-        .login-box input[type="password"]:focus {
-            border-color: #a47e3c;
-            outline: none;
-            box-shadow: 0 0 5px #a47e3c;
-            background-color: #fff8ea;
-        }
-
-        /* Button */
-        .login-box button {
-            width: 100%;
-            background: #a47e3c;
-            color: white;
-            border: none;
-            padding: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .login-box button:hover {
-            background: #8c682e;
-        }
-
-        /* Link */
-        .login-box a {
-            display: inline-block;
-            margin-top: 12px;
-            font-size: 14px;
-            color: #3c2a21;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .login-box a:hover {
-            color: #a47e3c;
-            text-decoration: underline;
-        }
-
-        /* Mobile-friendly */
-        @media (max-width: 480px) {
-            .login-box {
-                padding: 30px 20px;
-                margin: 10px;
-            }
-
-            .company {
-                font-size: 22px;
-            }
-        }
-    </style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" href="{{ asset('storage/default-images/favicon.png') }}">
+    <title>Khmer Angkor | Sign In</title>
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 </head>
 
-<body>
-    <div class="login-box">
-        <div class="company">Khmer Angkor</div>
+<body style="background: url('{{ asset('storage/default-images/angkor-wat.jpg') }}') center/cover no-repeat fixed;">
 
-        <h2>Sign In</h2>
-        <form id="loginForm" method="POST" action="{{ route('login.post') }}">
-            @csrf
+    <div class="overlay" aria-hidden="true"></div>
 
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" value="{{ old('email') }}" required>
-            </div>
+    <main class="card" role="main" aria-labelledby="signinTitle">
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
-            </div>
+        <!-- ===== LOGIN FORM ===== -->
+        <section id="login-section">
+            <header class="brand">
+                <div class="logo" aria-hidden="true">KA</div>
+                <div>
+                    <h1 id="signinTitle">Khmer Angkor — Sign In</h1>
+                    <p style="font-size: 14px;">Welcome back — sign in to continue to your dashboard</p>
+                </div>
+            </header>
 
-            <button type="submit">Login</button>
-            <div style="margin-top:10px;">
-                <a href="#">Forgot password?</a>
-            </div>
+            <form method="POST" action="{{ route('login.post') }}">
+                @csrf
+                <div class="input">
+                    <label for="email">Email</label>
+                    <input id="email" name="email" type="email" placeholder="you@domain.com" required value="{{ old('email') }}"
+                        autocomplete="email">
+                </div>
 
-            <div id="errorMessage" style="color:red; margin-top:10px;">
-                @error('email')
-                    <div class="error">{{ $message }}</div>
-                @enderror
-            </div>
-        </form>
-    </div>
+                <div class="input">
+                    <label for="password">Password</label>
+                    <input id="password" name="password" type="password" placeholder="Enter your password" required value="{{ old('password') }}"
+                        autocomplete="current-password">
+                </div>
+                <label class="password-visibility" for="password-visibility">Show Password<input class="custom-checkbox" type="checkbox" name="password-visibility"></label>
+
+                @if ($errors->any())
+                    <div style="color:red;">
+                        @foreach ($errors->all() as $error)
+                            {{ $error }}
+                        @endforeach
+                    </div>
+                @endif
+
+                <div class="actions">
+                    <label class="remember" for="remember-me"><input class="custom-checkbox" type="checkbox" name="remember"> Remember me</label>
+                    <div class="forgot"><a href={{ route('forgot.password') }}>Forgot password?</a></div>
+                </div>
+
+                <button class="btn" type="submit">Sign In</button>
+            </form>
+        </section>
+
+    </main>
+
+    <script>
+        const passwordInput = document.getElementById('password');
+        const passwordToggle = document.getElementsByName('password-visibility')[0]; // get the first checkbox with that name
+
+        passwordToggle.addEventListener('change', function() {
+            passwordInput.type = this.checked ? 'text' : 'password';
+        });
+    </script>
+
 </body>
 
 </html>

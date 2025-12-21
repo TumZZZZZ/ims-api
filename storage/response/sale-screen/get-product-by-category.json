@@ -1,0 +1,14 @@
+{
+    "status": true,
+    "code": 200,
+    "message": "Success",
+    "data": [
+        {
+            "id": "69457233ed75b318360c07ae",
+            "name": "Steven Holder",
+            "image_url": "https://khmer-angkor-ims.s3.amazonaws.com/images/categories/69457233ed75b318360c07ae.jpg",
+            "price": 72000,
+            "price_format": "$720.00"
+        }
+    ]
+}

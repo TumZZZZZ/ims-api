@@ -1,0 +1,12 @@
+{
+    "status": true,
+    "code": 200,
+    "message": "Success",
+    "data": [
+        {
+            "id": "69456e42ed75b318360c07a8",
+            "name": "DRINKS",
+            "image_url": "https://khmer-angkor-ims.s3.amazonaws.com/images/categories/69456e42ed75b318360c07a8.jpg"
+        }
+    ]
+}
