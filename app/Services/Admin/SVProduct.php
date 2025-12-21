@@ -13,10 +13,13 @@ class SVProduct
     {
         $user = Auth::user();
         $search = $params['search'] ?? null;
+        $categoryIds = Category::where('name', 'like', "%{$search}%")
+            ->pluck('id');
         return Product::with(['image','categories','assign',])
-            ->when($search, function($query, $search) {
+            ->when($search, function($query) use ($search, $categoryIds) {
                 $query->where('name', 'like', '%'.$search.'%')
-                    ->orWhere('barcode', 'like', '%'.$search.'%');
+                    ->orWhere('barcode', 'like', '%'.$search.'%')
+                    ->orWhereIn('category_ids', $categoryIds);;
             })
             ->whereHas('assign', function ($query) use ($user) {
                 $query->where('branch_id', $user->active_on);

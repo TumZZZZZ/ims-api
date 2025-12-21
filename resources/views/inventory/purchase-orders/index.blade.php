@@ -148,6 +148,7 @@
                         <th>@lang('requested_date')</th>
                         <th>@lang('status')</th>
                         <th>@lang('total_cost')</th>
+                        <th>@lang('actions')</th>
                     @elseif ($activeTab == $rejectedTab)
                         <th>@lang('order_no')</th>
                         <th>@lang('branch')</th>
@@ -162,6 +163,13 @@
 
             <tbody id="table-body">
                 @forelse($data as $po)
+                    @php
+                        $po->total_cost = amountFormat(convertCentsToAmounts($po->total_cost), getCurrencyCode());
+                        $po->requested_date = \Carbon\Carbon::parse($po->requested_date)->setTimezone(getTimezone())->format('m/d/Y h:i A');
+                        $po->received_date = \Carbon\Carbon::parse($po->received_date)->setTimezone(getTimezone())->format('m/d/Y h:i A');
+                        $po->rejected_date = \Carbon\Carbon::parse($po->rejected_date)->setTimezone(getTimezone())->format('m/d/Y h:i A');
+                        $po->status = \App\Enum\Constants::PURCHASE_ORDER_STATUS[$po->status] ?? $po->status;
+                    @endphp
                     <tr>
                         @if ($activeTab == $closedTab)
                             <td>{{ $po->order_number }}</td>
@@ -177,7 +185,25 @@
                             <td>{{ $po->supplier->name }}</td>
                             <td>{{ $po->status }}</td>
                             <td>{{ $po->total_cost }}</td>
-                            <td></td>
+                            <td>
+                                <button class="btn"
+                                    onclick="window.location.href='/inventory/purchase-orders/edit/{{ $po->id }}'"
+                                    style="background: #7d7c7a;">{{ __('edit') }}
+                                </button>
+                                {{-- <button class="btn"
+                                    onclick="window.location.href='/admin/users/edit/{{ $user->id }}'"
+                                    style="background: #dc3545;">{{ __('delete') }}
+                                </button> --}}
+                                <button
+                                    class="btn delete-btn"
+                                    data-url={{ 'inventory/purchase-orders/delete' }}
+                                    data-id="{{ $po->id }}"
+                                    data-name="{{ $po->order_number }}"
+                                    data-title="{{ __('delete') }}"
+                                    style="background: #F44336;">
+                                    {{ __('delete') }}
+                                </button>
+                            </td>
                         @elseif ($activeTab == $sentTab)
                             <td>{{ $po->order_number }}</td>
                             <td>{{ $po->branch->name }}</td>
@@ -185,6 +211,16 @@
                             <td>{{ $po->requested_date }}</td>
                             <td>{{ $po->status }}</td>
                             <td>{{ $po->total_cost }}</td>
+                            <td>
+                                <button class="btn"
+                                    onclick="window.location.href='/inventory/purchase-orders/view-details/{{ $po->id }}'"
+                                    style="background: #bea803;">{{ __('view_details') }}
+                                </button>
+                                <button class="btn"
+                                    onclick="openDialogRejectionForm('/inventory/purchase-orders/reject/{{ $po->id }}', '{{ $po->order_number }}')"
+                                    style="background: #dc3545;">{{ __('reject') }}
+                                </button>
+                            </td>
                         @elseif ($activeTab == $rejectedTab)
                             <td>{{ $po->order_number }}</td>
                             <td>{{ $po->branch->name }}</td>
@@ -192,7 +228,7 @@
                             <td>{{ $po->rejected_date }}</td>
                             <td>{{ $po->status }}</td>
                             <td>{{ $po->total_cost }}</td>
-                            <td>{{ $po->reason }}</td>
+                            <td>{{ $po->reason ?? '-' }}</td>
                         @endif
                     </tr>
                 @empty
@@ -210,6 +246,7 @@
 
     <!-- ===== Modal ===== -->
     @include('modal')
+    @include('modal-rejcet-po')
 
     @push('scripts')
         <script src="{{ asset('js/search.js') }}"></script>
@@ -242,6 +279,25 @@
                     tab.classList.add('active');
                 });
             });
+
+            function openDialogRejectionForm(url, title) {
+
+                const modalRejectionTitle = document.getElementById('modalRejectPOTitle');
+                const formRejectionPO = document.getElementById('rejectionPOForm');
+                const inputHiddenPONumber = document.getElementById('inputHiddenPONumner');
+                const inputReason = document.getElementById('inputReason');
+
+                modalRejectionTitle.textContent = title;
+                formRejectionPO.setAttribute('action', url);
+                inputHiddenPONumber.value = title;
+
+                inputReason.value = null;
+                document.getElementById("modalRejectPO").style.display = "flex";
+            }
+
+            function closeDialogForm() {
+                document.getElementById("modalRejectPO").style.display = "none";
+            }
         </script>
     @endpush
 

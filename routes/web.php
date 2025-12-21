@@ -20,14 +20,13 @@ use App\Http\Controllers\Admin\{
     PromotionController,
     UserController as AdminUserController
 };
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Inventory\{
     SupplierController,
     PurchaseOrderController,
     LedgersController
 };
 use App\Http\Controllers\SettingController;
-
-Route::get('po-draft', fn() => view('po-draft'));
 
 Route::middleware('web')->group(function () {
 
@@ -159,7 +158,7 @@ Route::middleware('web')->group(function () {
             Route::post('store', [SupplierController::class, 'store'])->name('inventory.supplier.store');
             Route::get('edit/{id}', [SupplierController::class, 'edit'])->name('inventory.supplier.edit');
             Route::put('update/{id}', [SupplierController::class, 'update'])->name('inventory.supplier.update');
-            Route::delete('delete/{id}', [SupplierController::class, 'destroy'])->name('inventory.supplier.destroy');
+            Route::delete('delete/{id}', [SupplierController::class, 'delete'])->name('inventory.supplier.delete');
         });
 
         // Purchase Orders routes
@@ -169,7 +168,12 @@ Route::middleware('web')->group(function () {
             Route::get('sent', [PurchaseOrderController::class, 'sent'])->name('inventory.purchase-orders.sent');
             Route::get('rejected', [PurchaseOrderController::class, 'rejected'])->name('inventory.purchase-orders.rejected');
             Route::get('create', [PurchaseOrderController::class, 'create'])->name('inventory.purchase-order.create');
-            Route::get('store', [PurchaseOrderController::class, 'store'])->name('inventory.purchase-order.store');
+            Route::post('store', [PurchaseOrderController::class, 'store'])->name('inventory.purchase-order.store');
+            Route::get('view-details/{id}', [PurchaseOrderController::class, 'viewDetails'])->name('inventory.purchase-order.view-details');
+            Route::put('update/{id}', [PurchaseOrderController::class, 'update'])->name('inventory.purchase-order.update');
+            Route::post('reject/{id}', [PurchaseOrderController::class, 'reject'])->name('inventory.purchase-order.reject');
+            Route::get('edit/{id}', [PurchaseOrderController::class, 'edit'])->name('inventory.purchase-order.edit');
+            Route::delete('delete/{id}', [PurchaseOrderController::class, 'delete'])->name('inventory.purchase-order.destroy');
         });
 
         // Ledgers routes
@@ -195,4 +199,12 @@ Route::middleware('web')->group(function () {
         Route::get('403', [ErrorsController::class, 'forbidden'])->name('403.page');
         Route::get('404', [ErrorsController::class, 'pageNotFound'])->name('404.page');
     });
+
+
+    /**
+     * ================================================
+     *                  API CHAT BOT
+     * ================================================
+     */
+    Route::post('/chat/send', [ChatController::class, 'sendMessage']);
 });

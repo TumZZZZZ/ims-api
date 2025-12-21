@@ -133,6 +133,8 @@
                                 'inventory.purchase-orders.sent',
                                 'inventory.purchase-orders.rejected',
                                 'inventory.purchase-order.create',
+                                'inventory.purchase-order.view-details',
+                                'inventory.purchase-order.edit',
                             ],
                         ],
                         [
@@ -173,6 +175,8 @@
                         'inventory.purchase-orders.sent',
                         'inventory.purchase-orders.rejected',
                         'inventory.purchase-order.create',
+                        'inventory.purchase-order.view-details',
+                        'inventory.purchase-order.edit'
                     ],
                 ],
                 [
@@ -310,33 +314,34 @@
             @yield('content')
         </div>
 
+        @include('layouts.chat')
         {{-- <footer>© 2025 Khmer Angkor. All rights reserved.</footer> --}}
     </main>
     <script src="{{ asset('js/dropdown.js') }}"></script>
     @stack('scripts')
-    <script>
-        // JS for menu group
-        document.addEventListener('DOMContentLoaded', function () {
+        <script>
+            // JS for menu group
+            document.addEventListener('DOMContentLoaded', function () {
 
-            // Auto-open menu groups that have active children
-            document.querySelectorAll('.menu-group').forEach(group => {
-                if (group.querySelector('.menu-children .active')) {
-                    group.classList.add('open');
-                }
+                // Auto-open menu groups that have active children
+                document.querySelectorAll('.menu-group').forEach(group => {
+                    if (group.querySelector('.menu-children .active')) {
+                        group.classList.add('open');
+                    }
+                });
+
+                // Toggle on click (event delegation)
+                document.addEventListener('click', function (e) {
+                    const parentBtn = e.target.closest('.menu-parent');
+                    if (!parentBtn) return;
+
+                    const group = parentBtn.closest('.menu-group');
+                    if (!group) return;
+
+                    group.classList.toggle('open');
+                });
             });
-
-            // Toggle on click (event delegation)
-            document.addEventListener('click', function (e) {
-                const parentBtn = e.target.closest('.menu-parent');
-                if (!parentBtn) return;
-
-                const group = parentBtn.closest('.menu-group');
-                if (!group) return;
-
-                group.classList.toggle('open');
-            });
-        });
-    </script>
+        </script>
 </body>
 
 </html>

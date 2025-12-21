@@ -3,6 +3,7 @@
 use App\Enum\Constants;
 use App\Models\History;
 use App\Models\Image;
+use App\Models\Ledger;
 use App\Models\Meta;
 use App\Models\Order;
 use App\Models\Store;
@@ -314,5 +315,28 @@ if (!function_exists('generateOrderNumber')) {
             ->orderByDesc('order_number')
             ->first();
         return $lastOrder ? $lastOrder->order_number + 1 : 1;
+    }
+}
+
+if (!function_exists('formatPhoneKH')) {
+    function formatPhoneKH($phone)
+    {
+        // Remove all non-digits
+        $phone = preg_replace('/\D/', '', $phone);
+
+        // Remove leading 0
+        if (str_starts_with($phone, '0')) {
+            $phone = substr($phone, 1);
+        }
+
+        // Format: 98 765 432
+        return '+855 ' . substr($phone, 0, 2) . ' ' . substr($phone, 2, 3) . ' ' . substr($phone, 5);
+    }
+}
+
+if (! function_exists('createLedgers')) {
+    function createLedgers(array $params)
+    {
+        Ledger::insert($params);
     }
 }

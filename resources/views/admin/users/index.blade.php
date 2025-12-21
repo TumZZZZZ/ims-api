@@ -58,9 +58,14 @@
                         <td>{{ App\Enum\Constants::ROLES[$user->role] }}</td>
                         <td class="text-center">
                             @if ($user->id != auth()->user()->id)
-                                <button class="btn"
-                                    onclick="openDialog('admin/users/delete', '{{ $user->id }}', '{{ $user->first_name.' '.$user->last_name }}', '{{ __('delete') }}')"
-                                    style="background: #F44336;">{{ __('delete') }}
+                                <button
+                                    class="btn delete-btn"
+                                    data-url={{ 'admin/users/delete' }}
+                                    data-id="{{ $user->id }}"
+                                    data-name="{{ $user->first_name . ' ' . $user->last_name }}"
+                                    data-title="{{ __('delete') }}"
+                                    style="background: #F44336;">
+                                    {{ __('delete') }}
                                 </button>
                             @endif
                             <button class="btn"

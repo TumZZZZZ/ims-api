@@ -98,7 +98,7 @@
                     <div style="width: 50%;">
                         <label>@lang('barcode') (@lang('optional'))</label>
                         <input type="text" name="barcode" value="{{ old('barcode') }}"
-                            placeholder="@lang('enter_barcode')" required style="padding-right: 40px;">
+                            placeholder="@lang('enter_barcode')" style="padding-right: 40px;">
                     </div>
                 </div>
 

@@ -68,7 +68,7 @@ class SVCategory
 
             // Update category
             $category->name = $params['name'];
-            $category->parent_id = $params['parent_category_id'] ?? null;
+            $category->product_ids = $params['product_ids'] ?? [];
             $category->save();
 
             // Update image if exists

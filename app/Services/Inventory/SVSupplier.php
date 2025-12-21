@@ -82,4 +82,12 @@ class SVSupplier
             createHistory($user->_id, __('deleted_an_object', ['object' => __('supplier')]), @$user->merchant->id, $user->active_on);
         });
     }
+
+    public function getAllSuppliers()
+    {
+        $user = Auth::user();
+        return Supplier::where('merchant_id', $user->merchant->id)
+            ->whereNull('deleted_at')
+            ->get();
+    }
 }

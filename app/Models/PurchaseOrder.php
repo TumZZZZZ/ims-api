@@ -21,21 +21,75 @@ class PurchaseOrder extends Model
         'total_cost',
         'reason',
         'purchase_order_details',
+        'payment_term',
+        'shipping_carrier',
+        'shipping_fee'
     ];
 
     public function branch()
     {
-        return $this->hasOne(Store::class, '_id', 'branch_id')->whereNull('deleted_at');
+        return $this->belongsTo(Store::class, 'branch_id', '_id')->whereNull('deleted_at');
     }
 
     public function user()
     {
-        return $this->hasOne(User::class, '_id', 'user_id')->whereNull('deleted_at');
+        return $this->belongsTo(User::class, 'user_id', '_id')->whereNull('deleted_at');
     }
 
     public function supplier()
     {
-        return $this->hasOne(Supplier::class, '_id', 'supplier_id')->whereNull('deleted_at');
+        return $this->belongsTo(Supplier::class, 'supplier_id', '_id')->whereNull('deleted_at');
+    }
+
+    /**
+     * Get embedded items only
+     */
+    public function items()
+    {
+        return collect($this->purchase_order_details ?? []);
+    }
+
+    /**
+     * Get products related to embedded items
+     */
+    public function products()
+    {
+        $productIds = $this->items()
+            ->pluck('product_id')
+            ->unique()
+            ->values()
+            ->toArray();
+
+        return Product::whereIn('_id', $productIds)->get();
+    }
+
+    /**
+     * Get items with full product info
+     */
+    public function purchaseOrderDetails()
+    {
+        $items = $this->items();
+
+        if ($items->isEmpty()) {
+            return collect();
+        }
+
+        $products = Product::whereIn(
+            '_id',
+            $items->pluck('product_id')
+        )->get()->keyBy('_id');
+
+        return $items->map(function ($item) use ($products) {
+            $product = $products[$item['product_id']] ?? null;
+
+            return [
+                'product_id' => $product->id,
+                'product'    => $product,
+                'quantity'   => (int) $item['quantity'],
+                'unit_cost'  => (float) $item['unit_cost'],
+                'total_cost' => (float) $item['total_cost'],
+            ];
+        });
     }
 
     public static function generatePONumber(): string

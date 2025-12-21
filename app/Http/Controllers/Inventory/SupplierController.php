@@ -31,22 +31,22 @@ class SupplierController extends Controller
         return redirect()->route('inventory.suppliers.index')->with('success_message', __('object_created_successfully', ['object' => __('supplier'), 'object_name' => $request->first_name." ".$request->last_name]));
     }
 
-    public function edit($userId)
+    public function edit($id)
     {
         return view('inventory.suppliers.update', [
-            'data' => $this->getService()->getById($userId),
+            'data' => $this->getService()->getById($id),
         ]);
     }
 
-    public function update(Request $request, $branchId)
+    public function update(Request $request, $id)
     {
-        $this->getService()->update($branchId, $request->all());
+        $this->getService()->update($id, $request->all());
         return redirect()->route('inventory.suppliers.index')->with('success_message', __('object_updated_successfully', ['object' => __('supplier'), 'object_name' => $request->first_name." ".$request->last_name]));
     }
 
-    public function delete(Request $request, $branchId)
+    public function delete(Request $request, $id)
     {
-        $this->getService()->delete($branchId);
+        $this->getService()->delete($id);
         return response()->json([
             'success' => true,
             'message' => __('object_deleted_successfully', ['object' => __('supplier'), 'object_name' => $request->name]),

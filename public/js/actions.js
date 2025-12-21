@@ -14,6 +14,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        openDialog(
+            this.dataset.url,
+            this.dataset.id,
+            this.dataset.name,
+            this.dataset.title
+        );
+    });
+});
+
 // Modal
 let baseUrl = "";
 let currentObjectId = "";

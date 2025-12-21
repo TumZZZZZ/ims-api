@@ -3,7 +3,8 @@
 namespace App\Services\Inventory;
 
 use App\Models\Ledger;
-use App\Models\User;
+use App\Models\Product;
+use App\Models\Store;
 use Illuminate\Support\Facades\Auth;
 
 class SVLedgers
@@ -12,33 +13,26 @@ class SVLedgers
     {
         $user = Auth::user();
         $search = $params['search'] ?? null;
-        return Ledger::with(['branch','product'])
-            ->when($search, function($query, $search) {
-                $query->where('first_name', 'like', '%'.$search.'%')
-                    ->orWhere('first_name', 'like', '%'.$search.'%')
-                    ->orWhere('email', 'like', '%'.$search.'%')
-                    ->orWhere('phone_number', 'like', '%'.$search.'%');
-            })
-            ->where('merchant_id', $user->merchant->id)
-            ->where('deleted_at', null)
-            ->orderByDesc('created_at')
-            ->paginate(10);
-        return User::with(['image'])
-            ->when($search, function($query, $search) {
-                $query->where('first_name', 'like', '%'.$search.'%')
-                    ->orWhere('first_name', 'like', '%'.$search.'%')
-                    ->orWhere('email', 'like', '%'.$search.'%')
-                    ->orWhere('phone_number', 'like', '%'.$search.'%');
-            })
-            ->where('merchant_id', $user->merchant->id)
-            ->where('deleted_at', null)
-            ->orderByDesc('created_at')
-            ->paginate(10);
-    }
 
-    public function getById($id)
-    {
-        $user = User::find($id);
-        return $user;
+        $branchIds = Store::where('name', 'like', "%{$search}%")
+            ->pluck('id');
+
+        $productIds = Product::where(function($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+            ->orWhere('sku', 'like', "%{$search}%");
+        })->pluck('id');
+
+        return Ledger::with(['branch','product'])
+            ->when($search, function ($q) use ($branchIds, $productIds, $search) {
+                $q->where(function($q2) use ($branchIds, $productIds, $search) {
+                    $q2->whereIn('branch_id', $branchIds)
+                    ->orWhereIn('product_id', $productIds)
+                    ->orWhere('type', 'like', "%{$search}%");
+                });
+            })
+            ->where('branch_id', $user->active_on)
+            ->whereNull('deleted_at')
+            ->orderByDesc('created_at')
+            ->paginate(10);
     }
 }

@@ -21,11 +21,11 @@ class Ledger extends Model
 
     public function branch()
     {
-        return $this->hasOne(Store::class, '_id', 'branch_id')->whereNull('deleted_at');
+        return $this->belongsTo(Store::class, 'branch_id', '_id')->whereNull('deleted_at');
     }
 
     public function product()
     {
-        return $this->hasOne(Store::class, '_id', 'product_id')->whereNull('deleted_at');
+        return $this->belongsTo(Product::class, 'product_id', '_id')->whereNull('deleted_at');
     }
 }

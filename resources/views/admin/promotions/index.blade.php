@@ -49,9 +49,14 @@
                         <td>{{ $endDate }}</td>
                         <td><span style="color: #{{ $colorCode }}">{{ $status }}</span></td>
                         <td class="text-center">
-                            <button class="btn"
-                                onclick="openDialog('admin/promotions/delete', '{{ $promotion->id }}', '{{ $promotion->name }}', '{{ __('delete') }}')"
-                                style="background: #F44336;">{{ __('delete') }}
+                            <button
+                                class="btn delete-btn"
+                                data-url={{ 'admin/promotions/delete' }}
+                                data-id="{{ $promotion->id }}"
+                                data-name="{{ $promotion->name }}"
+                                data-title="{{ __('delete') }}"
+                                style="background: #F44336;">
+                                {{ __('delete') }}
                             </button>
                             <button class="btn"
                                 onclick="window.location.href='/admin/promotions/edit/{{ $promotion->id }}'"

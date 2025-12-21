@@ -27,8 +27,8 @@ class SendOTPMail extends Mailable
     public function build()
     {
         return $this->subject('Email verification code: '. $this->otp)
-            ->view('verify.mail-otp', [
-                'app_name' => "Khmer Angkor",
+            ->view('po-draft', [
+                'app_name' => config('app.system_name'),
                 'otp'      => $this->otp,
             ]);
     }

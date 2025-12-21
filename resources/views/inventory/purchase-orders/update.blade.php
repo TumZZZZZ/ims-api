@@ -1,7 +1,24 @@
 @extends('layouts.app')
 
-@section('title', __('create_purchase_order'))
-@section('header-title', __('create_purchase_order'))
+@section('title', __('update_purchase_order'))
+@section('header-title', __('update_purchase_order'))
+
+@php
+    $orderDetails = $data->purchaseOrderDetails();
+
+    // First, map all products to include ordered_qty
+    $products = $products->map(function($item) use ($orderDetails) {
+        $existing = $orderDetails->where('product_id', $item->id)->first();
+        $item->ordered_qty = $existing ? $existing['quantity'] : 0;
+        return $item;
+    });
+
+    // Then, sort: existing products first
+    $products = $products->sortByDesc(function($item) {
+        return $item->ordered_qty > 0 ? 1 : 0;
+    })->values();
+
+@endphp
 
 @push('styles')
     <style>
@@ -35,13 +52,14 @@
 @section('content')
 
     <div class="action-bar">
-        <button class="btn btn-gold" onclick="window.location.href='/inventory/purchase-orders/closed'">
+        <button class="btn btn-gold" onclick="window.location.href='/inventory/purchase-orders/draft'">
             ← @lang('back')
         </button>
     </div>
 
-    <form action="{{ route('inventory.purchase-order.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('inventory.purchase-order.update', $data->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
+        @method('PUT')
 
         <div style="display: flex;">
 
@@ -54,25 +72,24 @@
                         <div style="display:flex;">
                             <div style="width:50%; padding-right:20px;">
                                 <label>@lang('buyer')</label>
-                                <input type="hidden" name="branch_id" value="{{ auth()->user()->getActiveBranch()->id }}">
-                                <input type="text" value="{{ auth()->user()->getActiveBranch()->name }}" readonly>
+                                <input type="hidden" name="branch_id" value="{{ $data->branch->id }}">
+                                <input type="text" value="{{ $data->branch->name }}" readonly>
                             </div>
                             <div style="width:50%;">
                                 <label>@lang('po_number')</label>
-                                <input type="text" name="po_number" value="{{ $po_number }}" readonly>
+                                <input type="text" name="po_number" value="{{ $data->order_number }}" readonly>
                             </div>
                         </div>
 
                         <div style="display:flex;">
                             <div style="width:50%; padding-right:20px;">
                                 <label>@lang('address')</label>
-                                <textarea rows="3" readonly>{{ auth()->user()->getActiveBranch()->location }}</textarea>
+                                <textarea rows="3" readonly>{{ $data->branch->location }}</textarea>
                             </div>
                             <div style="width:50%;">
                                 <label>@lang('order_date')</label>
-                                <input type="hidden" name="order_date" value="{{ now() }}">
-                                <input type="text" value="{{ now()->setTimezone(getTimezone())->format('m/d/Y h:i A') }}"
-                                    readonly>
+                                <input type="hidden" name="order_date" value="{{ $data->branch->requested_date }}">
+                                <input type="text" value="{{ \Carbon\Carbon::parse($data->branch->requested_date)->setTimezone(getTimezone())->format('m/d/Y h:i A') }}" readonly>
                             </div>
                         </div>
                     </div>
@@ -98,7 +115,7 @@
                                         </div>
                                     </option>
                                     @foreach ($suppliers as $supplier)
-                                        <option value="{{ $supplier->id }}" data-address="{{ $supplier->address }}">
+                                        <option value="{{ $supplier->id }}" data-address="{{ $supplier->address }}" {{ $supplier->id === $data->supplier->id ? 'selected' : '' }}>
                                             <div class="custom-option">
                                                 <span class="option-text">{{ $supplier->name }}</span>
                                             </div>
@@ -108,7 +125,7 @@
                             </div>
                             <div style="width: 50%;">
                                 <label>@lang('address')</label>
-                                <textarea id="supplierAddress" rows="2" readonly></textarea>
+                                <textarea id="supplierAddress" rows="2" readonly>{{ $data->supplier->address }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -139,39 +156,43 @@
                             <tr>
                                 <td>
                                     {{ $product->name }}
-                                    <input type="hidden" name="items[{{ $index }}][product_id]"
-                                        value="{{ $product->id }}">
+                                    <input type="hidden" name="items[{{ $index }}][product_id]" value="{{ $product->id }}">
                                 </td>
                                 <td>{{ $product->sku }}</td>
                                 <td>
-                                    <input type="number" name="items[{{ $index }}][quantity]" value="0"
-                                        class="qty" min="0" step="1">
+                                    <input type="number"
+                                        name="items[{{ $index }}][quantity]"
+                                        value="{{ $product->ordered_qty }}"
+                                        class="qty"
+                                        min="0"
+                                        step="1">
                                 </td>
                                 <td>
-                                    <input type="number" name="items[{{ $index }}][unit_cost]"
-                                        value="{{ convertCentsToAmounts($product->assign->price) }}" class="unit-cost"
-                                        min="0" step="0.01" readonly>
+                                    <input type="number"
+                                        name="items[{{ $index }}][unit_cost]"
+                                        value="{{ convertCentsToAmounts($product->assign->price) }}"
+                                        class="unit-cost"
+                                        min="0"
+                                        step="0.01" readonly>
                                 </td>
                                 <td>
-                                    <input type="number" name="items[{{ $index }}][total_cost]" value="0"
-                                        class="total-cost" readonly>
+                                    <input type="number"
+                                        name="items[{{ $index }}][total_cost]"
+                                        value="{{ convertCentsToAmounts($product->assign->price * $product->ordered_qty) }}"
+                                        value="0"
+                                        class="total-cost"
+                                        readonly>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn removeRow"
-                                        style="font-weight:bold; font-size:28px; line-height:1; background: #dc3545; padding: 10px 15px;">&times;</button>
+                                    <button type="button" class="btn removeRow" style="font-weight:bold; font-size:28px; line-height:1; background: #dc3545; padding: 10px 15px;">&times;</button>
                                 </td>
                             </tr>
                         @endforeach
                         <tr>
                             <td colspan="3"></td>
-                            <td>
-                                <h3>@lang('total_all_product')</h3>
-                            </td>
-                            <input id="totalAllProduct" type="hidden" name="total_all_product" step="0.01"
-                                min="0">
-                            <td id="allProductTotal">
-                                <h3>{{ 0 }}</h3>
-                            </td>
+                            <td><h3>@lang('total_all_product')</h3></td>
+                            <input id="totalAllProduct" type="hidden" name="total_all_product" step="0.01" min="0" value="{{ convertCentsToAmounts($data->total_cost) }}">
+                            <td id="allProductTotal"><h3>{{ convertCentsToAmounts($data->total_cost) }}</h3></td>
                             <td></td>
                         </tr>
                     </tbody>
@@ -198,7 +219,7 @@
                                 </div>
                             </option>
                             @foreach ($payment_terms as $value)
-                                <option value="{{ $value }}">
+                                <option value="{{ $value }}" {{ $value === $data->payment_term ? 'selected' : '' }}>
                                     <div class="custom-option">
                                         <span class="option-text">{{ $value }}</span>
                                     </div>
@@ -218,7 +239,7 @@
                                 </div>
                             </option>
                             @foreach ($shipping_carrier as $value)
-                                <option value="{{ $value }}">
+                                <option value="{{ $value }}" {{ $value === $data->shipping_carrier ? 'selected' : '' }}>
                                     <div class="custom-option">
                                         <span class="option-text">{{ $value }}</span>
                                     </div>
@@ -228,7 +249,7 @@
                     </div>
                     <div style="width: 30%;">
                         <label>@lang('shipping_fee') ({{ getCurrencySymbolByCurrencyCode(getCurrencyCode()) }})</label>
-                        <input id="shippingFeeInput" type="number" name="shipping_fee" value="0">
+                        <input id="shippingFeeInput" type="number" name="shipping_fee" value="{{ convertCentsToAmounts($data->shipping_fee) }}">
                     </div>
                 </div>
             </div>
@@ -240,27 +261,38 @@
         <div style="display: flex; justify-content: space-between;">
             <h2>@lang('subtotal')</h2>
             <input id="summarySubtotalInput" type="hidden" value="0">
-            <h2 id="subtotal"></h2>
+            <h2 id="subtotal">{{ amountFormat(convertCentsToAmounts($data->total_cost), getCurrencyCode()) }}</h2>
         </div>
         <div style="display: flex; justify-content: space-between;">
             <h2>@lang('shipping_fee')</h2>
             <input id="summaryShippingFeeInput" type="hidden" value="0">
-            <h2 id="shippingFee"></h2>
+            <h2 id="shippingFee">{{ amountFormat(convertCentsToAmounts($data->shipping_fee), getCurrencyCode()) }}</h2>
         </div>
         <hr>
         <div style="display: flex; justify-content: space-between;">
             <h2>@lang('grand_total')</h2>
             <input id="summaryGrandTotalInput" type="hidden" value="0">
-            <h2 id="grandTotal"></h2>
+            <h2 id="grandTotal">{{ amountFormat(convertCentsToAmounts($data->total_cost + $data->shipping_fee), getCurrencyCode()) }}</h2>
         </div>
 
         <div style="display: flex; justify-content: flex-end; gap: 10px;">
-            <button type="submit" name="action" value="save" class="submit-btn" style="background: #666666;">
+            <button
+                type="submit"
+                name="action"
+                value="save"
+                class="submit-btn"
+                style="background: #666666;"
+            >
                 @lang('save')
             </button>
 
-            <button type="submit" name="action" value="create" class="submit-btn">
-                @lang('create')
+            <button
+                type="submit"
+                name="action"
+                value="send"
+                class="submit-btn"
+            >
+                @lang('send')
             </button>
         </div>
 
@@ -270,7 +302,7 @@
 
     @push('scripts')
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
 
                 function showToast(message, success = true) {
                     toast.textContent = message;
@@ -285,13 +317,12 @@
                 const tbody = document.getElementById('productTableBody');
 
                 tbody.addEventListener('click', function(e) {
-                    if (e.target && e.target.classList.contains('removeRow')) {
-                        const productRows = Array.from(tbody.querySelectorAll('tr')).slice(0, -
-                        1); // exclude total row
-                        if (productRows.length > 1) {
+                    if(e.target && e.target.classList.contains('removeRow')) {
+                        const productRows = Array.from(tbody.querySelectorAll('tr')).slice(0, -1); // exclude total row
+                        if(productRows.length > 1) {
                             e.target.closest('tr').remove();
                         } else {
-                            showToast("{{ __('at_least_one_row_must_remain') }}", false);
+                        showToast("{{ __('at_least_one_row_must_remain') }}", false);
                         }
                     }
                 });
@@ -299,7 +330,7 @@
                 const supplierSelect = document.getElementById('supplierSelect');
                 const supplierAddress = document.getElementById('supplierAddress');
 
-                supplierSelect.addEventListener('change', function() {
+                supplierSelect.addEventListener('change', function () {
                     const selectedOption = this.options[this.selectedIndex];
 
                     const address = selectedOption.dataset.address || '';
@@ -395,17 +426,12 @@
                 });
 
                 const shippingFeeInput = document.getElementById('shippingFeeInput');
-                shippingFeeInput.addEventListener('input', function(e) {
+                shippingFeeInput.addEventListener('input', function (e) {
                     const value = e.target.value;
                     document.getElementById('summaryShippingFeeInput').value = value;
                     document.getElementById('shippingFee').innerText = formatMoneyWithSymbol(value);
                     calculateGrandTotal();
                 });
-
-                // Fill summary
-                document.getElementById('subtotal').innerText = formatMoneyWithSymbol(0);
-                document.getElementById('shippingFee').innerText = formatMoneyWithSymbol(0);
-                document.getElementById('grandTotal').innerText = formatMoneyWithSymbol(0);
             });
         </script>
     @endpush

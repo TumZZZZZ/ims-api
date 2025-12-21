@@ -31,7 +31,7 @@
                     </div>
                     <div style="width: 25%; padding-right: 20px;">
                         <label>@lang('type')<span>*</span></label>
-                        <select name="type">
+                        <select name="type" required>
                             <button>
                                 <selectedcontent></selectedcontent>
                             </button>
@@ -54,17 +54,17 @@
                 <div style="display: flex;">
                     <div style="width: 50%; padding-right: 20px;">
                         <label>@lang('start_date')<span>*</span></label>
-                        <input type="datetime-local" name="start_date" value="{{ $data->start_date }}">
+                        <input type="datetime-local" name="start_date" value="{{ $data->start_date }}" required>
                     </div>
                     <div style="width: 50%;">
                         <label>@lang('end_date')<span>*</span></label>
-                        <input type="datetime-local" name="end_date" value="{{ $data->end_date }}">
+                        <input type="datetime-local" name="end_date" value="{{ $data->end_date }}" required>
                     </div>
                 </div>
 
                 <div style="display: flex;">
                     <div style="width: 50%; padding-right: 20px;">
-                        <label>@lang('product')<span>*</span></label>
+                        <label>@lang('product') (@lang('optional'))</label>
                         <div class="custom-multi-select-wrapper" data-placeholder="{{ __('select_product') }}">
                             <button type="button" class="custom-multi-select-btn">
                                 <span class="selected-items"></span>
@@ -81,7 +81,7 @@
                         </div>
                     </div>
                     <div style="width: 50%;">
-                        <label>@lang('category')<span>*</span></label>
+                        <label>@lang('category') (@lang('optional'))</label>
                         <div class="custom-multi-select-wrapper" data-placeholder="{{ __('select_category') }}">
                             <button type="button" class="custom-multi-select-btn">
                                 <span class="selected-items"></span>

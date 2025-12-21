@@ -26,7 +26,7 @@
                     </div>
                     <div style="width: 25%; padding-right: 20px;">
                         <label>@lang('type')<span>*</span></label>
-                        <select name="type">
+                        <select name="type" required>
                             <button>
                                 <selectedcontent></selectedcontent>
                             </button>
@@ -49,11 +49,11 @@
                 <div style="display: flex;">
                     <div style="width: 50%; padding-right: 20px;">
                         <label>@lang('start_date')<span>*</span></label>
-                        <input type="datetime-local" name="start_date" value="{{ old('start_date') }}">
+                        <input type="datetime-local" name="start_date" value="{{ old('start_date') }}" required>
                     </div>
                     <div style="width: 50%;">
                         <label>@lang('end_date')<span>*</span></label>
-                        <input type="datetime-local" name="end_date" value="{{ old('end_date') }}">
+                        <input type="datetime-local" name="end_date" value="{{ old('end_date') }}" required>
                     </div>
                 </div>
 

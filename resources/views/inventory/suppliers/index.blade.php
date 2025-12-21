@@ -41,9 +41,14 @@
                         <td>{{ $supplier->phone_number }}</td>
                         <td>{{ $supplier->address }}</td>
                         <td class="text-center">
-                            <button class="btn"
-                                onclick="openDialog('inventory/suppliers/delete', '{{ $supplier->id }}', '{{ $supplier->name }}', '{{ __('delete') }}')"
-                                style="background: #F44336;">{{ __('delete') }}
+                            <button
+                                class="btn delete-btn"
+                                data-url={{ 'inventory/suppliers/delete' }}
+                                data-id="{{ $supplier->id }}"
+                                data-name="{{ $supplier->name }}"
+                                data-title="{{ __('delete') }}"
+                                style="background: #F44336;">
+                                {{ __('delete') }}
                             </button>
                             <button class="btn"
                                 onclick="window.location.href='/inventory/suppliers/edit/{{ $supplier->id }}'"

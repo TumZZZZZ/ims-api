@@ -52,9 +52,14 @@
                         <td>{{ $category->getProducts()->isNotEmpty() ? $category->getProducts()->count() : '-' }}</td>
                         <td class="text-center">
                             @if ($category->getProducts()->isEmpty())
-                                <button class="btn"
-                                    onclick="openDialog('admin/categories/delete', '{{ $category->id }}', '{{ $category->name }}', '{{ __('delete') }}')"
-                                    style="background: #F44336;">{{ __('delete') }}
+                                <button
+                                    class="btn delete-btn"
+                                    data-url={{ 'admin/categories/delete' }}
+                                    data-id="{{ $category->id }}"
+                                    data-name="{{ $category->name }}"
+                                    data-title="{{ __('delete') }}"
+                                    style="background: #F44336;">
+                                    {{ __('delete') }}
                                 </button>
                             @endif
                             <button class="btn"

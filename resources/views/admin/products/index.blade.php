@@ -61,9 +61,14 @@
                         <td>{{ $product->assign->quantity }}</td>
                         <td>{{ $product->assign->threshold }}</td>
                         <td class="text-center">
-                            <button class="btn"
-                                onclick="openDialog('admin/products/delete', '{{ $product->id }}', '{{ $product->name }}', '{{ __('delete') }}')"
-                                style="background: #F44336;">{{ __('delete') }}
+                            <button
+                                class="btn delete-btn"
+                                data-url={{ 'admin/products/delete' }}
+                                data-id="{{ $product->id }}"
+                                data-name="{{ $product->name }}"
+                                data-title="{{ __('delete') }}"
+                                style="background: #F44336;">
+                                {{ __('delete') }}
                             </button>
                             <button class="btn"
                                 onclick="window.location.href='/admin/products/edit/{{ $product->id }}'"

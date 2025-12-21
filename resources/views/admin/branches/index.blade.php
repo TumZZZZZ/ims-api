@@ -61,9 +61,14 @@
                                 {{ !$branch->active ? __('open') : __('close') }}
                             </button>
                             @if ($branch->id != auth()->user()->active_on)
-                                <button class="btn"
-                                    onclick="openDialog('admin/branches/delete', '{{ $branch->id }}', '{{ $branch->name }}', '{{ __('delete') }}')"
-                                    style="background: #F44336;">{{ __('delete') }}
+                                <button
+                                    class="btn delete-btn"
+                                    data-url={{ 'admin/branches/delete' }}
+                                    data-id="{{ $branch->id }}"
+                                    data-name="{{ $branch->name }}"
+                                    data-title="{{ __('delete') }}"
+                                    style="background: #F44336;">
+                                    {{ __('delete') }}
                                 </button>
                             @endif
                             <button class="btn"

@@ -18,9 +18,9 @@
         <table class="activity-table">
             <thead class="table-header">
                 <tr>
-                    <th></th>
                     <th>@lang('branch')</th>
                     <th>@lang('product')</th>
+                    <th>@lang('sku')</th>
                     <th>@lang('quantity')</th>
                     <th>@lang('type')</th>
                     <th>@lang('reason')</th>
@@ -32,8 +32,10 @@
                     <tr>
                         <td>{{ $ledger->branch->name }}</td>
                         <td>{{ $ledger->product->name }}</td>
+                        <td>{{ $ledger->product->sku }}</td>
                         <td>{{ $ledger->quantity }}</td>
                         <td>{{ App\Enum\Constants::LEDGER_TYPES[$ledger->type] }}</td>
+                        <td>{{ $ledger->reason ?? '-' }}</td>
                     </tr>
                 @empty
                     <tr>

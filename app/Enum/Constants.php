@@ -20,16 +20,28 @@ class Constants
     const PROMOTION_TYPE_PERCENTAGE = "PERCENTAGE";
 
     const LEDGER_TYPES = [
-        'SALE' => 'Sale',
-        'PURCHASE_ORDER' => 'Purchase Order',
-        'INCREASEMENT' => 'Adjustment Increase',
-        'DECREASEMENT' => 'Adjustment Decrease'
+        self::LEDTER_TYPE_SALE => 'Sale',
+        self::LEDTER_TYPE_PURCHASE_ORDER => 'Purchase Order',
+        self::LEDTER_TYPE_INCREASEMENT => 'Adjustment Increase',
+        self::LEDTER_TYPE_DECREASEMENT => 'Adjustment Decrease'
     ];
 
-    const  PURCHASE_ORDER_STATUS_CLOSED = "CLOSED";
-    const  PURCHASE_ORDER_STATUS_DRAFT = "DRAFT";
-    const  PURCHASE_ORDER_STATUS_SENT = "SENT";
+    const PURCHASE_ORDER_STATUS = [
+        self::PURCHASE_ORDER_STATUS_RECEIVED => 'Received',
+        self::PURCHASE_ORDER_STATUS_IN_REVIEW => 'In Review',
+        self::PURCHASE_ORDER_STATUS_REQUESTED => 'Requested',
+        self::PURCHASE_ORDER_STATUS_REJECTED => 'Rejected'
+    ];
+
+    const  PURCHASE_ORDER_STATUS_RECEIVED = "RECEIVED";
+    const  PURCHASE_ORDER_STATUS_IN_REVIEW = "IN_REVIEW";
+    const  PURCHASE_ORDER_STATUS_REQUESTED = "REQUESTED";
     const  PURCHASE_ORDER_STATUS_REJECTED = "REJECTED";
+
+    const LEDTER_TYPE_SALE = "SALE";
+    const LEDTER_TYPE_PURCHASE_ORDER = "PURCHASE_ORDER";
+    const LEDTER_TYPE_INCREASEMENT = "INCREASEMENT";
+    const LEDTER_TYPE_DECREASEMENT = "DECREASEMENT";
 
     const PAYMENT_TYPE = "PAYMENT_TYPE";
     const PAYMENT_TYPE_CASH = "CASH";
@@ -48,4 +60,9 @@ class Constants
     const TELEGRAM_CONFIG_TYPE_LOWER_STOCK_ALERT = "lower_stock_alert";
     const TELEGRAM_RECEIVE_INVOICE = "TELEGRAM_RECEIVE_INVOICE";
     const TELEGRAM_LOWER_STOCK_ALERT = "TELEGRAM_LOWER_STOCK_ALERT";
+
+    const PO_STATUS_IN_REVIEW = "IN_REVIEW";
+    const PO_STATUS_REQUESTED = "REQUESTED";
+    const PO_STATUS_REJECTED = "REJECTED";
+    const PO_STATUS_RECIEVED = "RECIEVED";
 }
