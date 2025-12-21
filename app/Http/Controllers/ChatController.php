@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Auth;
 
 class ChatController extends Controller
 {
@@ -45,8 +46,29 @@ class ChatController extends Controller
             $reply = "Error from API: " . $result['error']['message'];
         }
 
+        // Store chat in session per user
+        if (Auth::check()) {
+            $chatSessionKey = 'chat_messages_user_' . Auth::user()->id;
+            $chatHistory = session()->get($chatSessionKey, []);
+            $chatHistory[] = [
+                'user' => $message,
+                'ai' => $reply,
+            ];
+            session()->put($chatSessionKey, $chatHistory);
+        }
+
         return response()->json([
             'reply' => $reply,
         ]);
+    }
+
+    // Optional: Get previous chat messages
+    public function getChatHistory()
+    {
+        if (Auth::check()) {
+            $chatSessionKey = 'chat_messages_user_' . Auth::user()->id;
+            return response()->json(session()->get($chatSessionKey, []));
+        }
+        return response()->json([]);
     }
 }

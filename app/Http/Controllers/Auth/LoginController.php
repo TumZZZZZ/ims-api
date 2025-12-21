@@ -93,7 +93,13 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
+        $chatSessionKey = 'chat_messages_user_' . Auth::user()->id;
+        session()->forget($chatSessionKey); // clear chat sessio
+
         Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
         return redirect()->route('login');
     }
 

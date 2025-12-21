@@ -206,5 +206,6 @@ Route::middleware('web')->group(function () {
      *                  API CHAT BOT
      * ================================================
      */
-    Route::post('/chat/send', [ChatController::class, 'sendMessage']);
+    Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+    Route::get('/chat/history', [ChatController::class, 'getChatHistory'])->name('chat.history');
 });
