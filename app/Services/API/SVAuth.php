@@ -21,9 +21,9 @@ class SVAuth
             throw new \Exception('Invalid credentials', 401);
         }
 
-        if ($user->active_on) {
-            throw new \Exception('User already logged in another device');
-        }
+        // if ($user->active_on) {
+        //     throw new \Exception('User already logged in another device');
+        // }
 
         $token = $user->createToken('auth_token')->plainTextToken;
         $token = str_replace('|', '', $token);
