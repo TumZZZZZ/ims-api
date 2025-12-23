@@ -287,7 +287,7 @@ class SVSaleScreen
         $receiveInvoiceConfig = getReceiveInvoiceConfig();
         if ($receiveInvoiceConfig) {
             $message = __('date')." : ". Carbon::parse($order->date)->setTimezone(getTimezone())->format('y/m/d g:i A')."\n";
-            $message .= __('branch')." : ". $user->getActiveBranch()->name ?? "Unknown Branch\n";
+            $message .= __('branch')." : ". $user->getActiveBranch()->name ?? "Unknown Branch"."\n";
             $message .= __('order_number')." : <b>".str_pad($order->order_number, 4, '0', STR_PAD_LEFT)."</b>\n";
             $message .= __('order_details')."\n";
             $discount = 0;
