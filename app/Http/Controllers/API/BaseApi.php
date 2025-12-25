@@ -53,7 +53,7 @@ class BaseApi extends Controller
     protected function responseSuccess($data, string $message = 'Success', int $code = 200): JsonResponse
     {
         return response()->json([
-            'status'    => true,
+            'success'   => true,
             'code'      => $code,
             'message'   => $message,
             'data'      => $data,
