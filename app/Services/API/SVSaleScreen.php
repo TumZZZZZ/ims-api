@@ -263,6 +263,7 @@ class SVSaleScreen
 
     public function placeOrder(array $params)
     {
+        $user = Auth::user();
         $order = Order::find($params['order_id']);
         $payment = Meta::find($params['payment_id']);
 
@@ -286,6 +287,7 @@ class SVSaleScreen
         $receiveInvoiceConfig = getReceiveInvoiceConfig();
         if ($receiveInvoiceConfig) {
             $message = __('date')." : ". Carbon::parse($order->date)->setTimezone(getTimezone())->format('y/m/d g:i A')."\n";
+            $message .= __('branch')." : ". $user->getActiveBranch()->name."\n";
             $message .= __('order_number')." : <b>".str_pad($order->order_number, 4, '0', STR_PAD_LEFT)."</b>\n";
             $message .= __('order_details')."\n";
             $discount = 0;
