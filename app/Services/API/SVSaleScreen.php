@@ -8,9 +8,10 @@ use App\Models\Meta;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
-use App\Models\ProductAssign;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Mpdf\Mpdf;
 
 use function Symfony\Component\Clock\now;
 
@@ -279,6 +280,10 @@ class SVSaleScreen
             throw new \Exception('Payment not found!', 404);
         }
 
+        if ($order->status === Constants::ORDER_STATUS_PAID) {
+            throw new \Exception('Order already paid.', 404);
+        }
+
         $order->payment_id = $params['payment_id'];
         $order->status = Constants::ORDER_STATUS_PAID;
         $order->save();
@@ -286,6 +291,29 @@ class SVSaleScreen
         # Notify to telegram channel if setup
         $receiveInvoiceConfig = getReceiveInvoiceConfig();
         if ($receiveInvoiceConfig) {
+
+            # Generate html
+            $html = view('invoice-pdf', [
+                'data' => $order
+            ])->render();
+
+            $mpdf = new Mpdf([
+                'mode' => 'utf-8',
+                'format' => 'A5', // or 'A5'
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 10,
+                'margin_bottom' => 10,
+            ]);
+
+            // Optional: Khmer font support
+            $mpdf->autoScriptToLang = true;
+            $mpdf->autoLangToFont = true;
+
+            $mpdf->WriteHTML($html);
+            $pdfContent = $mpdf->Output('', 'S'); // 'S' = return as string
+            $invoicePdfName = $order->branch->name.' '.str_pad($order->order_number, 4, '0', STR_PAD_LEFT) . '.pdf';
+
             $message = __('date')." : ". Carbon::parse($order->date)->setTimezone(getTimezone())->format('y/m/d g:i A')."\n";
             $message .= __('branch')." : ". $user->getActiveBranch()->name."\n";
             $message .= __('order_number')." : <b>".str_pad($order->order_number, 4, '0', STR_PAD_LEFT)."</b>\n";
@@ -301,9 +329,12 @@ class SVSaleScreen
             $message .= __('discount')." : ".amountFormat(convertCentsToAmounts($discount), getCurrencyCode())."\n";
             $message .= "<b>".__('total')." : ".amountFormat(convertCentsToAmounts($total), getCurrencyCode())."</b>\n";
             $message .= __('payment_method')." : ".($order->payment->value);
-            sendMessageToTelegram([
+            $botToken = config('app.telegram_bot_token');
+            Http::attach(
+                'document', $pdfContent, $invoicePdfName
+            )->post("https://api.telegram.org/bot{$botToken}/sendDocument", [
                 'chat_id' => getTelegramChannelIDFormatted($receiveInvoiceConfig->value),
-                'text' => $message,
+                'caption' => $message,
                 'parse_mode' => "HTML"
             ]);
         }

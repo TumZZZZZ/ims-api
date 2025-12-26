@@ -18,6 +18,11 @@ class Order extends Model
         'status',
     ];
 
+    public function branch()
+    {
+        return $this->belongsTo(Store::class, 'branch_id', '_id')->whereNull('deleted_at');
+    }
+
     public function payment()
     {
         return $this->belongsTo(Meta::class, 'payment_id', '_id')->whereNull('deleted_at');

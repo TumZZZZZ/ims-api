@@ -193,5 +193,7 @@
     "purchase_order_rejection": "Purchase Order Rejection",
     "enter_reason": "Enter reason",
     "update_purchase_order": "Update Purchase Order",
-    "invoice": "Invoice"
+    "invoice": "Invoice",
+    "qty": "Qty",
+    "item_name": "Item Name"
 }
