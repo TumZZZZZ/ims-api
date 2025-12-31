@@ -35,7 +35,13 @@ class LoginController extends Controller
         $email    = $request->email;
         $password = $request->password;
 
-        $user = User::where('email', $email)->first();
+        $user = User::where('email', $email)
+            ->whereIn('role', [
+                Constants::ROLE_SUPER_ADMIN,
+                Constants::ROLE_ADMIN,
+                Constants::ROLE_MANAGER
+            ])
+            ->first();
 
         if (!$user || !Hash::check($password, $user->password)) {
             return back()->withErrors(['email' => 'Invalid credentials'])->withInput();

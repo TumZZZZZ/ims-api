@@ -192,5 +192,9 @@
     "grand_total": "សរុបសរុង",
     "purchase_order_rejection": "ការបដិសេធបញ្ជារទិញ",
     "enter_reason": "បញ្ចូលមូលហេតុ",
-    "update_purchase_order": "បន្ថែមបញ្ជារទិញ"
+    "update_purchase_order": "បន្ថែមបញ្ជារទិញ",
+    "invoice": "វិក្កយបត្រ",
+    "qty": "ចំនួន",
+    "item_name": "ឈ្មោះទំនិញ",
+    "update_promotion": "កែប្រែប្រូម៉ូសិន"
 }

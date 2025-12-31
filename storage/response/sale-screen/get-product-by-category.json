@@ -1,14 +1,31 @@
 {
-    "status": true,
+    "success": true,
     "code": 200,
     "message": "Success",
     "data": [
         {
-            "id": "69457233ed75b318360c07ae",
-            "name": "Steven Holder",
-            "image_url": "https://khmer-angkor-ims.s3.amazonaws.com/images/categories/69457233ed75b318360c07ae.jpg",
-            "price": 72000,
-            "price_format": "$720.00"
+            "id": "6954d0e967bd27567c0f19aa",
+            "category_id": "6954d0bb67bd27567c0f19a8",
+            "name": "Pro Vida 1.5L",
+            "image_url": "https://khmer-angkor-ims.s3.amazonaws.com/images/categories/69466e745490231cca00914e.png",
+            "price": 63,
+            "price_format": "$0.63",
+            "discount_id": "6954d82b67bd27567c0f19b3",
+            "discount_name": "50% Off",
+            "price_after_discount": 31.5,
+            "price_after_discount_format": "$0.32"
+        },
+        {
+            "id": "6954d4df67bd27567c0f19af",
+            "category_id": "6954d0bb67bd27567c0f19a8",
+            "name": "Vita",
+            "image_url": null,
+            "price": 63,
+            "price_format": "$0.63",
+            "discount_id": null,
+            "discount_name": null,
+            "price_after_discount": 0,
+            "price_after_discount_format": "$0.00"
         }
     ]
 }

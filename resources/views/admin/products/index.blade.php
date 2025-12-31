@@ -57,7 +57,7 @@
                         <td>{{ $product->name }}</td>
                         <td>{{ amountFormat(convertCentsToAmounts($product->assign->price), getCurrencyCode()) }}</td>
                         <td>{{ amountFormat(convertCentsToAmounts($product->assign->cost), getCurrencyCode()) }}</td>
-                        <td>{{ $product->categories->pluck('name')->implode(',') }}</td>
+                        <td>{{ $product->category->name }}</td>
                         <td>{{ $product->assign->quantity }}</td>
                         <td>{{ $product->assign->threshold }}</td>
                         <td class="text-center">

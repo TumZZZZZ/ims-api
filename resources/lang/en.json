@@ -195,5 +195,6 @@
     "update_purchase_order": "Update Purchase Order",
     "invoice": "Invoice",
     "qty": "Qty",
-    "item_name": "Item Name"
+    "item_name": "Item Name",
+    "update_promotion": "Update Promotion"
 }

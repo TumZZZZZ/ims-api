@@ -3,6 +3,8 @@
 namespace App\Services\Admin;
 
 use App\Enum\Constants;
+use App\Models\Category;
+use App\Models\Product;
 use App\Models\Promotion;
 use App\Models\User;
 use Carbon\Carbon;
@@ -52,7 +54,7 @@ class SVPromotion
             $params['end_date'] = Carbon::parse($params['end_date'], getTimezone())->setTimezone('UTC');
 
             // Create promotion
-            Promotion::create([
+            $promotion = Promotion::create([
                 'branch_id' => $user->active_on,
                 'name' => $params['name'],
                 'type' => $params['type'],
@@ -62,6 +64,18 @@ class SVPromotion
                 'category_ids' => $params['category_ids'] ?? [],
                 'product_ids' => $params['product_ids'] ?? [],
             ]);
+
+            if (!empty($params['product_ids'])) {
+                Product::whereIn('id', $params['product_ids'])->update([
+                    'promotion_id' => $promotion->id,
+                ]);
+            }
+
+            if (!empty($params['category_ids'])) {
+                Category::whereIn('id', $params['category_ids'])->update([
+                    'promotion_id' => $promotion->id,
+                ]);
+            }
 
             // Create history
             unset($params['_token']);
@@ -81,14 +95,27 @@ class SVPromotion
             $promotion = Promotion::find($id);
 
             // Update promotion
+            $promotion->branch_id = $user->active_on;
             $promotion->name = $params['name'];
             $promotion->type = $params['type'];
             $promotion->value = $params['amount'];
             $promotion->start_date = $params['start_date'];
             $promotion->end_date = $params['end_date'];
             $promotion->category_ids = $params['category_ids'] ?? [];
-            $promotion->branch_ids = $params['branch_ids'] ?? [];
+            $promotion->product_ids = $params['product_ids'] ?? [];
             $promotion->save();
+
+            if (!empty($params['product_ids'])) {
+                Product::whereIn('id', $params['product_ids'])->update([
+                    'promotion_id' => $promotion->id,
+                ]);
+            }
+
+            if (!empty($params['category_ids'])) {
+                Category::whereIn('id', $params['category_ids'])->update([
+                    'promotion_id' => $promotion->id,
+                ]);
+            }
 
             // Create history
             unset($params['_token']);

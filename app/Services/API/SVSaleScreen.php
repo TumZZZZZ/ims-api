@@ -24,7 +24,6 @@ class SVSaleScreen
             ->transform(function ($paymentMethod) {
                 return (object)[
                     'id' => $paymentMethod->id,
-                    'image_url' => $paymentMethod->image->url ?? null,
                     'name' => $paymentMethod->value,
                 ];
             })
@@ -52,6 +51,52 @@ class SVSaleScreen
             ->values();
     }
 
+    public function getAllProducts(array $params)
+    {
+        $user = Auth::user();
+        $search = $params['search'] ?? null;
+        return Product::with(['image','assign','category','promotion'])
+            ->when($search, function($query, $search) {
+                $query->where('name', 'like', '%'.$search.'%');
+            })
+            ->whereHas('assign', function ($query) use ($user) {
+                $query->where('branch_id', $user->active_on)
+                    ->whereNull('deleted_at');
+            })
+            ->whereNull('deleted_at')
+            ->get()
+            ->transform(function($product) {
+                $price = $product->assign->price;
+                $discountId = null;
+                $discountName = null;
+                $priceAfterDiscount = 0;
+                $promotion = @$product->promotion ?? @$product->category->promotion;
+                if ($promotion) {
+                    $discountId = $promotion->id;
+                    $discountName = $promotion->name;
+                    if ($promotion->type === Constants::PROMOTION_TYPE_PERCENTAGE) {
+                        $priceAfterDiscount = $price - ($price * $promotion->value / 100);
+                    } else {
+                        $priceAfterDiscount = $price - $promotion->value;
+                    };
+                    $priceAfterDiscount = $priceAfterDiscount < 0 ? 0 : $priceAfterDiscount;
+                }
+                return (object)[
+                    'id' => $product->id,
+                    'category_id' => $product->category->id,
+                    'name' => $product->name,
+                    'image_url' => $product->image->url ?? null,
+                    'price' => $price,
+                    'price_format' => amountFormat(convertCentsToAmounts($price), getCurrencyCode()),
+                    'discount_id' => $discountId,
+                    'discount_name' => $discountName,
+                    'price_after_discount' => $priceAfterDiscount,
+                    'price_after_discount_format' => amountFormat(convertCentsToAmounts($priceAfterDiscount), getCurrencyCode()),
+                ];
+            })
+            ->values();
+    }
+
     public function getProductByCategory($categoryId, array $params)
     {
         $user = Auth::user();
@@ -70,7 +115,7 @@ class SVSaleScreen
                 $query->where('branch_id', $user->active_on)
                     ->whereNull('deleted_at');
             })
-            ->where('category_ids', $category->id)
+            ->where('category_id', $category->id)
             ->whereNull('deleted_at')
             ->get()
             ->transform(function($product) {

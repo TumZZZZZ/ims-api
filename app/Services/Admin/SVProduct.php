@@ -15,11 +15,11 @@ class SVProduct
         $search = $params['search'] ?? null;
         $categoryIds = Category::where('name', 'like', "%{$search}%")
             ->pluck('id');
-        return Product::with(['image','categories','assign',])
+        return Product::with(['image','category','assign',])
             ->when($search, function($query) use ($search, $categoryIds) {
                 $query->where('name', 'like', '%'.$search.'%')
                     ->orWhere('barcode', 'like', '%'.$search.'%')
-                    ->orWhereIn('category_ids', $categoryIds);;
+                    ->orWhereIn('category_id', $categoryIds);;
             })
             ->whereHas('assign', function ($query) use ($user) {
                 $query->where('branch_id', $user->active_on);
@@ -38,7 +38,8 @@ class SVProduct
                 'name' => $params['name'],
                 'sku' => $params['sku'],
                 'barcode' => $params['barcode'] ?? null,
-                'description' => $params['description'] ?? null
+                'description' => $params['description'] ?? null,
+                'category_id' => $params['category_id'],
             ]);
 
             // Save image if exists
@@ -52,9 +53,6 @@ class SVProduct
             $category->product_ids = !empty($category->product_ids) ? $category->product_ids : [];
             $category->product_ids = array_merge($category->product_ids, [$product->id]);
             $category->save();
-
-            // Assign category
-            $product->push('category_ids', $category->id);
 
             // Create product assigns
             foreach ($params['branches'] as $branch) {
@@ -102,7 +100,7 @@ class SVProduct
             'sku' => $product->sku,
             'barcode' => $product->barcode,
             'description' => $product->description ?? null,
-            'category_id' => $product->categories->first()->id,
+            'category_id' => $product->category->id,
             'branches' => $branches,
         ];
     }
@@ -118,6 +116,7 @@ class SVProduct
             $product->sku = $params['sku'];
             $product->barcode = $params['barcode'] ?? null;
             $product->description = $params['description'] ?? null;
+            $product->category_id = $params['category_id'];
             $product->save();
 
             // Update image if exists

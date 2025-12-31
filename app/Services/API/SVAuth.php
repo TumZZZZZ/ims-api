@@ -2,11 +2,9 @@
 
 namespace App\Services\API;
 
-use App\Mail\SendOTPMail;
+use App\Enum\Constants;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 
 class SVAuth
 {
@@ -15,24 +13,26 @@ class SVAuth
         $email = $credential['email'];
         $password = $credential['password'];
 
-        $user = User::where('email', $email)->first();
+        $user = User::where('email', $email)->where('role', Constants::ROLE_STAFF)->first();
 
         if (!$user || !Hash::check($password, $user->password)) {
             throw new \Exception('Invalid credentials', 401);
         }
 
-        // if ($user->active_on) {
-        //     throw new \Exception('User already logged in another device');
-        // }
+        $branch = $user->getBranches()->first();
+
+        if (!$branch->active) {
+            throw new \Exception('This user was suspended');
+        }
+
+        # Assingn active on
+        $user->active_on = $branch->id;
+        $user->save();
 
         $token = $user->createToken('auth_token')->plainTextToken;
         $token = str_replace('|', '', $token);
 
         $token = trim($token);
-
-        # Assingn active on
-        $user->active_on = $user->getBranches()->first()->id;
-        $user->save();
 
         return [
             'token'         => $token,

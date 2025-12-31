@@ -52,6 +52,23 @@ class SaleScreenController extends BaseApi
     }
 
     /**
+     * Get All Products
+     *
+     * @queryParam search string optional
+     *
+     * @responseFile storage/response/sale-screen/get-product-by-category.json
+     */
+    public function getAllProducts(Request $request)
+    {
+        try {
+            $data = $this->getService()->getAllProducts($request->all());
+            return $this->responseSuccess($data);
+        } catch (\Throwable $th) {
+            return $this->responseError($th);
+        }
+    }
+
+    /**
      * Get Product by Category
      *
      * @queryParam search string optional

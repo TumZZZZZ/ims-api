@@ -15,7 +15,8 @@ class Product extends Model
         'sku',
         'barcode',
         'description',
-        'category_ids',
+        'category_id',
+        'promotion_id',
     ];
 
     public function image()
@@ -36,13 +37,13 @@ class Product extends Model
             ->whereNull('deleted_at');
     }
 
-    public function categories()
+    public function category()
     {
-        return $this->belongsToMany(
-            Category::class,
-            null,
-            'product_ids',
-            '_id'
-        )->whereNull('deleted_at');
+        return $this->belongsTo(Category::class, 'category_id', '_id')->whereNull('deleted_at');
+    }
+
+    public function promotion()
+    {
+        return $this->belongsTo(Promotion::class, 'promotion_id', '_id')->whereNull('deleted_at');
     }
 }

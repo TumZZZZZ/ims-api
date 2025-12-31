@@ -18,6 +18,7 @@ Route::prefix('v1')->group(function () {
         Route::group(['prefix' => 'sale-screen'], function() {
             Route::get('get-payment-methods', [SaleScreenController::class, 'getPaymentMethods']);
             Route::get('get-all-categories', [SaleScreenController::class, 'getAllCategories']);
+            Route::get('get-all-products', [SaleScreenController::class, 'getAllProducts']);
             Route::get('get-product-by-category/{category_id}', [SaleScreenController::class, 'getProductByCategory']);
             Route::get('get-order-details', [SaleScreenController::class, 'getOrderDetails']);
             Route::post('add-order', [SaleScreenController::class, 'addOrder']);

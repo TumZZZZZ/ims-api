@@ -34,6 +34,12 @@ class SVCategory
                 'product_ids' => $params['product_ids'] ?? [],
             ]);
 
+            if (!empty($params['product_ids'])) {
+                Product::whereIn('id', $params['product_ids'])->update([
+                    'category_id' => $category->id,
+                ]);
+            }
+
             // Save image if exists
             if (request()->hasFile('image')) {
                 uploadImage($category->_id, 'categories', request()->file('image'));
@@ -70,6 +76,12 @@ class SVCategory
             $category->name = $params['name'];
             $category->product_ids = $params['product_ids'] ?? [];
             $category->save();
+
+            if (!empty($params['product_ids'])) {
+                Product::whereIn('id', $params['product_ids'])->update([
+                    'category_id' => $category->id,
+                ]);
+            }
 
             // Update image if exists
             if (request()->hasFile('image')) {
